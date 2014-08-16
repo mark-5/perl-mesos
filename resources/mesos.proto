@@ -1,0 +1,481 @@
+
+
+package mesos;
+
+option java_package = "org.apache.mesos";
+option java_outer_classname = "Protos";
+
+
+
+enum Status {
+  DRIVER_NOT_STARTED = 1;
+  DRIVER_RUNNING = 2;
+  DRIVER_ABORTED = 3;
+  DRIVER_STOPPED = 4;
+}
+
+
+
+message FrameworkID {
+  required string value = 1;
+}
+
+
+
+message OfferID {
+  required string value = 1;
+}
+
+
+
+message SlaveID {
+  required string value = 1;
+}
+
+
+
+message TaskID {
+  required string value = 1;
+}
+
+
+
+message ExecutorID {
+  required string value = 1;
+}
+
+
+
+message ContainerID {
+  required string value = 1;
+}
+
+
+
+message FrameworkInfo {
+  required string user = 1;
+  required string name = 2;
+  optional FrameworkID id = 3;
+  optional double failover_timeout = 4 [default = 0.0];
+  optional bool checkpoint = 5 [default = false];
+  optional string role = 6 [default = "*"];
+  optional string hostname = 7;
+  optional string principal = 8;
+}
+
+
+
+message HealthCheck {
+    message HTTP {
+        required uint32 port = 1;
+
+        optional string path = 2 [default = "/"];
+
+            
+            repeated uint32 statuses = 4;
+
+          }
+
+  optional HTTP http = 1;
+
+      
+              
+    optional double delay_seconds = 2 [default = 15.0];
+
+    optional double interval_seconds = 3 [default = 10.0];
+
+    optional double timeout_seconds = 4 [default = 20.0];
+
+    optional uint32 consecutive_failures = 5 [default = 3];
+
+    optional double grace_period_seconds = 6 [default = 10.0];
+
+    optional CommandInfo command = 7;
+}
+
+
+
+message CommandInfo {
+  message URI {
+    required string value = 1;
+    optional bool executable = 2;
+    optional bool extract = 3 [default = true];
+  }
+
+                    message ContainerInfo {
+        required string image = 1;
+
+        repeated string options = 2;
+  }
+
+      optional ContainerInfo container = 4;
+
+  repeated URI uris = 1;
+
+  optional Environment environment = 2;
+
+    required string value = 3;
+
+        optional string user = 5;
+}
+
+
+
+message ExecutorInfo {
+  required ExecutorID executor_id = 1;
+  optional FrameworkID framework_id = 8;   required CommandInfo command = 7;
+  repeated Resource resources = 5;
+  optional string name = 9;
+
+              optional string source = 10;
+  optional bytes data = 4;
+}
+
+
+
+message MasterInfo {
+  required string id = 1;
+  required uint32 ip = 2;
+  required uint32 port = 3 [default = 5050];
+  optional string pid = 4;
+  optional string hostname = 5;
+}
+
+
+
+message SlaveInfo {
+  required string hostname = 1;
+  optional int32 port = 8 [default = 5051];
+  repeated Resource resources = 3;
+  repeated Attribute attributes = 5;
+  optional SlaveID id = 6;
+  optional bool checkpoint = 7 [default = false];
+
+      repeated Resource private_resources = 9;
+
+    optional string webui_hostname = 2;
+  optional int32 webui_port = 4 [default = 8081];
+}
+
+
+
+message Value {
+  enum Type {
+    SCALAR = 0;
+    RANGES = 1;
+    SET = 2;
+    TEXT = 3;
+  }
+
+  message Scalar {
+    required double value = 1;
+  }
+
+  message Range {
+    required uint64 begin = 1;
+    required uint64 end = 2;
+  }
+
+  message Ranges {
+    repeated Range range = 1;
+  }
+
+  message Set {
+    repeated string item = 1;
+  }
+
+  message Text {
+    required string value = 1;
+  }
+
+  required Type type = 1;
+  optional Scalar scalar = 2;
+  optional Ranges ranges = 3;
+  optional Set set = 4;
+  optional Text text = 5;
+}
+
+
+
+message Attribute {
+  required string name = 1;
+  required Value.Type type = 2;
+  optional Value.Scalar scalar = 3;
+  optional Value.Ranges ranges = 4;
+  optional Value.Set set = 6;
+  optional Value.Text text = 5;
+}
+
+
+
+message Resource {
+  required string name = 1;
+  required Value.Type type = 2;
+  optional Value.Scalar scalar = 3;
+  optional Value.Ranges ranges = 4;
+  optional Value.Set set = 5;
+  optional string role = 6 [default = "*"];
+}
+
+
+
+message ResourceStatistics {
+  required double timestamp = 1; 
+      optional double cpus_user_time_secs = 2;
+  optional double cpus_system_time_secs = 3;
+
+    optional double cpus_limit = 4;
+
+    optional uint32 cpus_nr_periods = 7;
+  optional uint32 cpus_nr_throttled = 8;
+  optional double cpus_throttled_time_secs = 9;
+
+    optional uint64 mem_rss_bytes = 5; 
+    optional uint64 mem_limit_bytes = 6;
+
+    optional uint64 mem_file_bytes = 10;
+  optional uint64 mem_anon_bytes = 11;
+  optional uint64 mem_mapped_file_bytes = 12;
+
+  
+    optional PerfStatistics perf = 13;
+
+    optional uint64 net_rx_packets = 14;
+  optional uint64 net_rx_bytes = 15;
+  optional uint64 net_rx_errors = 16;
+  optional uint64 net_rx_dropped = 17;
+  optional uint64 net_tx_packets = 18;
+  optional uint64 net_tx_bytes = 19;
+  optional uint64 net_tx_errors = 20;
+  optional uint64 net_tx_dropped = 21;
+}
+
+
+
+message ResourceUsage {
+  required SlaveID slave_id = 1;
+  required FrameworkID framework_id = 2;
+
+          
+  optional ExecutorID executor_id = 3;   optional string executor_name = 4;   
+  optional TaskID task_id = 5; 
+    optional ResourceStatistics statistics = 6;
+}
+
+
+
+message PerfStatistics {
+  required double timestamp = 1;   required double duration = 2;  
+    optional uint64 cycles = 3;
+  optional uint64 stalled_cycles_frontend = 4;
+  optional uint64 stalled_cycles_backend = 5;
+  optional uint64 instructions = 6;
+  optional uint64 cache_references = 7;
+  optional uint64 cache_misses = 8;
+  optional uint64 branches = 9;
+  optional uint64 branch_misses = 10;
+  optional uint64 bus_cycles = 11;
+  optional uint64 ref_cycles = 12;
+
+    optional double cpu_clock = 13;
+  optional double task_clock = 14;
+  optional uint64 page_faults = 15;
+  optional uint64 minor_faults = 16;
+  optional uint64 major_faults = 17;
+  optional uint64 context_switches = 18;
+  optional uint64 cpu_migrations = 19;
+  optional uint64 alignment_faults = 20;
+  optional uint64 emulation_faults = 21;
+
+    optional uint64 l1_dcache_loads = 22;
+  optional uint64 l1_dcache_load_misses = 23;
+  optional uint64 l1_dcache_stores = 24;
+  optional uint64 l1_dcache_store_misses = 25;
+  optional uint64 l1_dcache_prefetches = 26;
+  optional uint64 l1_dcache_prefetch_misses = 27;
+  optional uint64 l1_icache_loads = 28;
+  optional uint64 l1_icache_load_misses = 29;
+  optional uint64 l1_icache_prefetches = 30;
+  optional uint64 l1_icache_prefetch_misses = 31;
+  optional uint64 llc_loads = 32;
+  optional uint64 llc_load_misses = 33;
+  optional uint64 llc_stores = 34;
+  optional uint64 llc_store_misses = 35;
+  optional uint64 llc_prefetches = 36;
+  optional uint64 llc_prefetch_misses = 37;
+  optional uint64 dtlb_loads = 38;
+  optional uint64 dtlb_load_misses = 39;
+  optional uint64 dtlb_stores = 40;
+  optional uint64 dtlb_store_misses = 41;
+  optional uint64 dtlb_prefetches = 42;
+  optional uint64 dtlb_prefetch_misses = 43;
+  optional uint64 itlb_loads = 44;
+  optional uint64 itlb_load_misses = 45;
+  optional uint64 branch_loads = 46;
+  optional uint64 branch_load_misses = 47;
+  optional uint64 node_loads = 48;
+  optional uint64 node_load_misses = 49;
+  optional uint64 node_stores = 50;
+  optional uint64 node_store_misses = 51;
+  optional uint64 node_prefetches = 52;
+  optional uint64 node_prefetch_misses = 53;
+}
+
+
+
+message Request {
+  optional SlaveID slave_id = 1;
+  repeated Resource resources = 2;
+}
+
+
+
+message Offer {
+  required OfferID id = 1;
+  required FrameworkID framework_id = 2;
+  required SlaveID slave_id = 3;
+  required string hostname = 4;
+  repeated Resource resources = 5;
+  repeated Attribute attributes = 7;
+  repeated ExecutorID executor_ids = 6;
+}
+
+
+
+message TaskInfo {
+  required string name = 1;
+  required TaskID task_id = 2;
+  required SlaveID slave_id = 3;
+  repeated Resource resources = 4;
+  optional ExecutorInfo executor = 5;
+  optional CommandInfo command = 7;
+  optional bytes data = 6;
+      optional HealthCheck health_check = 8;
+}
+
+
+
+enum TaskState {
+  TASK_STAGING = 6;    TASK_STARTING = 0;
+  TASK_RUNNING = 1;
+  TASK_FINISHED = 2;   TASK_FAILED = 3;     TASK_KILLED = 4;     TASK_LOST = 5;     
+  }
+
+
+
+message TaskStatus {
+  required TaskID task_id = 1;
+  required TaskState state = 2;
+  optional string message = 4;   optional bytes data = 3;
+  optional SlaveID slave_id = 5;
+  optional ExecutorID executor_id = 7;   optional double timestamp = 6;
+
+        optional bool healthy = 8;
+}
+
+
+
+message Filters {
+              optional double refuse_seconds = 1 [default = 5.0];
+}
+
+
+
+message Environment {
+  message Variable {
+    required string name = 1;
+    required string value = 2;
+  }
+
+  repeated Variable variables = 1;
+}
+
+
+
+message Parameter {
+  required string key = 1;
+  required string value = 2;
+}
+
+
+
+message Parameters {
+  repeated Parameter parameter = 1;
+}
+
+
+
+message Credential {
+  required string principal = 1;
+  optional bytes secret = 2;
+}
+
+
+
+message Credentials {
+      repeated Credential registration = 1;
+
+        repeated Credential http = 2;
+}
+
+
+
+message ACL {
+
+          message Entity {
+    enum Type {
+      SOME = 0;
+      ANY = 1;
+      NONE = 2;
+    }
+    optional Type type = 1 [default = SOME];
+    repeated string values = 2;   }
+
+    message RunTasks {
+        required Entity principals = 1; 
+        required Entity users = 2;   }
+
+  message ReceiveOffers {
+        required Entity principals = 1; 
+        required Entity roles = 2;   }
+
+  message HTTPGet {
+        optional Entity usernames = 1;     optional Entity ips = 2;
+    optional Entity hostnames = 3;
+
+        required Entity urls = 4;
+  }
+
+  message HTTPPut {
+        optional Entity usernames = 1;     optional Entity ips = 2;
+    optional Entity hostnames = 3;
+
+        required Entity urls = 4;
+  }
+}
+
+
+
+message ACLs {
+  optional bool permissive = 1 [default = true];
+  repeated ACL.RunTasks run_tasks = 2;
+  repeated ACL.ReceiveOffers receive_offers = 3;
+  repeated ACL.HTTPGet http_get = 4;
+  repeated ACL.HTTPPut http_put = 5;
+}
+
+
+
+message RateLimit {
+    optional double qps = 1;
+
+      required string principal = 2;
+}
+
+
+
+message RateLimits {
+    repeated RateLimit limits = 1;
+
+        optional double aggregate_default_qps = 2;
+}
