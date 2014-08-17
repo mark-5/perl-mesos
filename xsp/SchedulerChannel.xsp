@@ -1,0 +1,22 @@
+%module{Net::Mesos};
+#include <SchedulerChannel.hpp>
+
+%name{Net::Mesos::SchedulerChannel} class mesos::perl::SchedulerChannel
+{
+
+%{
+void
+Net::Mesos::SchedulerChannel::new(...)
+    CODE:
+        mesos::perl::SchedulerChannel* channel = new mesos::perl::SchedulerChannel();
+        HV* stash = gv_stashpv("Net::Mesos::SchedulerChannel", GV_ADDWARN);
+        SV* glob = (SV*) newGVgen("Net::Mesos::SchedulerChannel");
+        GvIOp(glob) = newIO();        
+        IoIFP(GvIOp(glob)) = PerlIO_importFILE(channel->in_, "r");
+        sv_magic(glob, Nullsv, PERL_MAGIC_ext,
+                         (const char*) channel, 0);
+        ST(0) = sv_bless(sv_2mortal(newRV_noinc(glob)), stash);
+        XSRETURN(1);
+%}
+
+};

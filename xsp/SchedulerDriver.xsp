@@ -1,0 +1,21 @@
+%module{Net::Mesos};
+#include <SchedulerDriver.hpp>
+
+%name{Net::Mesos::SchedulerDriver} class mesos::perl::SchedulerDriver
+{
+
+%{
+void
+Net::Mesos::SchedulerDriver::new(...)
+    CODE:
+        mesos::perl::SchedulerDriver* schedulerDriver = new mesos::perl::SchedulerDriver();
+        HV* stash = gv_stashpv("Net::Mesos::SchedulerDriver", GV_ADDWARN);
+        SV* attr_hash = (SV*) newHV();
+        sv_magic(attr_hash, Nullsv, PERL_MAGIC_ext,
+                         (const char*) schedulerDriver, 0);
+        ST(0) = sv_bless(sv_2mortal(newRV_noinc(attr_hash)), stash);
+        XSRETURN(1);
+%}
+
+};
+

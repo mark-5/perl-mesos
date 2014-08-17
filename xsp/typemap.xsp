@@ -1,1 +1,25 @@
 %loadplugin{feature::default_xs_typemap};
+
+%typemap{SchedulerDriver*}{simple}{
+    %name{object};
+    %xs_type{O_SCHEDULER_DRIVER};
+    %xs_input_code{%
+        if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVHV))
+            Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\");
+        SV* tied_hash = SvRV($arg);
+        MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext);
+        $var = ($type) ext_magic->mg_ptr;
+    %};
+};
+
+%typemap{SchedulerChannel*}{simple}{
+    %name{object};
+    %xs_type{O_SCHEDULER_CHANNEL};
+    %xs_input_code{%
+        if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVGV))
+            Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\");
+        SV* tied_glob = SvRV($arg);
+        MAGIC* ext_magic = mg_find(tied_glob, PERL_MAGIC_ext);
+        $var = ($type) ext_magic->mg_ptr;
+    %};
+};
