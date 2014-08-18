@@ -14,9 +14,9 @@ namespace perl {
 class ProxyScheduler : public Scheduler
 {
 public:
-    std::shared_ptr<SchedulerChannel> channel_;
+    SharedChannel channel_;
 
-    ProxyScheduler(std::shared_ptr<SchedulerChannel> channel);
+    ProxyScheduler(SharedChannel channel);
     virtual ~ProxyScheduler(){};
 
     virtual void registered(SchedulerDriver* driver,

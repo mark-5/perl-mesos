@@ -14,7 +14,8 @@ my $build = Module::Build::WithXSpp->new(
     },
 # Provides useful extra C typemaps for opaque objects:
     extra_typemap_modules => {
-        'ExtUtils::Typemaps::ObjectMap' => '0.01',
+        'ExtUtils::Typemaps::ObjectMap' => '0',
+        'ExtUtils::Typemaps::STL::String' => '0',
     },
     include_dirs => [qw(include /usr/local/include/mesos)],
     early_includes => [@my_cpp_headers, 'mesos/scheduler.hpp'],

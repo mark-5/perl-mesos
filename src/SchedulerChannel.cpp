@@ -5,7 +5,14 @@
 namespace mesos {
 namespace perl {
 
+SchedulerCommand::SchedulerCommand(const std::string& name, const CommandArgs& args)
+: name_(name), args_(args)
+{
+
+}
+
 SchedulerChannel::SchedulerChannel()
+: pending_(new CommandQueue)
 {
     int fds[2];
     pipe(fds);
@@ -18,18 +25,19 @@ SchedulerChannel::~SchedulerChannel()
 {
     fclose(in_);
     fclose(out_);
+    delete pending_;
 }
 
-void SchedulerChannel::send(const SchedulerCommand* command)
+void SchedulerChannel::send(const SchedulerCommand& command)
 {
-    pending_.push(command);
-    fprintf(out_, "%s\n", command->name.c_str());
+    pending_->push(command);
+    fprintf(out_, "%s\n", command.name_.c_str());
 }
 
-const SchedulerCommand* SchedulerChannel::recv()
+const SchedulerCommand SchedulerChannel::recv()
 {
-    const SchedulerCommand* command = pending_.front();
-    pending_.pop();
+    const SchedulerCommand command = pending_->front();
+    pending_->pop();
     return command;
 }
 

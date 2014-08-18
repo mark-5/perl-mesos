@@ -1,6 +1,6 @@
 %loadplugin{feature::default_xs_typemap};
 
-%typemap{SchedulerDriver*}{simple}{
+%typemap{mesos::perl::SchedulerDriver*}{simple}{
     %name{object};
     %xs_type{O_SCHEDULER_DRIVER};
     %xs_input_code{%
@@ -10,9 +10,16 @@
         MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext);
         $var = ($type) ext_magic->mg_ptr;
     %};
+    %xs_output_code{%
+        HV* stash = gv_stashpv("Net::Mesos::SchedulerDriver", GV_ADDWARN);
+        SV* attr_hash = (SV*) newHV();
+        sv_magic(attr_hash, Nullsv, PERL_MAGIC_ext,
+                         (const char*) $var, 0);
+        $arg = sv_bless(sv_2mortal(newRV_noinc(attr_hash)), stash);
+    %};
 };
 
-%typemap{SchedulerChannel*}{simple}{
+%typemap{mesos::perl::SchedulerChannel*}{simple}{
     %name{object};
     %xs_type{O_SCHEDULER_CHANNEL};
     %xs_input_code{%
@@ -21,5 +28,14 @@
         SV* tied_glob = SvRV($arg);
         MAGIC* ext_magic = mg_find(tied_glob, PERL_MAGIC_ext);
         $var = ($type) ext_magic->mg_ptr;
+    %};
+    %xs_output_code{%
+        HV* stash = gv_stashpv("Net::Mesos::SchedulerChannel", GV_ADDWARN);
+        SV* glob = (SV*) newGVgen("Net::Mesos::SchedulerChannel");
+        GvIOp(glob) = newIO();
+        IoIFP(GvIOp(glob)) = PerlIO_importFILE($var->in_, "r");
+        sv_magic(glob, Nullsv, PERL_MAGIC_ext,
+                         (const char*) $var, 0);
+        $arg = sv_bless(sv_2mortal(newRV_noinc(glob)), stash);
     %};
 };

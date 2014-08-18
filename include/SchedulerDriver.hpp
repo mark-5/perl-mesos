@@ -14,7 +14,7 @@ namespace perl {
 class SchedulerDriver
 {
 public:
-    std::shared_ptr<SchedulerChannel> channel_;
+    SharedChannel channel_;
 
     SchedulerDriver(){};
     SchedulerDriver(const FrameworkInfo& framework,

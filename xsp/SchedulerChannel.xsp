@@ -5,18 +5,45 @@
 {
 
 %{
-void
+mesos::perl::SchedulerChannel*
 Net::Mesos::SchedulerChannel::new(...)
     CODE:
-        mesos::perl::SchedulerChannel* channel = new mesos::perl::SchedulerChannel();
-        HV* stash = gv_stashpv("Net::Mesos::SchedulerChannel", GV_ADDWARN);
-        SV* glob = (SV*) newGVgen("Net::Mesos::SchedulerChannel");
-        GvIOp(glob) = newIO();        
-        IoIFP(GvIOp(glob)) = PerlIO_importFILE(channel->in_, "r");
-        sv_magic(glob, Nullsv, PERL_MAGIC_ext,
-                         (const char*) channel, 0);
-        ST(0) = sv_bless(sv_2mortal(newRV_noinc(glob)), stash);
-        XSRETURN(1);
+        RETVAL = new mesos::perl::SchedulerChannel();
+    OUTPUT:
+        RETVAL
+
+void
+mesos::perl::SchedulerChannel::recv()
+    PPCODE:
+        if (!THIS->pending_->size()) {
+            if (GIMME_V == G_ARRAY) {
+                XSRETURN_EMPTY;
+            } else {
+                XSRETURN_UNDEF;
+            }
+        }
+        const mesos::perl::SchedulerCommand command = THIS->recv();
+        EXTEND(SP, command.args_.size() + 1);
+
+        ST(0) = newSVpvn(command.name_.c_str(), command.name_.length());
+        for (int i=0; i < command.args_.size(); i++) {
+            const std::string arg = command.args_.at(i);
+            ST(i + 1) = newSVpvn(arg.c_str(), arg.length());
+        }
+        XSRETURN(command.args_.size() + 1);
+
+void
+mesos::perl::SchedulerChannel::send(...)
+    PPCODE:
+        std::string name( SvPV_nolen( ST(1) ), SvCUR( ST(1) ) );
+        if (items < 2) Perl_croak(aTHX_ "send must be called with at least one argument");
+        mesos::perl::CommandArgs args;
+        int i;
+        for (i = 2; i < items; i++) {
+            args.push_back(std::string( SvPV_nolen( ST(i) ), SvCUR( ST(i) ) ));
+        }
+        THIS->send( mesos::perl::SchedulerCommand(name, args) );
+        XSRETURN_YES;
 %}
 
 };
