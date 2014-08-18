@@ -4,6 +4,7 @@
 #include <mesos/scheduler.hpp>
 #include <ProxyScheduler.hpp>
 #include <SchedulerChannel.hpp>
+#include <memory>
 
 using namespace mesos;
 
@@ -13,6 +14,8 @@ namespace perl {
 class SchedulerDriver
 {
 public:
+    std::shared_ptr<SchedulerChannel> channel_;
+
     SchedulerDriver(){};
     SchedulerDriver(const FrameworkInfo& framework,
                         const std::string& master);
@@ -43,7 +46,6 @@ public:
 
 private:
     mesos::MesosSchedulerDriver* driver_;
-    SchedulerChannel* channel_;
     ProxyScheduler* proxyScheduler_;
 };
 

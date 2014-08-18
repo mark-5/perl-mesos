@@ -2,6 +2,7 @@
 #define PROXYSCHEDULER_HPP_
 #include <string>
 #include <vector>
+#include <memory>
 #include <mesos/scheduler.hpp>
 #include <SchedulerChannel.hpp>
 
@@ -13,7 +14,9 @@ namespace perl {
 class ProxyScheduler : public Scheduler
 {
 public:
-    ProxyScheduler();
+    std::shared_ptr<SchedulerChannel> channel_;
+
+    ProxyScheduler(std::shared_ptr<SchedulerChannel> channel);
     virtual ~ProxyScheduler(){};
 
     virtual void registered(SchedulerDriver* driver,
@@ -38,8 +41,6 @@ public:
     virtual void error(SchedulerDriver* driver, const std::string& message);
 };
 
-private:
-    SchedulerChannel* channel_;
 } // namespace perl {
 } // namespace mesos {
 
