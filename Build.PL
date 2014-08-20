@@ -19,6 +19,7 @@ my $build = Module::Build::WithXSpp->new(
     },
     include_dirs => [qw(include /usr/local/include/mesos)],
     early_includes => [@my_cpp_headers, 'mesos/scheduler.hpp'],
+    extra_compiler_flags => [qw(-std=c++11 -Wno-reserved-user-defined-literal)],
     extra_linker_flags => [qw(-lmesos)],
 );
 

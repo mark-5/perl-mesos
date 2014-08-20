@@ -16,7 +16,6 @@ class SchedulerDriver
 public:
     SharedChannel channel_;
 
-    SchedulerDriver(){};
     SchedulerDriver(const FrameworkInfo& framework,
                         const std::string& master);
     SchedulerDriver(const FrameworkInfo& framework,
@@ -32,9 +31,9 @@ public:
     virtual Status launchTasks(const std::vector<OfferID>& offerIds,
                                const std::vector<TaskInfo>& tasks,
                                const Filters& filters = Filters());
-    virtual Status launchTasks(const OfferID& offerId,
-                               const std::vector<TaskInfo>& tasks,
-                               const Filters& filters = Filters());
+    virtual Status launchTask(const OfferID& offerId,
+                              const std::vector<TaskInfo>& tasks,
+                              const Filters& filters = Filters());
     virtual Status killTask(const TaskID& taskId);
     virtual Status declineOffer(const OfferID& offerId,
                                 const Filters& filters = Filters());

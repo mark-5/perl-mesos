@@ -8,6 +8,7 @@ BEGIN {
         unless eval{ require Test::LeakTrace };
 }
 use Test::LeakTrace;
+use Data::Dumper;
 
 use Net::Mesos::SchedulerDriver;
 no_leaks_ok {
@@ -18,5 +19,6 @@ use Net::Mesos::SchedulerChannel;
 no_leaks_ok {
     my $channel = Net::Mesos::SchedulerChannel->new;
 } 'Net::Mesos::SchedulerChannel construction does not leak';
+
 
 done_testing();

@@ -1,16 +1,116 @@
 %module{Net::Mesos};
 #include <SchedulerDriver.hpp>
+#include <NetMesosUtils.hpp>
+#include <string>
+#include <vector>
+
 
 %name{Net::Mesos::SchedulerDriver} class mesos::perl::SchedulerDriver
 {
 
 %{
 mesos::perl::SchedulerDriver*
-Net::Mesos::SchedulerDriver::new(...)
+Net::Mesos::SchedulerDriver::new(std::string framework, std::string master, std::string credential = std::string())
     CODE:
-        RETVAL = new mesos::perl::SchedulerDriver();
+        if (credential.length()) {
+            RETVAL = new mesos::perl::SchedulerDriver(toMsg<FrameworkInfo>(framework), master, toMsg<Credential>(credential));
+        } else {
+            RETVAL = new mesos::perl::SchedulerDriver(toMsg<FrameworkInfo>(framework), master);
+        }
     OUTPUT:
         RETVAL
+
+void
+mesos::perl::SchedulerDriver::start()
+    PPCODE:
+        THIS->start();
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::stop(bool failover = false)
+    PPCODE:
+        THIS->stop();
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::abort()
+    PPCODE:
+        THIS->abort();
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::join()
+    PPCODE:
+        THIS->join();
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::run()
+    PPCODE:
+        THIS->run();
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::requestResources(std::vector< std::string > requests)
+    PPCODE:
+        THIS->requestResources(toMsg<Request>(requests));
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::launchTasks(std::vector< std::string > offerIds, std::vector< std::string > tasks, std::string filters = std::string())
+    PPCODE:
+        if (filters.length()) {
+            THIS->launchTasks(toMsg<OfferID>(offerIds), toMsg<TaskInfo>(tasks), toMsg<Filters>(filters));
+        } else {
+            THIS->launchTasks(toMsg<OfferID>(offerIds), toMsg<TaskInfo>(tasks));
+        }
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::launchTask(std::string offerId, std::vector< std::string > tasks, std::string filters = std::string())
+    PPCODE:
+        if (filters.length()) {
+            THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks), toMsg<Filters>(filters));
+        } else {
+            THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks));
+        }
+        THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks));
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::killTask(std::string taskId)
+    PPCODE:
+        THIS->killTask(toMsg<TaskID>(taskId));
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::declineOffer(std::string offerId, std::string filters = std::string())
+    PPCODE:
+        if (filters.length()) {
+            THIS->declineOffer(toMsg<OfferID>(offerId), toMsg<Filters>(filters));
+        } else {
+            THIS->declineOffer(toMsg<OfferID>(offerId));
+        }
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::reviveOffers()
+    PPCODE:
+        THIS->reviveOffers();
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::sendFrameworkMessage(std::string executorId, std::string slaveId, std::string data)
+    PPCODE:
+        THIS->sendFrameworkMessage(toMsg<ExecutorID>(executorId), toMsg<SlaveID>(slaveId), data);
+        XSRETURN_YES;
+
+void
+mesos::perl::SchedulerDriver::reconcileTasks(std::vector< std::string > statuses)
+    PPCODE:
+        THIS->reconcileTasks(toMsg<TaskStatus>(statuses));
+        XSRETURN_YES;
+
 %}
 
 };

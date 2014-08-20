@@ -28,7 +28,7 @@ SchedulerDriver::~SchedulerDriver()
 
 Status SchedulerDriver::start()
 {
-    return driver_->run();
+    return driver_->start();
 }
 
 Status SchedulerDriver::stop(bool failover)
@@ -63,7 +63,7 @@ Status SchedulerDriver::launchTasks(const std::vector<OfferID>& offerIds,
     return driver_->launchTasks(offerIds, tasks, filters);
 }
 
-Status SchedulerDriver::launchTasks(const OfferID& offerId,
+Status SchedulerDriver::launchTask(const OfferID& offerId,
                            const std::vector<TaskInfo>& tasks,
                            const Filters& filters)
 {
