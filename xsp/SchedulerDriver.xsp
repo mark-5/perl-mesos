@@ -5,18 +5,25 @@
 #include <vector>
 
 
-%name{Net::Mesos::SchedulerDriver} class mesos::perl::SchedulerDriver
+%name{Net::Mesos::SchedulerDriver::XS} class mesos::perl::SchedulerDriver
 {
 
 %{
 mesos::perl::SchedulerDriver*
-Net::Mesos::SchedulerDriver::new(std::string framework, std::string master, std::string credential = std::string())
+Net::Mesos::SchedulerDriver::XS::new(std::string framework, std::string master, std::string credential = std::string())
     CODE:
         if (credential.length()) {
             RETVAL = new mesos::perl::SchedulerDriver(toMsg<FrameworkInfo>(framework), master, toMsg<Credential>(credential));
         } else {
             RETVAL = new mesos::perl::SchedulerDriver(toMsg<FrameworkInfo>(framework), master);
         }
+    OUTPUT:
+        RETVAL
+
+mesos::perl::SchedulerChannel*
+mesos::perl::SchedulerDriver::channel()
+    CODE:
+        RETVAL = THIS->channel_.get();
     OUTPUT:
         RETVAL
 
