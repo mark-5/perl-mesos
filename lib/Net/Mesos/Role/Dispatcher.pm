@@ -24,7 +24,8 @@ sub dispatch_events {
 sub dispatch_event {
     my ($self) = @_;
     my ($event, @args) = $self->channel->recv;
-    $self->scheduler->$event($self, @args);
+    my $scheduler = $self->scheduler;
+    $scheduler->$event($self, @args);
 }
 
 around dispatch_event => sub {
