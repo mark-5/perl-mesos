@@ -15,6 +15,7 @@ class SchedulerDriver
 {
 public:
     SharedChannel channel_;
+    ProxyScheduler* proxyScheduler_;
 
     SchedulerDriver(const FrameworkInfo& framework,
                         const std::string& master);
@@ -45,7 +46,6 @@ public:
 
 private:
     mesos::MesosSchedulerDriver* driver_;
-    ProxyScheduler* proxyScheduler_;
 };
 
 } // namespace perl {

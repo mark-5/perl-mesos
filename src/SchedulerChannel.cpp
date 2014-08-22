@@ -18,6 +18,7 @@ SchedulerChannel::SchedulerChannel()
     pipe(fds);
     in_ = fdopen(fds[0], "r");
     out_ = fdopen(fds[1], "w");
+    setvbuf(in_, NULL, _IONBF, 0);
     setvbuf(out_, NULL, _IONBF, 0);
 }
 
@@ -36,9 +37,14 @@ void SchedulerChannel::send(const SchedulerCommand& command)
 
 const SchedulerCommand SchedulerChannel::recv()
 {
-    const SchedulerCommand command = pending_->front();
-    pending_->pop();
-    return command;
+    char str[100];
+    if (fgets(str, 100, in_)) {
+        const SchedulerCommand command = pending_->front();
+        pending_->pop();
+        return command;
+    } else {
+        return SchedulerCommand(std::string(), CommandArgs());
+    }
 }
 
 } // namespace perl {

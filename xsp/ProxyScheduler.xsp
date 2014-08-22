@@ -1,0 +1,22 @@
+%module{Net::Mesos};
+#include <ProxyScheduler.hpp>
+
+
+%name{Net::Mesos::ProxyScheduler} class mesos::perl::ProxyScheduler
+{
+
+%{
+
+static void
+xs_init(...)
+    PPCODE:
+        if (SvROK(ST(0)) && SvTYPE(SvRV(ST(0))) == SVt_PVHV) {
+            SV* self = SvRV(ST(0));
+            mesos::perl::ProxyScheduler* proxy = new mesos::perl::ProxyScheduler();
+            sv_magic(self, Nullsv, PERL_MAGIC_ext,
+                             (const char*) proxy, 0);
+        }
+
+%}
+
+};

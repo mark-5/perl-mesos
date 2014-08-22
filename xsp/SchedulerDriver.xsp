@@ -5,25 +5,36 @@
 #include <vector>
 
 
-%name{Net::Mesos::SchedulerDriver::XS} class mesos::perl::SchedulerDriver
+%name{Net::Mesos::SchedulerDriver} class mesos::perl::SchedulerDriver
 {
 
 %{
-mesos::perl::SchedulerDriver*
-Net::Mesos::SchedulerDriver::XS::new(std::string framework, std::string master, std::string credential = std::string())
-    CODE:
-        if (credential.length()) {
-            RETVAL = new mesos::perl::SchedulerDriver(toMsg<FrameworkInfo>(framework), master, toMsg<Credential>(credential));
-        } else {
-            RETVAL = new mesos::perl::SchedulerDriver(toMsg<FrameworkInfo>(framework), master);
+
+static void
+xs_init(SV* self, std::string framework, std::string master, std::string credential = std::string())
+    PPCODE:
+        if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
+            mesos::perl::SchedulerDriver* driver;
+            if (credential.length()) {
+                driver = new mesos::perl::SchedulerDriver(toMsg<FrameworkInfo>(framework), master, toMsg<Credential>(credential));
+            } else {
+                driver = new mesos::perl::SchedulerDriver(toMsg<FrameworkInfo>(framework), master);
+            }
+            sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
+                             (const char*) driver, 0);
         }
+
+mesos::perl::SchedulerChannel*
+mesos::perl::SchedulerDriver::_channel()
+    CODE:
+        RETVAL = THIS->channel_.get();
     OUTPUT:
         RETVAL
 
-mesos::perl::SchedulerChannel*
-mesos::perl::SchedulerDriver::channel()
+mesos::perl::ProxyScheduler*
+mesos::perl::SchedulerDriver::proxy_scheduler()
     CODE:
-        RETVAL = THIS->channel_.get();
+        RETVAL = THIS->proxyScheduler_;
     OUTPUT:
         RETVAL
 
@@ -43,18 +54,6 @@ void
 mesos::perl::SchedulerDriver::abort()
     PPCODE:
         THIS->abort();
-        XSRETURN_YES;
-
-void
-mesos::perl::SchedulerDriver::join()
-    PPCODE:
-        THIS->join();
-        XSRETURN_YES;
-
-void
-mesos::perl::SchedulerDriver::run()
-    PPCODE:
-        THIS->run();
         XSRETURN_YES;
 
 void

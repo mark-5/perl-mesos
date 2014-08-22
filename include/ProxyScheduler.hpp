@@ -16,7 +16,7 @@ class ProxyScheduler : public Scheduler
 public:
     SharedChannel channel_;
 
-    ProxyScheduler(SharedChannel channel);
+    ProxyScheduler(SharedChannel channel = SharedChannel(new SchedulerChannel));
     virtual ~ProxyScheduler(){};
 
     virtual void registered(SchedulerDriver* driver,

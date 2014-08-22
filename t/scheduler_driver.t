@@ -15,4 +15,8 @@ isa_ok($driver, 'Net::Mesos::SchedulerDriver');
 my $channel = $driver->channel;
 isa_ok($channel, 'Net::Mesos::SchedulerChannel');
 
+my $proxy = $driver->proxy_scheduler;
+isa_ok($proxy, 'Net::Mesos::ProxyScheduler');
+
+
 done_testing;
