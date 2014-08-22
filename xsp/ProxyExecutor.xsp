@@ -1,0 +1,22 @@
+%module{Net::Mesos};
+#include <ProxyExecutor.hpp>
+
+
+%name{Net::Mesos::ProxyExecutor} class mesos::perl::ProxyExecutor
+{
+
+%{
+
+static void
+xs_init(...)
+    PPCODE:
+        if (SvROK(ST(0)) && SvTYPE(SvRV(ST(0))) == SVt_PVHV) {
+            SV* self = SvRV(ST(0));
+            mesos::perl::ProxyExecutor* proxy = new mesos::perl::ProxyExecutor();
+            sv_magic(self, Nullsv, PERL_MAGIC_ext,
+                             (const char*) proxy, 0);
+        }
+
+%}
+
+};

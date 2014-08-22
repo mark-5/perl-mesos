@@ -1,10 +1,11 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use FindBin::libs;
 use Test::More;
-use Net::Mesos::SchedulerChannel;
+use Net::Mesos::Channel;
 
-my $channel = Net::Mesos::SchedulerChannel->new;
+my $channel = Net::Mesos::Channel->new;
 like(fileno($channel), qr/^\d+$/, 'channel fileno returned int');
 
 is($channel->recv, undef, 'returned undef on empty recv');

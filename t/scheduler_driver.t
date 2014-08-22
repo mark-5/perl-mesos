@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use FindBin::libs;
 use Test::More;
 use Net::Mesos::Test::Utils;
 
@@ -15,7 +16,7 @@ isa_ok($driver, 'Net::Mesos::SchedulerDriver');
 ok($driver->does('Net::Mesos::Role::Dispatcher'), 'driver does Net::Mesos::Role::Dispatcher');
 
 my $channel = $driver->channel;
-isa_ok($channel, 'Net::Mesos::SchedulerChannel');
+isa_ok($channel, 'Net::Mesos::Channel');
 
 my $proxy = $driver->proxy_scheduler;
 isa_ok($proxy, 'Net::Mesos::ProxyScheduler');

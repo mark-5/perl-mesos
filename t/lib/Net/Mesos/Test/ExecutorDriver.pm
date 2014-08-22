@@ -1,10 +1,10 @@
-package Net::Mesos::Test::SchedulerDriver;
+package Net::Mesos::Test::ExecutorDriver;
 use Moo;
 use strict;
 use warnings;
 
 
-has scheduler => (
+has executor => (
     is       => 'ro',
     required => 1,
 );
@@ -17,7 +17,7 @@ has process => (
 
 sub _build_process {
     my ($self) = @_;
-    return $self->scheduler;
+    return $self->executor;
 }
 
 has channel => (
@@ -26,7 +26,7 @@ has channel => (
 
 sub BUILD {
     my ($self) = @_;
-    $self->channel($self->scheduler->channel);
+    $self->channel($self->executor->channel);
 }
 
 with 'Net::Mesos::Role::Dispatcher';

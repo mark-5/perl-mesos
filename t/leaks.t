@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use FindBin::libs;
 use Test::More;
 use Net::Mesos::Test::Utils;
 
@@ -19,10 +20,10 @@ no_leaks_ok {
     );
 } 'Net::Mesos::SchedulerDriver construction does not leak';
 
-use Net::Mesos::SchedulerChannel;
+use Net::Mesos::Channel;
 no_leaks_ok {
-    my $channel = Net::Mesos::SchedulerChannel->new;
-} 'Net::Mesos::SchedulerChannel construction does not leak';
+    my $channel = Net::Mesos::Channel->new;
+} 'Net::Mesos::Channel construction does not leak';
 
 use Net::Mesos::ProxyScheduler;
 no_leaks_ok {

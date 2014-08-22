@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use FindBin::libs;
 use Test::More;
 use Net::Mesos::Test::Utils;
 

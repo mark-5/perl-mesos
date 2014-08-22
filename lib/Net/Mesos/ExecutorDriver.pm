@@ -1,4 +1,4 @@
-package Net::Mesos::SchedulerDriver;
+package Net::Mesos::ExecutorDriver;
 use Net::Mesos;
 use Mesos::Messages;
 use Net::Mesos::Utils qw(encode_protobufs);
@@ -9,30 +9,12 @@ use warnings;
 
 sub BUILD {
     my ($self) = @_;
-    my @encoded = encode_protobufs grep {$_} map {$self->$_} qw(framework master credentials);
-    return $self->xs_init(@encoded);
+    return $self->xs_init;
 }
 
-has scheduler => (
+has executor => (
     is       => 'ro',
     required => 1,
-);
-
-has framework => (
-    is       => 'ro',
-    isa      => sub {shift->isa('Mesos::FrameworkInfo')},
-    required => 1,
-);
-
-has master => (
-    is       => 'ro',
-    isa      => Str,
-    required => 1,
-);
-
-has credentials => (
-    is => 'ro',
-    isa => sub {shift->isa('Mesos::Credential')},
 );
 
 has channel => (
@@ -57,22 +39,14 @@ has process => (
 
 sub _build_process {
     my ($self) = @_;
-    return $self->scheduler;
+    return $self->executor;
 }
-
 # need to apply this after declaring channel and process
 with 'Net::Mesos::Role::Dispatcher';
 
 
 my @needs_wrapped = qw(
-    stop
-    requestResources
-    launchTasks
-    killTask
-    declineOffer
-    reviveOffers
-    sendFrameworkMessage
-    reconcileTasks
+    sendStatusUpdate
 );
 
 

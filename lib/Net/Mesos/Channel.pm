@@ -1,4 +1,4 @@
-package Net::Mesos::SchedulerChannel;
+package Net::Mesos::Channel;
 use strict;
 use warnings;
 

@@ -1,4 +1,4 @@
-package Net::Mesos::Test::Scheduler;
+package Net::Mesos::Test::Executor;
 use Moo;
 use strict;
 use warnings;

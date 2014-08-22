@@ -3,7 +3,7 @@ use Moo::Role;
 use AnyEvent;
 
 requires 'channel';
-requires 'scheduler';
+requires 'process';
 
 has watcher => (
     is        => 'rw',
@@ -24,8 +24,8 @@ sub dispatch_events {
 sub dispatch_event {
     my ($self) = @_;
     my ($event, @args) = $self->channel->recv;
-    my $scheduler = $self->scheduler;
-    $scheduler->$event($self, @args);
+    my $process = $self->process;
+    $process->$event($self, @args);
 }
 
 around dispatch_event => sub {

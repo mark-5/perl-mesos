@@ -20,20 +20,20 @@ public:
     SchedulerCommand(const std::string& name, const CommandArgs& args);
 };
 
-class SchedulerChannel
+class MesosChannel
 {
 public:
     typedef std::queue<SchedulerCommand> CommandQueue;
 
     FILE* in_;
     FILE* out_;
-    SchedulerChannel();
-    ~SchedulerChannel();
+    MesosChannel();
+    ~MesosChannel();
     CommandQueue* pending_;
     void send(const SchedulerCommand& command);
     const SchedulerCommand recv();
 };
-typedef std::shared_ptr<SchedulerChannel> SharedChannel;
+typedef std::shared_ptr<MesosChannel> SharedChannel;
 
 } // namespace perl {
 } // namespace mesos {

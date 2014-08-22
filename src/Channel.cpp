@@ -1,4 +1,4 @@
-#include <SchedulerChannel.hpp>
+#include <MesosChannel.hpp>
 #include <cstdio>
 #include <unistd.h>
 
@@ -11,7 +11,7 @@ SchedulerCommand::SchedulerCommand(const std::string& name, const CommandArgs& a
 
 }
 
-SchedulerChannel::SchedulerChannel()
+MesosChannel::MesosChannel()
 : pending_(new CommandQueue)
 {
     int fds[2];
@@ -22,20 +22,20 @@ SchedulerChannel::SchedulerChannel()
     setvbuf(out_, NULL, _IONBF, 0);
 }
 
-SchedulerChannel::~SchedulerChannel()
+MesosChannel::~MesosChannel()
 {
     fclose(in_);
     fclose(out_);
     delete pending_;
 }
 
-void SchedulerChannel::send(const SchedulerCommand& command)
+void MesosChannel::send(const SchedulerCommand& command)
 {
     pending_->push(command);
     fprintf(out_, "%s\n", command.name_.c_str());
 }
 
-const SchedulerCommand SchedulerChannel::recv()
+const SchedulerCommand MesosChannel::recv()
 {
     char str[100];
     if (fgets(str, 100, in_)) {

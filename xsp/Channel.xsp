@@ -1,17 +1,17 @@
 %module{Net::Mesos};
-#include <SchedulerChannel.hpp>
+#include <MesosChannel.hpp>
 
 
-%name{Net::Mesos::SchedulerChannel} class mesos::perl::SchedulerChannel
+%name{Net::Mesos::Channel} class mesos::perl::MesosChannel
 {
 
 %{
 
 static void
-mesos::perl::SchedulerChannel::new(...)
+mesos::perl::MesosChannel::new(...)
     PPCODE:
         char* package = SvPV_nolen(ST(0));
-        mesos::perl::SchedulerChannel* channel = new mesos::perl::SchedulerChannel();
+        mesos::perl::MesosChannel* channel = new mesos::perl::MesosChannel();
         HV* stash = gv_stashpv(package, GV_ADDWARN);
         SV* glob = (SV*) newGVgen(package);
         GvIOp(glob) = newIO();
@@ -22,7 +22,7 @@ mesos::perl::SchedulerChannel::new(...)
         XSRETURN(1);
 
 void
-mesos::perl::SchedulerChannel::recv()
+mesos::perl::MesosChannel::recv()
     PPCODE:
         if (!THIS->pending_->size()) {
             if (GIMME_V == G_ARRAY) {
@@ -42,7 +42,7 @@ mesos::perl::SchedulerChannel::recv()
         XSRETURN(command.args_.size() + 1);
 
 void
-mesos::perl::SchedulerChannel::send(...)
+mesos::perl::MesosChannel::send(...)
     PPCODE:
         std::string name( SvPV_nolen( ST(1) ), SvCUR( ST(1) ) );
         if (items < 2) Perl_croak(aTHX_ "send must be called with at least one argument");

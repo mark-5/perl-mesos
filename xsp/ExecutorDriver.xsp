@@ -1,0 +1,68 @@
+%module{Net::Mesos};
+#include <ExecutorDriver.hpp>
+#include <NetMesosUtils.hpp>
+#include <string>
+#include <vector>
+
+
+%name{Net::Mesos::ExecutorDriver} class mesos::perl::ExecutorDriver
+{
+
+%{
+
+static void
+xs_init(SV* self)
+    PPCODE:
+        if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
+            mesos::perl::ExecutorDriver* driver = new mesos::perl::ExecutorDriver();
+            sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
+                             (const char*) driver, 0);
+        }
+
+mesos::perl::MesosChannel*
+mesos::perl::ExecutorDriver::_channel()
+    CODE:
+        RETVAL = THIS->channel_.get();
+    OUTPUT:
+        RETVAL
+
+mesos::perl::ProxyExecutor*
+mesos::perl::ExecutorDriver::proxy_executor()
+    CODE:
+        RETVAL = THIS->proxyExecutor_;
+    OUTPUT:
+        RETVAL
+
+%}
+
+void start()
+    %code{%
+        THIS->start();
+        XSRETURN_YES;
+    %};
+
+void stop()
+    %code{%
+        THIS->stop();
+        XSRETURN_YES;
+    %};
+
+void abort()
+    %code{%
+        THIS->abort();
+        XSRETURN_YES;
+    %};
+
+void sendStatusUpdate(std::string status)
+    %code{%
+        THIS->sendStatusUpdate(toMsg<TaskStatus>(status));
+        XSRETURN_YES;
+    %};
+
+void sendFrameworkMessage(std::string data)
+    %code{%
+        THIS->sendFrameworkMessage(data);
+        XSRETURN_YES;
+    %};
+
+};

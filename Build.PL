@@ -11,6 +11,7 @@ my $build = Module::Build::WithXSpp->new(
     },
     test_requires => {
         'Test::Most'     => 0,
+        'FindBin::libs'  => 0,
     },
 # Provides useful extra C typemaps for opaque objects:
     extra_typemap_modules => {

@@ -3,7 +3,7 @@
 
 #include <mesos/scheduler.hpp>
 #include <ProxyScheduler.hpp>
-#include <SchedulerChannel.hpp>
+#include <MesosChannel.hpp>
 #include <memory>
 
 using namespace mesos;
