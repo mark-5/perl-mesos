@@ -1,40 +1,7 @@
 %loadplugin{feature::default_xs_typemap};
 
-%typemap{std::string}{parsed}{
-    %xs_type{T_STD_STRING};
-    %xs_input_code{%{
-        $var = std::string( SvPV_nolen( $arg ), SvCUR( $arg ) );
-    }%};
-    %xs_output_code{%{
-        $arg = newSVpvn( $var.c_str(), $var.length() );
-    }%};
-};
-
-%typemap{std::vector< std::string >}{parsed}{
-    %xs_type{T_STR_VEC};
-    %xs_input_code{%{
-        if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVAV))
-                Perl_croak(aTHX_ \"$var is not a ArrayRef\");
-        AV* av = (AV*) SvRV($arg);
-        int length = AvFILL(av) + 1;
-        std::vector<std::string> rvec(length);
-        for (int i = 0; i < length; i++) {
-            SV** el = av_fetch(av, i, 0);
-            rvec.at(i) = std::string(SvPV_nolen(*el), SvCUR(*el));
-        }
-        $var = rvec;
-    }%};
-    %xs_output_code{%{
-        AV* av = newAV();
-        int length = $var.size();
-        for (int i = 0; i < length; i++) {
-            const std::string& str = $var.at(i);
-            SV* val = newSVpvn( str.c_str(), str.size() );
-            av_store(av, i, val);
-        }
-        $arg = sv_2mortal(newRV_noinc((SV*) av));
-    }%};
-};
+%typemap{std::string};
+%typemap{std::vector<std::string>};
 
 %typemap{mesos::perl::ProxyScheduler*}{simple}{ 
     %name{object}; 

@@ -26,13 +26,6 @@ mesos::perl::ExecutorDriver::_channel()
     OUTPUT:
         RETVAL
 
-mesos::perl::ProxyExecutor*
-mesos::perl::ExecutorDriver::proxy_executor()
-    CODE:
-        RETVAL = THIS->proxyExecutor_;
-    OUTPUT:
-        RETVAL
-
 %}
 
 void start()

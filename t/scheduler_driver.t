@@ -18,8 +18,5 @@ ok($driver->does('Net::Mesos::Role::Dispatcher'), 'driver does Net::Mesos::Role:
 my $channel = $driver->channel;
 isa_ok($channel, 'Net::Mesos::Channel');
 
-my $proxy = $driver->proxy_scheduler;
-isa_ok($proxy, 'Net::Mesos::ProxyScheduler');
-
 
 done_testing;

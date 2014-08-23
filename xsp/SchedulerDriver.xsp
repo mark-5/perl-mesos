@@ -31,13 +31,6 @@ mesos::perl::SchedulerDriver::_channel()
     OUTPUT:
         RETVAL
 
-mesos::perl::ProxyScheduler*
-mesos::perl::SchedulerDriver::proxy_scheduler()
-    CODE:
-        RETVAL = THIS->proxyScheduler_;
-    OUTPUT:
-        RETVAL
-
 %}
 
 void start()
