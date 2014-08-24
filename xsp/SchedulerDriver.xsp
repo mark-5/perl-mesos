@@ -33,83 +33,71 @@ mesos::perl::SchedulerDriver::_channel()
 
 %}
 
-void start()
+Status start()
     %code{%
-        THIS->start();
-        XSRETURN_YES;
+        RETVAL = THIS->start();
     %};
 
-void stop(bool failover = false)
+Status stop(bool failover = false)
     %code{%
-        THIS->stop(failover);
-        XSRETURN_YES;
+        RETVAL = THIS->stop(failover);
     %};
 
-void abort()
+Status abort()
     %code{%
-        THIS->abort();
-        XSRETURN_YES;
+        RETVAL = THIS->abort();
     %};
 
-void requestResources(std::vector< std::string > requests)
+Status requestResources(std::vector< std::string > requests)
     %code{%
-        THIS->requestResources(toMsg<Request>(requests));
-        XSRETURN_YES;
+        RETVAL = THIS->requestResources(toMsg<Request>(requests));
     %};
 
-void launchTasks(std::vector< std::string > offerIds, std::vector< std::string > tasks, std::string filters = std::string())
+Status launchTasks(std::vector< std::string > offerIds, std::vector< std::string > tasks, std::string filters = std::string())
     %code{%
         if (filters.length()) {
-            THIS->launchTasks(toMsg<OfferID>(offerIds), toMsg<TaskInfo>(tasks), toMsg<Filters>(filters));
+            RETVAL = THIS->launchTasks(toMsg<OfferID>(offerIds), toMsg<TaskInfo>(tasks), toMsg<Filters>(filters));
         } else {
-            THIS->launchTasks(toMsg<OfferID>(offerIds), toMsg<TaskInfo>(tasks));
+            RETVAL = THIS->launchTasks(toMsg<OfferID>(offerIds), toMsg<TaskInfo>(tasks));
         }
-        XSRETURN_YES;
     %};
 
-void launchTask(std::string offerId, std::vector< std::string > tasks, std::string filters = std::string())
+Status launchTask(std::string offerId, std::vector< std::string > tasks, std::string filters = std::string())
     %code{%
         if (filters.length()) {
-            THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks), toMsg<Filters>(filters));
+            RETVAL = THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks), toMsg<Filters>(filters));
         } else {
-            THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks));
+            RETVAL = THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks));
         }
-        THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks));
-        XSRETURN_YES;
     %};
 
-void killTask(std::string taskId)
+Status killTask(std::string taskId)
     %code{%
-        THIS->killTask(toMsg<TaskID>(taskId));
-        XSRETURN_YES;
+        RETVAL = THIS->killTask(toMsg<TaskID>(taskId));
     %};
 
-void declineOffer(std::string offerId, std::string filters = std::string())
+Status declineOffer(std::string offerId, std::string filters = std::string())
     %code{%
         if (filters.length()) {
-            THIS->declineOffer(toMsg<OfferID>(offerId), toMsg<Filters>(filters));
+            RETVAL = THIS->declineOffer(toMsg<OfferID>(offerId), toMsg<Filters>(filters));
         } else {
-            THIS->declineOffer(toMsg<OfferID>(offerId));
+            RETVAL = THIS->declineOffer(toMsg<OfferID>(offerId));
         }
-        XSRETURN_YES;
     %};
 
-void reviveOffers()
+Status reviveOffers()
     %code{%
-        THIS->reviveOffers();
-        XSRETURN_YES;
+        RETVAL = THIS->reviveOffers();
     %};
 
-void sendFrameworkMessage(std::string executorId, std::string slaveId, std::string data)
+Status sendFrameworkMessage(std::string executorId, std::string slaveId, std::string data)
     %code{%
-        THIS->sendFrameworkMessage(toMsg<ExecutorID>(executorId), toMsg<SlaveID>(slaveId), data);
-        XSRETURN_YES;
+        RETVAL = THIS->sendFrameworkMessage(toMsg<ExecutorID>(executorId), toMsg<SlaveID>(slaveId), data);
     %};
 
-void reconcileTasks(std::vector< std::string > statuses)
+Status reconcileTasks(std::vector< std::string > statuses)
     %code{%
-        THIS->reconcileTasks(toMsg<TaskStatus>(statuses));
-        XSRETURN_YES;
+        RETVAL = THIS->reconcileTasks(toMsg<TaskStatus>(statuses));
     %};
 
 };

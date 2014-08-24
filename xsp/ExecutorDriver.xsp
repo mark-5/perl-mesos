@@ -28,34 +28,29 @@ mesos::perl::ExecutorDriver::_channel()
 
 %}
 
-void start()
+Status start()
     %code{%
-        THIS->start();
-        XSRETURN_YES;
+        RETVAL = THIS->start();
     %};
 
-void stop()
+Status stop()
     %code{%
-        THIS->stop();
-        XSRETURN_YES;
+        RETVAL = THIS->stop();
     %};
 
-void abort()
+Status abort()
     %code{%
-        THIS->abort();
-        XSRETURN_YES;
+        RETVAL = THIS->abort();
     %};
 
-void sendStatusUpdate(std::string status)
+Status sendStatusUpdate(std::string status)
     %code{%
-        THIS->sendStatusUpdate(toMsg<TaskStatus>(status));
-        XSRETURN_YES;
+        RETVAL = THIS->sendStatusUpdate(toMsg<TaskStatus>(status));
     %};
 
-void sendFrameworkMessage(std::string data)
+Status sendFrameworkMessage(std::string data)
     %code{%
-        THIS->sendFrameworkMessage(data);
-        XSRETURN_YES;
+        RETVAL = THIS->sendFrameworkMessage(data);
     %};
 
 };

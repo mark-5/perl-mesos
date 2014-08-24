@@ -89,6 +89,11 @@ after start => sub {
     $self->dispatch_events;
 };
 
+after stop => sub {
+    my ($self) = @_;
+    $self->stop_dispatch;
+};
+
 sub run {
     my ($self) = @_;
     $self->start;

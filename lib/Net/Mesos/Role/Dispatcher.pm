@@ -11,6 +11,12 @@ has watcher => (
     predicate => 1,
 );
 
+has loop_condvar => (
+    is        => 'rw',
+    clearer   => 1,
+    predicate => 1,
+);
+
 sub dispatch_events {
     my ($self) = @_;
     my $w = AnyEvent->io(
@@ -35,7 +41,18 @@ around dispatch_event => sub {
     $self->dispatch_events;
 };
 
-sub dispatch_loop { AnyEvent->condvar->recv }
+sub dispatch_loop {
+    my ($self) = @_;
+    my $condvar = AnyEvent->condvar;
+    $self->loop_condvar($condvar);
+    $condvar->recv;
+}
+
+sub stop_dispatch {
+    my ($self) = @_;
+    $self->clear_watcher;
+    $self->loop_condvar->send if $self->has_loop_condvar;
+}
 
 
 1;
