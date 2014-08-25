@@ -8,6 +8,15 @@
 %{
 
 static void
+xs_init(SV* self)
+    PPCODE:
+        if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVGV) {
+            mesos::perl::MesosChannel* channel = new mesos::perl::MesosChannel;
+            sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
+                             (const char*) channel, 0);
+        }
+
+static void
 mesos::perl::MesosChannel::new(...)
     PPCODE:
         char* package = SvPV_nolen(ST(0));
