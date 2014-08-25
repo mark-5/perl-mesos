@@ -14,6 +14,7 @@ namespace perl {
 class ExecutorDriver
 {
 public:
+    Status status_;
     SharedChannel channel_;
     ProxyExecutor* proxyExecutor_;
 

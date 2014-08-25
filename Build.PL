@@ -32,7 +32,7 @@ my $build = Module::Build::WithXSpp->new(
         'ExtUtils::Typemaps::STL'       => '0',
     },
     include_dirs         => [qw(include /usr/local/include/mesos)],
-    early_includes       => [@my_cpp_headers, 'mesos/scheduler.hpp'],
+    early_includes       => [@my_cpp_headers, 'mesos/scheduler.hpp', 'mesos/executor.hpp'],
     extra_compiler_flags => [qw(-std=c++11)],
     extra_linker_flags   => [qw(-lmesos)],
 );

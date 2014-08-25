@@ -103,6 +103,7 @@ sub run {
 sub join {
     my ($self) = @_;
     $self->dispatch_loop;
+    return $self->status;
 }
 
 1;

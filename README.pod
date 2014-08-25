@@ -14,9 +14,9 @@ The Apache Mesos library is multithreaded, which is problematic when dealing wit
 
 =over 4
 
-=item add examples section
-
 =item add documention
+
+=item more tests
 
 =item make xs/c++ more portable
 

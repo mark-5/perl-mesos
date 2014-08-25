@@ -75,15 +75,15 @@ sub statusUpdate {
 
     if ($update->state == Mesos::TaskState::TASK_FINISHED) {
         $self->tasksFinished($self->tasksFinished + 1);
-        print "All tasks done, waiting for final framework message"
+        print "All tasks done, waiting for final framework message\n"
             if $self->tasksFinished == $self->TOTAL_TASKS;
 
         my ($slave_id, $executor_id) = @{$self->taskData->{$update->task_id->value}||[]};
 
         $self->messagesSent($self->messagesSent + 1);
         $driver->sendFrameworkMessage(
-            Mesos::ExecutorID->new({value => $executor_id}),
-            Mesos::SlaveID->new({value => $slave_id}),
+            $executor_id,
+            $slave_id,
             "data with a \0 byte",
         );
     }

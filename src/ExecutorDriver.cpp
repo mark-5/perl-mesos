@@ -18,37 +18,37 @@ ExecutorDriver::~ExecutorDriver()
 
 Status ExecutorDriver::start()
 {
-    return driver_->start();
+    return status_ = driver_->start();
 }
 
 Status ExecutorDriver::stop()
 {
-    return driver_->stop();
+    return status_ = driver_->stop();
 }
 
 Status ExecutorDriver::abort()
 {
-    return driver_->abort();
+    return status_ = driver_->abort();
 }
 
 Status ExecutorDriver::join()
 {
-    return driver_->join();
+    return status_ = driver_->join();
 }
 
 Status ExecutorDriver::run()
 {
-    return driver_->run();
+    return status_ = driver_->run();
 }
 
 Status ExecutorDriver::sendStatusUpdate(const TaskStatus& status)
 {
-    return driver_->sendStatusUpdate(status);
+    return status_ = driver_->sendStatusUpdate(status);
 }
 
 Status ExecutorDriver::sendFrameworkMessage(const std::string& data)
 {
-    return driver_->sendFrameworkMessage(data);
+    return status_ = driver_->sendFrameworkMessage(data);
 }
 
 } // namespace perl {

@@ -100,6 +100,9 @@ Status reconcileTasks(std::vector< std::string > statuses)
         RETVAL = THIS->reconcileTasks(toMsg<TaskStatus>(statuses));
     %};
 
+Status status()
+    %code{% RETVAL = THIS->status_; %};
+
 };
 
 

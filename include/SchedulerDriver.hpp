@@ -14,6 +14,7 @@ namespace perl {
 class SchedulerDriver
 {
 public:
+    Status status_;
     SharedChannel channel_;
     ProxyScheduler* proxyScheduler_;
 
