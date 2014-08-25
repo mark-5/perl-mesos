@@ -1,9 +1,9 @@
-package Net::Mesos::Scheduler;
+package Net::Mesos::Executor;
 use Moo;
 use strict;
 use warnings;
 
-with 'Net::Mesos::Role::Scheduler';
+with 'Net::Mesos::Role::Executor';
 
 sub registered {}
 sub reregistered {}
