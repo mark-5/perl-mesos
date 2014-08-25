@@ -5,7 +5,13 @@
 namespace mesos {
 namespace perl {
 
-SchedulerCommand::SchedulerCommand(const std::string& name, const CommandArgs& args)
+CommandArg::CommandArg(const std::string& data, const std::string& type)
+: data_(data), type_(type)
+{
+
+}
+
+MesosCommand::MesosCommand(const std::string& name, const CommandArgs& args)
 : name_(name), args_(args)
 {
 
@@ -29,21 +35,21 @@ MesosChannel::~MesosChannel()
     delete pending_;
 }
 
-void MesosChannel::send(const SchedulerCommand& command)
+void MesosChannel::send(const MesosCommand& command)
 {
     pending_->push(command);
     fprintf(out_, "%s\n", command.name_.c_str());
 }
 
-const SchedulerCommand MesosChannel::recv()
+const MesosCommand MesosChannel::recv()
 {
     char str[100];
     if (fgets(str, 100, in_)) {
-        const SchedulerCommand command = pending_->front();
+        const MesosCommand command = pending_->front();
         pending_->pop();
         return command;
     } else {
-        return SchedulerCommand(std::string(), CommandArgs());
+        return MesosCommand(std::string(), CommandArgs());
     }
 }
 

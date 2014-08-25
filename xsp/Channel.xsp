@@ -40,13 +40,16 @@ mesos::perl::MesosChannel::recv()
                 XSRETURN_UNDEF;
             }
         }
-        const mesos::perl::SchedulerCommand command = THIS->recv();
+        const mesos::perl::MesosCommand command = THIS->recv();
         EXTEND(SP, command.args_.size() + 1);
 
         ST(0) = newSVpvn(command.name_.c_str(), command.name_.length());
         for (int i=0; i < command.args_.size(); i++) {
-            const std::string arg = command.args_.at(i);
-            ST(i + 1) = newSVpvn(arg.c_str(), arg.length());
+            const mesos::perl::CommandArg arg = command.args_.at(i);
+            AV* av newAV();
+            av_store(av, 0, newSVpvn(arg.data_.c_str(), arg.data_.length()));
+            av_store(av, 1, newSVpvn(arg.type_.c_str(), arg.type_.length()));
+            ST(i + 1) = newRV_inc((SV*) av);
         }
         XSRETURN(command.args_.size() + 1);
 
@@ -58,9 +61,9 @@ mesos::perl::MesosChannel::send(...)
         mesos::perl::CommandArgs args;
         int i;
         for (i = 2; i < items; i++) {
-            args.push_back(std::string( SvPV_nolen( ST(i) ), SvCUR( ST(i) ) ));
+            args.push_back(mesos::perl::CommandArg(std::string( SvPV_nolen( ST(i) ), SvCUR( ST(i) ) )));
         }
-        THIS->send( mesos::perl::SchedulerCommand(name, args) );
+        THIS->send( mesos::perl::MesosCommand(name, args) );
         XSRETURN_YES;
 %}
 

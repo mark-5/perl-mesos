@@ -8,30 +8,39 @@
 #include <cstdio>
 #include <memory>
 
+#define PUSH_MSG(VEC, MSG, MSG_TYPE) VEC.push_back(CommandArg(MSG.SerializeAsString(), MSG_TYPE))
+
 namespace mesos {
 namespace perl {
 
-typedef std::vector<std::string> CommandArgs;
-class SchedulerCommand
+class CommandArg {
+public:
+    const std::string data_;
+    const std::string type_;
+    CommandArg(const std::string& data = std::string(""), const std::string& type = std::string("String"));
+};
+
+typedef std::vector<CommandArg> CommandArgs;
+class MesosCommand
 {
 public:
     const std::string name_;
     const CommandArgs args_;
-    SchedulerCommand(const std::string& name, const CommandArgs& args);
+    MesosCommand(const std::string& name, const CommandArgs& args);
 };
 
 class MesosChannel
 {
 public:
-    typedef std::queue<SchedulerCommand> CommandQueue;
+    typedef std::queue<MesosCommand> CommandQueue;
 
     FILE* in_;
     FILE* out_;
     MesosChannel();
     ~MesosChannel();
     CommandQueue* pending_;
-    void send(const SchedulerCommand& command);
-    const SchedulerCommand recv();
+    void send(const MesosCommand& command);
+    const MesosCommand recv();
 };
 typedef std::shared_ptr<MesosChannel> SharedChannel;
 
