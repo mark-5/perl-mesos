@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Carp;
 use parent 'Exporter';
-our @EXPORT = qw(load_messages encode_protobufs as_message);
+our @EXPORT = qw(load_messages encode_protobufs);
 our @EXPORT_OK = @EXPORT;
 
 sub load_messages {
@@ -34,18 +34,5 @@ sub encode_protobufs {
     return @encoded;
 };
 
-sub as_message {
-    require Class::Load;
-    my ($class, $data) = @_;
-    if (not Class::Load::is_class_loaded($class)) {
-        $class = "Mesos::$class";
-        croak "$class is not loaded" unless Class::Load::is_class_loaded($class); 
-    }
-    $class = "Mesos::$class" if $class !~ /^Mesos::/ and !Class::Load::is_class_loaded($class);
-    my $ref = ref $data;
-    return $data if $ref eq $class;
-    return [map {as_message($class, $data)} @$data] if $ref eq 'ARRAY';
-    return $ref ? $class->new($data) : $class->decode($data);
-}
 
 1;

@@ -3,7 +3,6 @@ use Moo::Role;
 use strict;
 use warnings;
 use Net::Mesos::Channel;
-use Net::Mesos::Utils qw(as_message);
 use Mesos::Messages;
 
 has channel => (
