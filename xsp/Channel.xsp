@@ -43,13 +43,24 @@ mesos::perl::MesosChannel::recv()
         const mesos::perl::MesosCommand command = THIS->recv();
         EXTEND(SP, command.args_.size() + 1);
 
-        ST(0) = newSVpvn(command.name_.c_str(), command.name_.length());
+        ST(0) = sv_2mortal(newSVpvn(command.name_.c_str(), command.name_.length()));
         for (int i=0; i < command.args_.size(); i++) {
             const mesos::perl::CommandArg arg = command.args_.at(i);
             AV* av newAV();
-            av_store(av, 0, newSVpvn(arg.data_.c_str(), arg.data_.length()));
-            av_store(av, 1, newSVpvn(arg.type_.c_str(), arg.type_.length()));
-            ST(i + 1) = newRV_inc((SV*) av);
+            if (arg.cpp_type_ == mesos::perl::cpp_type::SCALAR) {
+                std::string cpp_data = arg.scalar_data_;
+                av_store(av, 0, newSVpvn(cpp_data.c_str(), cpp_data.length()));
+            } else if (arg.cpp_type_ == mesos::perl::cpp_type::ARRAY) {
+                AV* perl_data = newAV();
+                std::vector<std::string> cpp_data = arg.array_data_;
+                for (int j=0; j < cpp_data.size(); j++) {
+                    std::string value = cpp_data.at(j);
+                    av_store(perl_data, j, newSVpvn(value.c_str(), value.length()));
+                }
+                av_store(av, 0, newRV_noinc((SV*) perl_data));
+            }
+            av_store(av, 1, newSVpvn(arg.perl_type_.c_str(), arg.perl_type_.length()));
+            ST(i + 1) = sv_2mortal(newRV_noinc((SV*) av));
         }
         XSRETURN(command.args_.size() + 1);
 
@@ -61,7 +72,20 @@ mesos::perl::MesosChannel::send(...)
         mesos::perl::CommandArgs args;
         int i;
         for (i = 2; i < items; i++) {
-            args.push_back(mesos::perl::CommandArg(std::string( SvPV_nolen( ST(i) ), SvCUR( ST(i) ) )));
+            SV* data = ST(i);
+            if (!SvROK(data) && SvTYPE(data) == SVt_PV) {
+                args.push_back(mesos::perl::CommandArg(std::string( SvPV_nolen(data), SvCUR(data) )));
+            } else if (SvROK(data) && SvTYPE(SvRV(data)) == SVt_PVAV) {
+                AV* av = (AV*) SvRV(data);
+                std::vector<std::string> encoded;
+                int j;
+                int av_length = AvFILL(av) + 1;
+                for (j = 0; j < av_length; j++) {
+                    SV** el = av_fetch(av, j, 0);
+                    encoded.push_back(std::string(SvPV_nolen(*el), SvCUR(*el)));
+                }
+                args.push_back(mesos::perl::CommandArg(encoded));
+            }
         }
         THIS->send( mesos::perl::MesosCommand(name, args) );
         XSRETURN_YES;

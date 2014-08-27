@@ -39,10 +39,11 @@ void ProxyScheduler::resourceOffers(SchedulerDriver* driver,
                     const std::vector<Offer>& offers)
 {
     CommandArgs args;
+    std::vector<std::string> strings;
     for (std::vector<Offer>::const_iterator it = offers.begin(); it != offers.end(); ++it) {
-        const Offer offer = *it;
-        PUSH_MSG(args, offer, "Offer");
+        strings.push_back(it->SerializeAsString());
     }
+    args.push_back( CommandArg(strings, "Offer") );
 
     channel_->send( MesosCommand("resourceOffers", args) );
 }

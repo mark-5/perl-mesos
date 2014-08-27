@@ -1,4 +1,5 @@
 package Net::Mesos::Test::Role::Process;
+use Symbol;
 use Moo::Role;
 use strict;
 use warnings;
@@ -15,24 +16,18 @@ has return => (
     default => sub { {} },
 );
 
-has event_1 => (
-    is  => 'rw',
-    isa => sub { ref shift eq 'CODE' },
-);
-
-sub call_event_1 {
-    my ($self, @args) = @_;
-    $self->event_1->($self, @args);
+sub create_method {
+    my ($self, $method, $code) = @_;
+    my $package = ref $self || $self;
+    no strict 'refs';
+    *{qualify($method, ref $self)} = $code;
 }
 
-has event_2 => (
-    is => 'rw',
-    isa => sub { ref shift eq 'CODE' },
-);
-
-sub call_event_2 {
+our $AUTOLOAD;
+sub AUTOLOAD {
+    (my $method = $AUTOLOAD) =~ s{.*::}{};
     my ($self, @args) = @_;
-    $self->event_2->($self, @args);
+    $self->return->{$method} = \@args;
 }
 
 1;

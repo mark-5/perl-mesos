@@ -11,7 +11,7 @@ like(fileno($channel), qr/^\d+$/, 'channel fileno returned int');
 is($channel->recv, undef, 'returned undef on empty recv');
 
 my $sent_command = "test command";
-my @sent_args = qw(some test args);
+my @sent_args = (qw(some test args), [qw(and an array ref)]);
 $channel->send($sent_command, @sent_args);
 my ($command, @args) = $channel->recv;
 is($command, $sent_command, 'received sent command');

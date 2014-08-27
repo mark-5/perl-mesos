@@ -6,7 +6,13 @@ namespace mesos {
 namespace perl {
 
 CommandArg::CommandArg(const std::string& data, const std::string& type)
-: data_(data), type_(type)
+: scalar_data_(data), array_data_(std::vector<std::string>()), perl_type_(type), cpp_type_(cpp_type::SCALAR)
+{
+
+}
+
+CommandArg::CommandArg(const std::vector<std::string>& data, const std::string& type)
+: scalar_data_(std::string("")), array_data_(data), perl_type_(type), cpp_type_(cpp_type::ARRAY)
 {
 
 }

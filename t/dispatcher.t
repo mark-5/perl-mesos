@@ -47,8 +47,8 @@ sub test_dispatcher {
 
     $driver->dispatch_events;
     my $ev1_cv = AE::cv;
-    my @ev1 = qw(call_event_1 return_value_1);
-    $process->event_1(sub {
+    my @ev1 = qw(event_1 return_value_1);
+    $process->create_method('event_1', sub {
         my ($self, $ev1_driver, @args) = @_;
         $self->return->{event_1} = [$ev1_driver, @args];
         $ev1_cv->send;
@@ -63,8 +63,8 @@ sub test_dispatcher {
 
 
     my $ev2_cv = AE::cv;
-    my @ev2 = qw(call_event_2 return_value_2);
-    $process->event_2(sub {
+    my @ev2 = qw(event_2 return_value_2);
+    $process->create_method('event_2', sub {
         my ($self, $ev2_driver, @args) = @_;
         $self->return->{event_2} = [$ev2_driver, @args];
         $ev2_cv->send;

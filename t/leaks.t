@@ -25,6 +25,14 @@ no_leaks_ok {
     my $channel = Net::Mesos::Channel->new;
 } 'Net::Mesos::Channel construction does not leak';
 
+my $channel = Net::Mesos::Channel->new;
+no_leaks_ok {
+    my $sent_command = "test command";
+    my @sent_args = (qw(some test args), [qw(and an array ref)]);
+    $channel->send($sent_command, @sent_args);
+    $channel->recv;
+} 'Net::Mesos::Channel sent data without leak';
+
 use Net::Mesos::ProxyScheduler;
 no_leaks_ok {
     my $proxy = Net::Mesos::ProxyScheduler->new;

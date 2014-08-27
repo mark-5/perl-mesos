@@ -6,6 +6,7 @@ use strict;
 use warnings;
 
 use Net::Mesos;
+use Net::Mesos::Utils qw(encode_protobufs);
 
 sub BUILD {
     my ($self) = @_;
@@ -26,7 +27,7 @@ sub deserialize_channel_args {
                 croak "$type is not loaded" unless Class::Load::is_class_loaded($type);
             }
             croak("$type must provide a decode method") unless $type->can('decode');
-            $deserialized = $type->decode($data);
+            $deserialized = ref $data eq 'ARRAY' ? [map {$type->decode($_)} @$data] : $type->decode($data);
         }
         $deserialized;
     } @in;
@@ -38,5 +39,11 @@ around recv => sub {
     return wantarray ? () : undef if !$command and !@output_args;
     return ($command, deserialize_channel_args(@output_args));
 };
+
+around send => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(encode_protobufs @args);
+};
+
 
 1;

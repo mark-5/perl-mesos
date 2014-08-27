@@ -20,13 +20,13 @@ has messagesReceived => (is => 'rw', default => 0);
 
 sub registered {
     my ($self, $driver, $frameworkId, $masterInfo) = @_;
-    printf "Registered with framework ID %s\n", $frameworkId;
+    printf "Registered with framework ID %s\n", $frameworkId->value;
 }
 
 sub resourceOffers {
-    my ($self, $driver, @offers) = @_;
-    printf "Got %d resource offers\n", scalar @offers;
-    for my $offer (@offers) {
+    my ($self, $driver, $offers) = @_;
+    printf "Got %d resource offers\n", scalar @$offers;
+    for my $offer (@$offers) {
         my $tasks = [];
         printf "Got resource offer %s\n", $offer->id->value;
         if ($self->tasksLaunched < $self->TOTAL_TASKS) {
