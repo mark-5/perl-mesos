@@ -2,6 +2,7 @@
 
 %typemap{std::string};
 %typemap{std::vector<std::string>};
+%typemap{std::vector< std::string >}{parsed}{%std::vector<std::string>%};
 %typemap{Status}{parsed}{
     %xs_type{T_ENUM};
 };

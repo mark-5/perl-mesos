@@ -48,12 +48,12 @@ Status abort()
         RETVAL = THIS->abort();
     %};
 
-Status requestResources(std::vector< std::string > requests)
+Status requestResources(std::vector<std::string> requests)
     %code{%
         RETVAL = THIS->requestResources(toMsg<Request>(requests));
     %};
 
-Status launchTasks(std::vector< std::string > offerIds, std::vector< std::string > tasks, std::string filters = std::string())
+Status launchTasks(std::vector<std::string> offerIds, std::vector<std::string> tasks, std::string filters = std::string())
     %code{%
         if (filters.length()) {
             RETVAL = THIS->launchTasks(toMsg<OfferID>(offerIds), toMsg<TaskInfo>(tasks), toMsg<Filters>(filters));
@@ -62,7 +62,7 @@ Status launchTasks(std::vector< std::string > offerIds, std::vector< std::string
         }
     %};
 
-Status launchTask(std::string offerId, std::vector< std::string > tasks, std::string filters = std::string())
+Status launchTask(std::string offerId, std::vector<std::string> tasks, std::string filters = std::string())
     %code{%
         if (filters.length()) {
             RETVAL = THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks), toMsg<Filters>(filters));
@@ -95,7 +95,7 @@ Status sendFrameworkMessage(std::string executorId, std::string slaveId, std::st
         RETVAL = THIS->sendFrameworkMessage(toMsg<ExecutorID>(executorId), toMsg<SlaveID>(slaveId), data);
     %};
 
-Status reconcileTasks(std::vector< std::string > statuses)
+Status reconcileTasks(std::vector<std::string> statuses)
     %code{%
         RETVAL = THIS->reconcileTasks(toMsg<TaskStatus>(statuses));
     %};
