@@ -14,7 +14,8 @@ my $build = Module::Build::WithXSpp->new(
         'Exporter'        => '5.57',
         'AnyEvent'        => 0,
         'Types::Standard' => 0,
-        'Google::ProtocolBuffers' => 0,
+        'Class::Method::Modifiers' => 0,
+        'Google::ProtocolBuffers'  => 0,
     },
     configure_requires => {
         'Devel::CheckLib' => 0,

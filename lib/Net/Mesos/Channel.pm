@@ -1,5 +1,5 @@
 package Net::Mesos::Channel;
-use Moo;
+use Class::Method::Modifiers;
 use Data::Dumper;
 use Carp;
 use strict;
