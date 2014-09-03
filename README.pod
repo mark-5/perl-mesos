@@ -10,6 +10,8 @@ This is a collection of perl bindings for Apache Mesos. This requires having the
 
 The Apache Mesos library is multithreaded, which is problematic when dealing with perl. The solution Net::Mesos currently goes with is to create C++ proxy classes, which registers callbacks that send notifications over a pipe, to perl. In the future this may change to sockets, or even to a pure perl implementation of mesos drivers(the latter would also eliminate the need for linking against the mesos shared library). Net::Mesos then handles these notifications, and executes the corresponding perl code, inside of an AnyEvent loop.
 
+Be aware that Mesos clients are not able to talk to remote servers from behind a NAT. Clients are required to start an http server that the mesos master will send post requests to. This is a limitation of Apache Mesos, not Net::Mesos.
+
 =head1 Install
 
 First make sure the apache mesos library is installed. This is easiest either with your native package manager, or with a package from L<mesosphere|http://mesosphere.io/downloads/>.
