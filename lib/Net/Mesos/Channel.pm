@@ -5,6 +5,16 @@ use Carp;
 use strict;
 use warnings;
 
+=head1 Name
+
+Net::Mesos::Channel - perl interface to the channel proxy schedulers and executors write events to
+
+=head1 Synopsis
+
+Net::Mesos channels are blessed filehandles, so can be passed directly to IO::Select, AnyEvent->io, or any other function expecting a filehandle.
+
+=cut
+
 use Net::Mesos;
 use Net::Mesos::Utils qw(encode_protobufs);
 
@@ -27,6 +37,22 @@ sub deserialize_channel_args {
         $deserialized;
     } @in;
 }
+
+=head1 Methods
+
+=over 4
+
+=item recv()
+
+    Main entry point to this class. Returns and deserializes any events logged by proxy schedulers or drivers.
+    This is non-blocking and will immediately return undef if no events are queued.
+
+    The first argument returned is the name of the event logged.
+    The remaining return values are the arguments received from MesosSchedulerDriver.
+
+=back
+
+=cut
 
 around recv => sub {
     my ($orig, $self, @input_args) = @_;

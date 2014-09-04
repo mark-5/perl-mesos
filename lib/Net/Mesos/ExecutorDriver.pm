@@ -8,6 +8,12 @@ use Types::Standard qw(Str);
 use strict;
 use warnings;
 
+=head1 Name
+
+Net::Mesos::ExecutorDriver - perl driver for Mesos executors
+
+=cut
+
 sub BUILD {
     my ($self) = @_;
     return $self->xs_init;
@@ -80,5 +86,30 @@ sub join {
     $self->dispatch_loop;
     return $self->status;
 }
+
+
+=head1 Methods
+
+=over 4
+
+=item new(executor => $executor)
+
+=item Status start()
+
+=item Status stop()
+
+=item Status abort()
+
+=item Status join()
+
+=item Status run()
+
+=item Status sendStatusUpdate($status)
+
+=item Status sendFrameworkMessage($data)
+
+=back
+
+=cut
 
 1;

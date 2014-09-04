@@ -8,6 +8,12 @@ use Types::Standard qw(Str);
 use strict;
 use warnings;
 
+=head1 Name
+
+Net::Mesos::SchedulerDriver - perl driver for Mesos schedulers
+
+=cut
+
 sub BUILD {
     my ($self) = @_;
     my @encoded = encode_protobufs grep {$_} map {$self->$_} qw(framework master credentials);
@@ -106,5 +112,41 @@ sub join {
     $self->dispatch_loop;
     return $self->status;
 }
+
+=head1 Methods
+
+=over 4
+
+=item new(scheduler => $scheduler, framework => $frameworkInfo, master => $master, credentials => $credentials)
+
+=item start()
+
+=item stop($failover)
+
+=item abort()
+
+=item join()
+
+=item run()
+
+=item requestResources($requests)
+
+=item launchTasks($offerIds, $tasks, $filters)
+
+=item launchTask($offerId, $tasks, $filters)
+
+=item killTask($taskId)
+
+=item declineOffer($offerId, $filters)
+
+=item reviveOffers()
+
+=item sendFrameworkMessage($executorId, $slaveId, $data)
+
+=item reconcileTasks($statuses)
+
+=back
+
+=cut
 
 1;

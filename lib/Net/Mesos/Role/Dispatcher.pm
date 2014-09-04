@@ -2,6 +2,12 @@ package Net::Mesos::Role::Dispatcher;
 use Moo::Role;
 use AnyEvent;
 
+=head1 Name
+
+ Net::Mesos::Role::Dispatcher - role to dispatch events in an AnyEvent loop
+
+=cut
+
 requires 'channel';
 requires 'process';
 
@@ -17,6 +23,16 @@ has loop_condvar => (
     predicate => 1,
 );
 
+=head1 Methods
+
+=over 4
+
+=item dispatch_events()
+
+    Instantiates the channel's initial IO watcher.
+
+=cut
+
 sub dispatch_events {
     my ($self) = @_;
     my $w = AnyEvent->io(
@@ -26,6 +42,12 @@ sub dispatch_events {
     );
     $self->watcher($w);
 }
+
+=item dispatch_event()
+
+    Dispatch the next event in the channel. Returns undef if no events are queued.
+
+=cut
 
 sub dispatch_event {
     my ($self) = @_;
@@ -41,6 +63,12 @@ around dispatch_event => sub {
     $self->dispatch_events;
 };
 
+=item dispatch_loop()
+
+    Enter into the AnyEvent loop. The loop can be broke by calling stop_dispatch.
+
+=cut
+
 sub dispatch_loop {
     my ($self) = @_;
     my $condvar = AnyEvent->condvar;
@@ -48,11 +76,20 @@ sub dispatch_loop {
     $condvar->recv;
 }
 
+=item stop_dispatch()
+
+    If in the middle of a dispatch loop, this will delete the condvar used, and break the loop.
+
+=cut
+
 sub stop_dispatch {
     my ($self) = @_;
     $self->clear_watcher;
     $self->loop_condvar->send if $self->has_loop_condvar;
 }
 
+=back
+
+=cut
 
 1;
