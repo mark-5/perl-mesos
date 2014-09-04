@@ -9,10 +9,11 @@ my $build = Module::Build::WithXSpp->new(
         'Test::LeakTrace' => 0,
     },
     requires        => {
+        'AnyEvent'        => 0,
+        'Data::Rmap'      => 0,
+        'Exporter'        => 0,
         'Moo'             => 0,
         'Try::Tiny'       => 0,
-        'Exporter'        => '5.57',
-        'AnyEvent'        => 0,
         'Types::Standard' => 0,
         'Class::Method::Modifiers' => 0,
         'Google::ProtocolBuffers'  => 0,

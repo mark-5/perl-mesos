@@ -25,10 +25,15 @@ no_leaks_ok {
     my $channel = Net::Mesos::Channel->new;
 } 'Net::Mesos::Channel construction does not leak';
 
+use Mesos::Messages;
 my $channel = Net::Mesos::Channel->new;
 no_leaks_ok {
     my $sent_command = "test command";
-    my @sent_args = (qw(some test args), [qw(and an array ref)]);
+    my @sent_args = ('string',
+                     [qw(array of strings)],
+                     Mesos::FrameworkID->new({value => 'single'}),
+                     [Mesos::FrameworkID->new({value => 'an'}), Mesos::FrameworkID->new({value => 'array'})]
+                  );
     $channel->send($sent_command, @sent_args);
     $channel->recv;
 } 'Net::Mesos::Channel sent data without leak';

@@ -13,24 +13,27 @@
 namespace mesos {
 namespace perl {
 
-enum class cpp_type : int { SCALAR, ARRAY };
+enum class context : int { SCALAR, ARRAY };
 
 class CommandArg {
 public:
-    const std::string scalar_data_;
-    const std::vector<std::string> array_data_;
-    const std::string perl_type_;
-    const cpp_type cpp_type_;
-    CommandArg(const std::string& data = std::string(""), const std::string& type = std::string("String"));
-    CommandArg(const std::vector<std::string>& data = std::vector<std::string>(), const std::string& type = std::string("String"));
+    std::string scalar_data_;
+    std::vector<std::string> array_data_;
+    std::string type_;
+    context context_;
+    CommandArg();
+    CommandArg(const std::string& data, const std::string type = std::string("String"));
+    CommandArg(const std::vector<std::string>& data, const std::string type = std::string("String"));
 };
 
 typedef std::vector<CommandArg> CommandArgs;
 class MesosCommand
 {
 public:
-    const std::string name_;
-    const CommandArgs args_;
+    std::string name_;
+    CommandArgs args_;
+
+    MesosCommand();
     MesosCommand(const std::string& name, const CommandArgs& args);
 };
 

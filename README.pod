@@ -22,8 +22,6 @@ Next just install like any other Module::Build distribution with C<perl Build.PL
 
 =over 4
 
-=item more tests
-
 =item upload to cpan
 
 =item maybe work on pure perl drivers

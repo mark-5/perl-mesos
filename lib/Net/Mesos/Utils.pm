@@ -19,19 +19,21 @@ sub load_messages {
     }
 }
 
+use Data::Rmap;
 sub encode_protobufs {
     my @args = @_;
-    my @encoded = map {
-        my $arg = $_;
-        my $retval = $arg;
-        if (ref $arg eq 'ARRAY') {
-            $retval = [map {$_->encode} @$arg] if grep {$_->can('encode')} @$arg;
-        } elsif (ref $arg and $arg->can('encode')) {
-            $retval = $arg->encode;
+    my ($encoded) = rmap_all {
+        my $ref = ref $_;
+        if ($ref eq 'HASH') {
+            $_ = {%$_};
+        } elsif ($ref eq 'ARRAY') {
+            $_ = [@$_];
+        } elsif ($ref) {
+            $_ = $_->encode if $_->can('encode');
         }
-        $retval;
-    } @args;
-    return @encoded;
+        $_;
+    } \@args;
+    return @$encoded;
 };
 
 
