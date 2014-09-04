@@ -2,6 +2,7 @@ package Net::Mesos::SchedulerDriver;
 use Net::Mesos;
 use Mesos::Messages;
 use Net::Mesos::Utils qw(encode_protobufs);
+use Net::Mesos::Channel;
 use Moo;
 use Types::Standard qw(Str);
 use strict;

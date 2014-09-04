@@ -8,11 +8,6 @@ use warnings;
 use Net::Mesos;
 use Net::Mesos::Utils qw(encode_protobufs);
 
-sub BUILD {
-    my ($self) = @_;
-    $self->xs_init;
-}
-
 sub deserialize_channel_args {
     my (@in) = @_;
     return map {

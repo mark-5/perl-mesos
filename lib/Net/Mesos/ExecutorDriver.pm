@@ -1,6 +1,7 @@
 package Net::Mesos::ExecutorDriver;
 use Net::Mesos;
 use Mesos::Messages;
+use Net::Mesos::Channel;
 use Net::Mesos::Utils qw(encode_protobufs);
 use Moo;
 use Types::Standard qw(Str);

@@ -33,9 +33,4 @@ no_leaks_ok {
     $channel->recv;
 } 'Net::Mesos::Channel sent data without leak';
 
-use Net::Mesos::ProxyScheduler;
-no_leaks_ok {
-    my $proxy = Net::Mesos::ProxyScheduler->new;
-} 'Net::Mesos::ProxyScheduler construction does not leak';
-
 done_testing();

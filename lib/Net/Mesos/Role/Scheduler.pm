@@ -2,13 +2,7 @@ package Net::Mesos::Role::Scheduler;
 use Moo::Role;
 use strict;
 use warnings;
-use Net::Mesos::Channel;
 use Mesos::Messages;
-
-has channel => (
-    is      => 'ro',
-    default => sub { Net::Mesos::Channel->new },
-);
 
 requires qw(
     registered
