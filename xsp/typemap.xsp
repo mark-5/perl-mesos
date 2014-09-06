@@ -7,25 +7,6 @@
     %xs_type{T_ENUM};
 };
 
-%typemap{mesos::perl::ProxyScheduler*}{simple}{ 
-    %name{object}; 
-    %xs_type{O_PROXY_SCHEDULER}; 
-    %xs_input_code{%{ 
-        if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVHV)) 
-            Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\"); 
-        SV* tied_hash = SvRV($arg); 
-        MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext); 
-        $var = ($type) ext_magic->mg_ptr; 
-    }%}; 
-    %xs_output_code{%{ 
-        HV* stash = gv_stashpv(\"Net::Mesos::ProxyScheduler\", GV_ADDWARN); 
-        SV* attr_hash = (SV*) newHV(); 
-        sv_magic(attr_hash, Nullsv, PERL_MAGIC_ext, 
-                         (const char*) $var, 0); 
-        $arg = sv_bless(sv_2mortal(newRV_noinc(attr_hash)), stash); 
-    }%}; 
-};
-
 %typemap{mesos::perl::SchedulerDriver*}{simple}{
     %name{object};
     %xs_type{O_SCHEDULER_DRIVER};
@@ -83,25 +64,6 @@
                          (const char*) $var, 0);
         $arg = sv_bless(sv_2mortal(newRV_noinc(glob)), stash);
     }%};
-};
-
-%typemap{mesos::perl::ProxyExecutor*}{simple}{ 
-    %name{object}; 
-    %xs_type{O_PROXY_EXECUTOR}; 
-    %xs_input_code{%{ 
-        if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVHV)) 
-            Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\"); 
-        SV* tied_hash = SvRV($arg); 
-        MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext); 
-        $var = ($type) ext_magic->mg_ptr; 
-    }%}; 
-    %xs_output_code{%{ 
-        HV* stash = gv_stashpv(\"Net::Mesos::ProxyExecutor\", GV_ADDWARN); 
-        SV* attr_hash = (SV*) newHV(); 
-        sv_magic(attr_hash, Nullsv, PERL_MAGIC_ext, 
-                         (const char*) $var, 0); 
-        $arg = sv_bless(sv_2mortal(newRV_noinc(attr_hash)), stash); 
-    }%}; 
 };
 
 %typemap{mesos::perl::MesosCommand}{parsed}{
