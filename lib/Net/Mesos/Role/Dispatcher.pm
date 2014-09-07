@@ -38,7 +38,11 @@ sub dispatch_events {
     my $w = AnyEvent->io(
         fh   => $self->channel,
         poll => 'r',
-        cb   => sub { $self->dispatch_event },
+        cb   => sub {
+            $self->clear_watcher;
+            $self->dispatch_event;
+            $self->dispatch_events;
+        },
     );
     $self->watcher($w);
 }
@@ -55,13 +59,6 @@ sub dispatch_event {
     my $process = $self->process;
     $process->$event($self, @args);
 }
-
-around dispatch_event => sub {
-    my ($orig, $self, @args) = @_;
-    $self->clear_watcher;
-    $self->$orig(@args);
-    $self->dispatch_events;
-};
 
 =item dispatch_loop()
 
