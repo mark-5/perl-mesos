@@ -1,4 +1,6 @@
 use strict;
+use File::Spec;
+use FindBin qw($Bin);
 use Module::Build::WithXSpp;
 
 my $build = Module::Build::WithXSpp->new(
@@ -20,6 +22,7 @@ my $build = Module::Build::WithXSpp->new(
         'Google::ProtocolBuffers'  => 0,
     },
     configure_requires => {
+        'FindBin'         => 0,
         'Devel::CheckLib' => 0,
     },
     test_requires => {
@@ -55,8 +58,23 @@ if (lc $^O eq 'darwin' and lc $build->config->{cc} eq 'cc') {
 $build->create_build_script;
 
 
+generate_protobufs($build->args('mesos-install'));
+
+
 sub find_mesos_install_path {
     my ($path) = grep {-d} map {"$_/mesos"} qw(/usr/include /usr/local/include);
     $path ||= Module::Build->prompt("Please enter path to mesos install", "/usr/local/include/mesos");
     return $path;
+}
+
+sub generate_protobufs {
+    my ($dir) = @_;
+    my $command = File::Spec->catfile($Bin, qw(bin generate_messages));
+    my $proto = File::Spec->catfile($dir, 'mesos.proto');
+    unless (-f $proto) {
+        warn "Couldn't find mesos proto file at $proto. Defaulting to 0.18 message format.\n";
+        return;
+    }
+    my $out = File::Spec->catfile($Bin, qw(lib Mesos Messages.pm));
+    system $command, $proto, $out;
 }

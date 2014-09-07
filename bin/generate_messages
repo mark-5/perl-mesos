@@ -1,0 +1,33 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Google::ProtocolBuffers;
+use File::Temp qw(tempfile);
+
+my ($in, $out) = @ARGV;
+die "USAGE: IN OUT\n" unless $in and $out;
+
+my $clean_proto = scrub_file($in);
+my $opts = {
+    generate_code    => $out,
+    create_accessors => 1,
+};
+Google::ProtocolBuffers->parsefile($clean_proto, $opts);
+
+sub scrub_file {
+    my ($proto) = @_;
+    my $tmp = File::Temp->new();
+    my $contents = slurp($proto);
+    $contents =~ s{/\*.*?\*/\s*}{}sg;
+    $tmp->print($contents);
+    $tmp->flush;
+    return $tmp;
+}
+
+sub slurp {
+    my ($file) = @_;
+    open(my $fh, $file);
+    my $contents = join '', <$fh>;
+    close $fh;
+    return $contents;
+}
