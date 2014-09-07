@@ -2,13 +2,11 @@
 
 %typemap{std::string};
 %typemap{std::vector<std::string>};
-%typemap{std::vector< std::string >}{parsed}{%std::vector<std::string>%};
 %typemap{Status}{parsed}{
     %xs_type{T_ENUM};
 };
 
 %typemap{mesos::perl::SchedulerDriver*}{simple}{
-    %name{object};
     %xs_type{O_SCHEDULER_DRIVER};
     %xs_input_code{%{ 
         if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVHV))
@@ -27,7 +25,6 @@
 };
 
 %typemap{mesos::perl::ExecutorDriver*}{simple}{
-    %name{object};
     %xs_type{O_EXECUTOR_DRIVER};
     %xs_input_code{%{ 
         if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVHV))
@@ -46,7 +43,6 @@
 };
 
 %typemap{mesos::perl::MesosChannel*}{simple}{
-    %name{object};
     %xs_type{O_SCHEDULER_CHANNEL};
     %xs_input_code{%{
         if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVGV))
@@ -67,7 +63,6 @@
 };
 
 %typemap{mesos::perl::MesosCommand}{parsed}{
-    %name{object};
     %xs_type{O_MESOS_COMMAND};
     %xs_input_code{%{
         if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVAV))
@@ -92,3 +87,91 @@
         $arg = sv_2mortal(newRV_noinc((SV*) retval));
     }%};
 };
+
+%typemap{mesos::FrameworkInfo}{parsed}{
+    %xs_type{O_MESOS_FRAMEWORKINFO};
+    %xs_input_code{%{
+        $var = ($type) toMsg<mesos::FrameworkInfo>($arg);
+    }%};   
+};
+
+%typemap{mesos::Credential}{parsed}{
+    %xs_type{O_MESOS_CREDENTIAL};
+    %xs_input_code{%{
+        $var = ($type) toMsg<mesos::Credential>($arg);
+    }%};   
+};
+
+%typemap{mesos::Filters}{parsed}{
+    %xs_type{O_MESOS_FILTERS};
+    %xs_input_code{%{
+        $var = ($type) toMsg<mesos::Filters>($arg);
+    }%};   
+};
+
+%typemap{mesos::OfferID}{parsed}{
+    %xs_type{O_MESOS_OFFERID};
+    %xs_input_code{%{
+        $var = ($type) toMsg<mesos::OfferID>($arg);
+    }%};   
+};
+
+%typemap{mesos::TaskID}{parsed}{
+    %xs_type{O_MESOS_TASKID};
+    %xs_input_code{%{
+        $var = ($type) toMsg<mesos::TaskID>($arg);
+    }%};   
+};
+
+%typemap{mesos::ExecutorID}{parsed}{
+    %xs_type{O_MESOS_EXECUTORID};
+    %xs_input_code{%{
+        $var = ($type) toMsg<mesos::ExecutorID>($arg);
+    }%};   
+};
+
+
+%typemap{mesos::SlaveID}{parsed}{
+    %xs_type{O_MESOS_SLAVEID};
+    %xs_input_code{%{
+        $var = ($type) toMsg<mesos::SlaveID>($arg);
+    }%};   
+};
+
+%typemap{mesos::TaskStatus}{parsed}{
+    %xs_type{O_MESOS_TASKSTATUS};
+    %xs_input_code{%{
+        $var = ($type) toMsg<mesos::TaskStatus>($arg);
+    }%};   
+};
+
+
+%typemap{std::vector<mesos::Request>}{parsed}{
+    %xs_type{O_MESOS_REQUEST_VEC};
+    %xs_input_code{%{
+        $var = ($type) toMsgVec<mesos::Request>($arg);
+    }%};   
+};
+
+
+%typemap{std::vector<mesos::OfferID>}{parsed}{
+    %xs_type{O_MESOS_OFFERID_VEC};
+    %xs_input_code{%{
+        $var = ($type) toMsgVec<mesos::OfferID>($arg);
+    }%};   
+};
+
+%typemap{std::vector<mesos::TaskInfo>}{parsed}{
+    %xs_type{O_MESOS_TASKINFO_VEC};
+    %xs_input_code{%{
+        $var = ($type) toMsgVec<mesos::TaskInfo>($arg);
+    }%};   
+};
+
+%typemap{std::vector<mesos::TaskStatus>}{parsed}{
+    %xs_type{O_MESOS_TASKSTATUS_VEC};
+    %xs_input_code{%{
+        $var = ($type) toMsgVec<mesos::TaskStatus>($arg);
+    }%};   
+};
+

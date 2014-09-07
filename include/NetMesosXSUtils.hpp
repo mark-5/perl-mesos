@@ -1,46 +1,9 @@
-#ifndef NET_MESOS_UTILS_
-#define NET_MESOS_UTILS_
+#ifndef NET_MESOS_XS_UTILS_
+#define NET_MESOS_XS_UTILS_
 
 #include <vector>
 #include <string>
 #include <MesosChannel.hpp>
-
-template<typename T>
-const T toMsg(const std::string str)
-{
-    T msg;
-    msg.ParseFromString(str);
-    return msg;
-}
-
-template<typename T>
-const std::vector<T> toMsg(const std::vector<std::string> strs)
-{
-    std::vector<T> rvec;
-    for (std::vector<std::string>::const_iterator it = strs.begin(); it != strs.end(); ++it) {
-        const std::string str(*it);
-        rvec.push_back( toMsg<T>(str) );
-    }
-    return rvec;
-}
-
-const std::string sv_to_msg(SV* msg) {
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
-    XPUSHs(msg);
-    PUTBACK;
-    int rc = call_method("encode", G_SCALAR);
-    SPAGAIN;
-
-    std::string retval(POPp);
-
-    FREETMPS;
-    LEAVE;
-
-    return retval; 
-}
 
 std::string sv_to_string(SV* sv) {
     return std::string( SvPV_nolen(sv), SvCUR(sv) );
@@ -58,6 +21,25 @@ std::string av_type(AV* av) {
         return std::string("String");
     }
 }
+
+const std::string sv_to_msg(SV* msg) {
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+    XPUSHs(msg);
+    PUTBACK;
+    int rc = call_method("encode", G_SCALAR);
+    SPAGAIN;
+
+    std::string retval(sv_to_string(POPs));
+
+    FREETMPS;
+    LEAVE;
+
+    return retval; 
+}
+
 
 mesos::perl::CommandArg sv_to_CommandArg(SV* msg) {
     if (SvTYPE(msg) == SVt_PV) {
@@ -96,4 +78,48 @@ SV* CommandArg_to_sv(const mesos::perl::CommandArg arg) {
     return newRV_noinc((SV*) return_av);
 }
 
-#endif // NET_MESOS_UTILS_
+template<typename T>
+T toMsg(const std::string str)
+{
+    T msg;
+    msg.ParseFromString(str);
+    return msg;
+}
+
+template<typename T>
+std::vector<T> toMsg(const std::vector<std::string> strs)
+{
+    std::vector<T> rvec;
+    for (std::vector<std::string>::const_iterator it = strs.begin(); it != strs.end(); ++it) {
+        const std::string str(*it);
+        rvec.push_back( toMsg<T>(str) );
+    }
+    return rvec;
+}
+
+template<typename T>
+T toMsg(SV* sv)
+{
+    T msg;
+    msg.ParseFromString(sv_to_msg(sv));
+    return msg;
+}
+
+template<typename T>
+std::vector<T> toMsgVec(SV* sv)
+{
+    std::vector<T> return_vec;
+    if (!SvROK(sv))
+        Perl_croak(aTHX_ "NOT A REF");
+    if (SvTYPE(SvRV(sv)) != SVt_PVAV)
+        Perl_croak(aTHX_ "NOT AN ARRAY REF");
+    AV* msg_av = (AV*) SvRV(sv);
+    int length = AvFILL(msg_av) + 1;
+    for (int i = 0; i < length; i++) {
+        SV* el = *(av_fetch(msg_av, i, 0));
+        return_vec.push_back(toMsg<T>(el));
+    }
+    return return_vec;
+}
+
+#endif // NET_MESOS_XS_UTILS_

@@ -51,20 +51,6 @@ sub _build_process {
 # need to apply this after declaring channel and process
 with 'Net::Mesos::Role::Dispatcher';
 
-
-my @needs_wrapped = qw(
-    sendStatusUpdate
-);
-
-
-my $wrap_protobufs = sub {
-    my ($orig, $self, @args) = @_;
-    return $self->$orig(encode_protobufs @args);
-};
-
-around $_ => $wrap_protobufs for @needs_wrapped;
-
-
 after start => sub {
     my ($self) = @_;
     $self->dispatch_events;

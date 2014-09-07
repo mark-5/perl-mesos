@@ -1,7 +1,6 @@
 package Net::Mesos::SchedulerDriver;
 use Net::Mesos;
 use Mesos::Messages;
-use Net::Mesos::Utils qw(encode_protobufs);
 use Net::Mesos::Channel;
 use Moo;
 use Types::Standard qw(Str);
@@ -16,8 +15,7 @@ Net::Mesos::SchedulerDriver - perl driver for Mesos schedulers
 
 sub BUILD {
     my ($self) = @_;
-    my @encoded = encode_protobufs grep {$_} map {$self->$_} qw(framework master credentials);
-    return $self->xs_init(@encoded);
+    return $self->xs_init(grep {$_} map {$self->$_} qw(framework master credentials));
 }
 
 has scheduler => (
@@ -69,27 +67,6 @@ sub _build_process {
 
 # need to apply this after declaring channel and process
 with 'Net::Mesos::Role::Dispatcher';
-
-
-my @needs_wrapped = qw(
-    stop
-    requestResources
-    launchTasks
-    killTask
-    declineOffer
-    reviveOffers
-    sendFrameworkMessage
-    reconcileTasks
-);
-
-
-my $wrap_protobufs = sub {
-    my ($orig, $self, @args) = @_;
-    return $self->$orig(encode_protobufs @args);
-};
-
-around $_ => $wrap_protobufs for @needs_wrapped;
-
 
 after start => sub {
     my ($self) = @_;

@@ -28,30 +28,15 @@ mesos::perl::ExecutorDriver::_channel()
 
 %}
 
-Status start()
-    %code{%
-        RETVAL = THIS->start();
-    %};
+Status start();
 
-Status stop()
-    %code{%
-        RETVAL = THIS->stop();
-    %};
+Status stop();
 
-Status abort()
-    %code{%
-        RETVAL = THIS->abort();
-    %};
+Status abort();
 
-Status sendStatusUpdate(std::string status)
-    %code{%
-        RETVAL = THIS->sendStatusUpdate(toMsg<TaskStatus>(status));
-    %};
+Status sendStatusUpdate(mesos::TaskStatus status);
 
-Status sendFrameworkMessage(std::string data)
-    %code{%
-        RETVAL = THIS->sendFrameworkMessage(data);
-    %};
+Status sendFrameworkMessage(std::string data);
 
 Status status()
     %code{% RETVAL = THIS->status_; %};

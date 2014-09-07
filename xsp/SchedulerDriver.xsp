@@ -11,14 +11,15 @@
 %{
 
 static void
-xs_init(SV* self, std::string framework, std::string master, std::string credential = std::string())
+xs_init(SV* self, mesos::FrameworkInfo framework, std::string master, ...)
     PPCODE:
         if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
             mesos::perl::SchedulerDriver* driver;
-            if (credential.length()) {
-                driver = new mesos::perl::SchedulerDriver(toMsg<FrameworkInfo>(framework), master, toMsg<Credential>(credential));
+            if (items > 3) {
+                mesos::Credential credential( toMsg<mesos::Credential>(ST(3)) );
+                driver = new mesos::perl::SchedulerDriver(framework, master, credential);
             } else {
-                driver = new mesos::perl::SchedulerDriver(toMsg<FrameworkInfo>(framework), master);
+                driver = new mesos::perl::SchedulerDriver(framework, master);
             }
             sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
                              (const char*) driver, 0);
@@ -33,72 +34,27 @@ mesos::perl::SchedulerDriver::_channel()
 
 %}
 
-Status start()
-    %code{%
-        RETVAL = THIS->start();
-    %};
+Status start();
 
-Status stop(bool failover = false)
-    %code{%
-        RETVAL = THIS->stop(failover);
-    %};
+Status stop(bool failover = false);
 
-Status abort()
-    %code{%
-        RETVAL = THIS->abort();
-    %};
+Status abort();
 
-Status requestResources(std::vector<std::string> requests)
-    %code{%
-        RETVAL = THIS->requestResources(toMsg<Request>(requests));
-    %};
+Status requestResources(std::vector<mesos::Request> requests);
 
-Status launchTasks(std::vector<std::string> offerIds, std::vector<std::string> tasks, std::string filters = std::string())
-    %code{%
-        if (filters.length()) {
-            RETVAL = THIS->launchTasks(toMsg<OfferID>(offerIds), toMsg<TaskInfo>(tasks), toMsg<Filters>(filters));
-        } else {
-            RETVAL = THIS->launchTasks(toMsg<OfferID>(offerIds), toMsg<TaskInfo>(tasks));
-        }
-    %};
+Status launchTasks(std::vector<mesos::OfferID> offerIds, std::vector<mesos::TaskInfo> tasks, mesos::Filters filters = mesos::Filters());
 
-Status launchTask(std::string offerId, std::vector<std::string> tasks, std::string filters = std::string())
-    %code{%
-        if (filters.length()) {
-            RETVAL = THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks), toMsg<Filters>(filters));
-        } else {
-            RETVAL = THIS->launchTask(toMsg<OfferID>(offerId), toMsg<TaskInfo>(tasks));
-        }
-    %};
+Status launchTask(mesos::OfferID offerId, std::vector<mesos::TaskInfo> tasks, mesos::Filters filters = mesos::Filters());
 
-Status killTask(std::string taskId)
-    %code{%
-        RETVAL = THIS->killTask(toMsg<TaskID>(taskId));
-    %};
+Status killTask(mesos::TaskID taskId);
 
-Status declineOffer(std::string offerId, std::string filters = std::string())
-    %code{%
-        if (filters.length()) {
-            RETVAL = THIS->declineOffer(toMsg<OfferID>(offerId), toMsg<Filters>(filters));
-        } else {
-            RETVAL = THIS->declineOffer(toMsg<OfferID>(offerId));
-        }
-    %};
+Status declineOffer(mesos::OfferID offerId, mesos::Filters filters);
 
-Status reviveOffers()
-    %code{%
-        RETVAL = THIS->reviveOffers();
-    %};
+Status reviveOffers();
 
-Status sendFrameworkMessage(std::string executorId, std::string slaveId, std::string data)
-    %code{%
-        RETVAL = THIS->sendFrameworkMessage(toMsg<ExecutorID>(executorId), toMsg<SlaveID>(slaveId), data);
-    %};
+Status sendFrameworkMessage(mesos::ExecutorID executorId, mesos::SlaveID slaveId, std::string data);
 
-Status reconcileTasks(std::vector<std::string> statuses)
-    %code{%
-        RETVAL = THIS->reconcileTasks(toMsg<TaskStatus>(statuses));
-    %};
+Status reconcileTasks(std::vector<mesos::TaskStatus> statuses);
 
 Status status()
     %code{% RETVAL = THIS->status_; %};
