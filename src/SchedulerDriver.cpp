@@ -6,8 +6,7 @@ namespace perl {
 SchedulerDriver::SchedulerDriver(const FrameworkInfo& framework,
                     const std::string& master)
 {
-    channel_ = SharedChannel(new MesosChannel);
-    proxyScheduler_ = new ProxyScheduler(channel_);
+    proxyScheduler_ = new ProxyScheduler();
     driver_ = new MesosSchedulerDriver(proxyScheduler_, framework, master);
 }
 
@@ -23,6 +22,11 @@ SchedulerDriver::~SchedulerDriver()
 {
     delete driver_;
     delete proxyScheduler_;
+}
+
+SharedChannel SchedulerDriver::get_proxy_channel()
+{
+    return proxyScheduler_->channel_;
 }
 
 Status SchedulerDriver::start()

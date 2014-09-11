@@ -5,8 +5,7 @@ namespace perl {
 
 ExecutorDriver::ExecutorDriver()
 {
-    channel_ = SharedChannel(new MesosChannel);
-    proxyExecutor_ = new ProxyExecutor(channel_);
+    proxyExecutor_ = new ProxyExecutor();
     driver_ = new MesosExecutorDriver(proxyExecutor_);
 }
 
@@ -14,6 +13,11 @@ ExecutorDriver::~ExecutorDriver()
 {
     delete driver_;
     delete proxyExecutor_;
+}
+
+SharedChannel ExecutorDriver::get_proxy_channel()
+{
+    return proxyExecutor_->channel_;
 }
 
 Status ExecutorDriver::start()

@@ -43,7 +43,18 @@
 };
 
 %typemap{mesos::perl::MesosChannel*}{simple}{
-    %xs_type{O_SCHEDULER_CHANNEL};
+    %xs_type{O_MESOS_CHANNEL};
+    %xs_input_code{%{
+        if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVGV))
+            Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\");
+        SV* tied_glob = SvRV($arg);
+        MAGIC* ext_magic = mg_find(tied_glob, PERL_MAGIC_ext);
+        $var = ($type) ((mesos::perl::SharedChannel*) ext_magic->mg_ptr)->get();
+    }%};
+};
+
+%typemap{mesos::perl::SharedChannel*}{simple}{
+    %xs_type{O_SHARED_CHANNEL};
     %xs_input_code{%{
         if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVGV))
             Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\");
@@ -55,7 +66,7 @@
         HV* stash = gv_stashpv(\"Net::Mesos::Channel\", GV_ADDWARN);
         SV* glob = (SV*) newGVgen(\"Net::Mesos::Channel\");
         GvIOp(glob) = newIO();
-        IoIFP(GvIOp(glob)) = PerlIO_importFILE($var->in_, "r");
+        IoIFP(GvIOp(glob)) = PerlIO_importFILE($var->get()->in_, "r");
         sv_magic(glob, Nullsv, PERL_MAGIC_ext,
                          (const char*) $var, 0);
         $arg = sv_bless(sv_2mortal(newRV_noinc(glob)), stash);

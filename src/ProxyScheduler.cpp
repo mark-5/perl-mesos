@@ -3,12 +3,6 @@
 namespace mesos {
 namespace perl {
 
-ProxyScheduler::ProxyScheduler(SharedChannel channel)
-: channel_(channel)
-{
-
-}
-
 void ProxyScheduler::registered(SchedulerDriver* driver,
                 const FrameworkID& frameworkId,
                 const MasterInfo& masterInfo)

@@ -15,11 +15,12 @@ class ExecutorDriver
 {
 public:
     Status status_;
-    SharedChannel channel_;
     ProxyExecutor* proxyExecutor_;
 
     ExecutorDriver();
     virtual ~ExecutorDriver();
+
+    SharedChannel get_proxy_channel();
 
     virtual Status start();
     virtual Status stop();

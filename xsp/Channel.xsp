@@ -12,7 +12,7 @@ static void
 xs_init(SV* self)
     PPCODE:
         if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVGV) {
-            mesos::perl::MesosChannel* channel = new mesos::perl::MesosChannel;
+            mesos::perl::SharedChannel* channel = new mesos::perl::SharedChannel(new mesos::perl::MesosChannel);
             sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
                              (const char*) channel, 0);
         }
@@ -21,11 +21,11 @@ static void
 mesos::perl::MesosChannel::new(...)
     PPCODE:
         char* package = SvPV_nolen(ST(0));
-        mesos::perl::MesosChannel* channel = new mesos::perl::MesosChannel();
+        mesos::perl::SharedChannel* channel = new mesos::perl::SharedChannel(new mesos::perl::MesosChannel);
         HV* stash = gv_stashpv(package, GV_ADDWARN);
         SV* glob = (SV*) newGVgen(package);
         GvIOp(glob) = newIO();
-        IoIFP(GvIOp(glob)) = PerlIO_importFILE(channel->in_, "r");
+        IoIFP(GvIOp(glob)) = PerlIO_importFILE(channel->get()->in_, "r");
         sv_magic(glob, Nullsv, PERL_MAGIC_ext,
                          (const char*) channel, 0);
         ST(0) = sv_bless(sv_2mortal(newRV_noinc(glob)), stash);

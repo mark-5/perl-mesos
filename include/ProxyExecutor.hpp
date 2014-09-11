@@ -16,7 +16,7 @@ class ProxyExecutor : public Executor
 public:
     SharedChannel channel_;
 
-    ProxyExecutor(SharedChannel channel = SharedChannel(new MesosChannel));
+    ProxyExecutor(): channel_(new MesosChannel) {};
     virtual ~ProxyExecutor(){};
 
     virtual void registered(ExecutorDriver* driver,

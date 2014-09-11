@@ -3,12 +3,6 @@
 namespace mesos {
 namespace perl {
 
-ProxyExecutor::ProxyExecutor(SharedChannel channel)
-: channel_(channel)
-{
-
-}
-
 void ProxyExecutor::registered(ExecutorDriver* driver,
                                const ExecutorInfo& executorInfo,
                                const FrameworkInfo& frameworkInfo,

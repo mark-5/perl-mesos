@@ -15,7 +15,6 @@ class SchedulerDriver
 {
 public:
     Status status_;
-    SharedChannel channel_;
     ProxyScheduler* proxyScheduler_;
 
     SchedulerDriver(const FrameworkInfo& framework,
@@ -24,6 +23,9 @@ public:
                         const std::string& master,
                         const Credential& credential);
     virtual ~SchedulerDriver();
+
+    SharedChannel get_proxy_channel();
+
     virtual Status start();
     virtual Status stop(bool failover = false);
     virtual Status abort();
