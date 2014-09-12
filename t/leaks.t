@@ -38,4 +38,13 @@ no_leaks_ok {
     $channel->recv;
 } 'Net::Mesos::Channel sent data without leak';
 
+no_leaks_ok {
+    my $driver = Net::Mesos::SchedulerDriver->new(
+        scheduler => test_scheduler,
+        master    => test_master,
+        framework => test_framework,
+    );
+    my $channel = $driver->channel;
+} 'Net::Mesos::Channel construction from driver does not leak';
+
 done_testing();

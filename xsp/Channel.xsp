@@ -6,30 +6,34 @@
 %name{Net::Mesos::Channel} class mesos::perl::MesosChannel
 {
 
+int FILENO()
+    %code{%
+        RETVAL = fileno(THIS->in_);
+    %};
+
 %{
 
 static void
-xs_init(SV* self)
+DESTROY(SV* self)
     PPCODE:
-        if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVGV) {
-            mesos::perl::SharedChannel* channel = new mesos::perl::SharedChannel(new mesos::perl::MesosChannel);
-            sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
-                             (const char*) channel, 0);
-        }
+        // make sure the c++ destructor only gets called once
+        //  (both the blessed glob and the tied hash will call DESTROY)
+        if (!SvROK(self) || (SvTYPE(SvRV(self)) != SVt_PVGV))
+            XSRETURN_YES;
+        SV* glob = SvRV(self);
+        MAGIC *tie_magic = mg_find(MUTABLE_SV(GvIOp(glob)), PERL_MAGIC_tiedscalar);
+        SV* tied_hash = SvRV(tie_magic->mg_obj);
+        MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext);
+        mesos::perl::SharedChannel* shared_channel = (mesos::perl::SharedChannel*) ext_magic->mg_ptr;
+        delete shared_channel;
+        XSRETURN_YES;
 
-static void
+static mesos::perl::SharedChannel*
 mesos::perl::MesosChannel::new(...)
-    PPCODE:
-        char* package = SvPV_nolen(ST(0));
-        mesos::perl::SharedChannel* channel = new mesos::perl::SharedChannel(new mesos::perl::MesosChannel);
-        HV* stash = gv_stashpv(package, GV_ADDWARN);
-        SV* glob = (SV*) newGVgen(package);
-        GvIOp(glob) = newIO();
-        IoIFP(GvIOp(glob)) = PerlIO_importFILE(channel->get()->in_, "r");
-        sv_magic(glob, Nullsv, PERL_MAGIC_ext,
-                         (const char*) channel, 0);
-        ST(0) = sv_bless(sv_2mortal(newRV_noinc(glob)), stash);
-        XSRETURN(1);
+    CODE:
+        RETVAL = new mesos::perl::SharedChannel(new mesos::perl::MesosChannel);
+    OUTPUT:
+        RETVAL
 
 mesos::perl::MesosCommand
 mesos::perl::MesosChannel::recv()
