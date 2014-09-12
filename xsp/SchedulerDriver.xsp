@@ -25,10 +25,10 @@ xs_init(SV* self, mesos::FrameworkInfo framework, std::string master, ...)
                              (const char*) driver, 0);
         }
 
-mesos::perl::SharedChannel*
+mesos::perl::MesosChannel*
 mesos::perl::SchedulerDriver::_channel()
     CODE:
-        RETVAL = new mesos::perl::SharedChannel(THIS->get_proxy_channel());
+        RETVAL = THIS->get_proxy_channel()->share();
     OUTPUT:
         RETVAL
 

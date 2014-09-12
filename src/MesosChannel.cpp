@@ -37,7 +37,7 @@ MesosCommand::MesosCommand()
 }
 
 MesosChannel::MesosChannel()
-: pending_(new CommandQueue)
+: pending_(new CommandQueue), count_(new int(1))
 {
     int fds[2];
     pipe(fds);
@@ -49,9 +49,18 @@ MesosChannel::MesosChannel()
 
 MesosChannel::~MesosChannel()
 {
-    fclose(in_);
-    fclose(out_);
-    delete pending_;
+    if (--*count_ == 0) {
+        fclose(in_);
+        fclose(out_);
+        delete pending_;
+        delete count_;
+    }
+}
+
+MesosChannel* MesosChannel::share()
+{
+    ++*count_;
+    MesosChannel* to_share = new MesosChannel(*this);
 }
 
 void MesosChannel::send(const MesosCommand& command)

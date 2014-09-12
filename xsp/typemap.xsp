@@ -58,31 +58,11 @@
             Perl_croak(aTHX_ \"$var is not a glob reference of type ${ntype}\");
         }
         MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext);
-        $var = ($type) ((mesos::perl::SharedChannel*) ext_magic->mg_ptr)->get();
-    }%};
-};
-
-%typemap{mesos::perl::SharedChannel*}{simple}{
-    %xs_type{O_SHARED_CHANNEL};
-    %xs_input_code{%{
-        SV* tied_hash;
-        if (SvROK($arg) && (SvTYPE(SvRV($arg)) == SVt_PVGV)) {
-            // normally given the ref to the glob
-            SV* glob = SvRV($arg);
-            MAGIC *tie_magic = mg_find(MUTABLE_SV(GvIOp(glob)), PERL_MAGIC_tiedscalar);
-            tied_hash = SvRV(tie_magic->mg_obj);
-        } else if (SvROK($arg) && (SvTYPE(SvRV($arg)) == SVt_PVHV)) {
-            // tied methods get the tied hash object
-            tied_hash = SvRV($arg);
-        } else {
-            Perl_croak(aTHX_ \"$var is not a glob reference of type ${ntype}\");
-        }
-        MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext);
         $var = ($type) ext_magic->mg_ptr;
     }%};
     %xs_output_code{%{
         HV* stash = gv_stashpv(\"Net::Mesos::Channel\", GV_ADDWARN);
-        HV* attr_hash = newHV();
+        HV* attr_hash = newHV(); 
         sv_magic((SV*) attr_hash, Nullsv, PERL_MAGIC_ext,
                          (const char*) $var, 0);
         SV* attr = sv_bless(newRV_noinc((SV*) attr_hash), stash);

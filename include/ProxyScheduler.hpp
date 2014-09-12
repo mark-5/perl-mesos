@@ -14,7 +14,7 @@ namespace perl {
 class ProxyScheduler : public Scheduler
 {
 public:
-    SharedChannel channel_;
+    MesosChannel* channel_;
 
     ProxyScheduler(): channel_(new MesosChannel) {};
     virtual ~ProxyScheduler(){};

@@ -20,7 +20,7 @@ public:
     ExecutorDriver();
     virtual ~ExecutorDriver();
 
-    SharedChannel get_proxy_channel();
+    MesosChannel* get_proxy_channel();
 
     virtual Status start();
     virtual Status stop();

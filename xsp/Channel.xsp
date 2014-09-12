@@ -24,14 +24,14 @@ DESTROY(SV* self)
         MAGIC *tie_magic = mg_find(MUTABLE_SV(GvIOp(glob)), PERL_MAGIC_tiedscalar);
         SV* tied_hash = SvRV(tie_magic->mg_obj);
         MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext);
-        mesos::perl::SharedChannel* shared_channel = (mesos::perl::SharedChannel*) ext_magic->mg_ptr;
-        delete shared_channel;
+        mesos::perl::MesosChannel* channel = (mesos::perl::MesosChannel*) ext_magic->mg_ptr;
+        delete channel;
         XSRETURN_YES;
 
-static mesos::perl::SharedChannel*
+static mesos::perl::MesosChannel*
 mesos::perl::MesosChannel::new(...)
     CODE:
-        RETVAL = new mesos::perl::SharedChannel(new mesos::perl::MesosChannel);
+        RETVAL = new mesos::perl::MesosChannel;
     OUTPUT:
         RETVAL
 

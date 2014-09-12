@@ -15,7 +15,7 @@ ExecutorDriver::~ExecutorDriver()
     delete proxyExecutor_;
 }
 
-SharedChannel ExecutorDriver::get_proxy_channel()
+MesosChannel* ExecutorDriver::get_proxy_channel()
 {
     return proxyExecutor_->channel_;
 }

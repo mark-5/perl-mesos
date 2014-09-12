@@ -49,8 +49,11 @@ public:
     CommandQueue* pending_;
     void send(const MesosCommand& command);
     const MesosCommand recv();
+    MesosChannel* share();
+
+private:
+    int* count_;
 };
-typedef std::shared_ptr<MesosChannel> SharedChannel;
 
 } // namespace perl {
 } // namespace mesos {

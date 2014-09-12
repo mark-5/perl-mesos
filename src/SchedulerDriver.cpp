@@ -24,7 +24,7 @@ SchedulerDriver::~SchedulerDriver()
     delete proxyScheduler_;
 }
 
-SharedChannel SchedulerDriver::get_proxy_channel()
+MesosChannel* SchedulerDriver::get_proxy_channel()
 {
     return proxyScheduler_->channel_;
 }

@@ -24,7 +24,7 @@ public:
                         const Credential& credential);
     virtual ~SchedulerDriver();
 
-    SharedChannel get_proxy_channel();
+    MesosChannel* get_proxy_channel();
 
     virtual Status start();
     virtual Status stop(bool failover = false);

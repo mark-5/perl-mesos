@@ -14,7 +14,7 @@ namespace perl {
 class ProxyExecutor : public Executor
 {
 public:
-    SharedChannel channel_;
+    MesosChannel* channel_;
 
     ProxyExecutor(): channel_(new MesosChannel) {};
     virtual ~ProxyExecutor(){};
