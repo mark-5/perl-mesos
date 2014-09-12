@@ -34,6 +34,8 @@ mesos::perl::SchedulerDriver::_channel()
 
 %}
 
+~SchedulerDriver();
+
 Status start();
 
 Status stop(bool failover = false);

@@ -28,6 +28,10 @@ mesos::perl::ExecutorDriver::_channel()
 
 %}
 
+// for now, dont call the c++ destructor
+// has a nasty habit of segfaulting(not a perl problem, purely a mesos issue)
+//~ExecutorDriver();
+
 Status start();
 
 Status stop();
