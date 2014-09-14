@@ -18,9 +18,9 @@ Next just install like any other Module::Build distribution with C<perl Build.PL
 
 =head1 Caveats
 
-Be aware that Mesos clients are not able to talk to remote servers from behind a NAT. Clients are required to start an http server that the mesos master will send post requests to. This is a limitation of Apache Mesos, not Net::Mesos.
+Be aware that Mesos drivers are not able to talk to remote servers from behind a NAT. Drivers are required to start an http server that the mesos master will send post requests to.
 
-Net::Mesos is not fork safe. Do not fork after instantiating any drivers.
+Net::Mesos is not fork safe. The underlying Mesos driver creates multiple threads during construction, and only exec and POSIX::_exit can be guaranteed to work safely in the child process after forking. One should definitely not call any driver code in the child process.
 
 =head1 TODO
 
