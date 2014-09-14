@@ -6,6 +6,8 @@
 #include <MesosChannel.hpp>
 
 std::string sv_to_string(SV* sv) {
+    if (SvTYPE(sv) != SVt_PV)
+        Perl_croak(aTHX_ "Expected a perl string");
     return std::string( SvPV_nolen(sv), SvCUR(sv) );
 }
 
@@ -109,10 +111,8 @@ template<typename T>
 std::vector<T> toMsgVec(SV* sv)
 {
     std::vector<T> return_vec;
-    if (!SvROK(sv))
-        Perl_croak(aTHX_ "NOT A REF");
-    if (SvTYPE(SvRV(sv)) != SVt_PVAV)
-        Perl_croak(aTHX_ "NOT AN ARRAY REF");
+    if (!SvROK(sv) || SvTYPE(SvRV(sv)) != SVt_PVAV)
+        Perl_croak(aTHX_ "Expected an array ref of messages");
     AV* msg_av = (AV*) SvRV(sv);
     int length = AvFILL(msg_av) + 1;
     for (int i = 0; i < length; i++) {

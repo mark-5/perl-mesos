@@ -81,6 +81,8 @@
             Perl_croak(aTHX_ \"$var must be an array ref\");
         AV* command_av = (AV*) SvRV($arg);
         SV* name_sv = *(av_fetch(command_av, 0, 0));
+        if (SvTYPE(name_sv) != SVt_PV)
+            Perl_croak(aTHX_ \"Command name must be a string\");
         mesos::perl::CommandArgs args;
         int length = AvFILL(command_av) + 1;
         for (int i = 1; i < length; i++) {
