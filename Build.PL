@@ -1,7 +1,11 @@
 use strict;
 use File::Spec;
+use File::Find;
 use FindBin qw($Bin);
 use Module::Build::WithXSpp;
+
+my @include_dirs;
+find(sub {push @include_dirs, $File::Find::name if -d}, 'include');
 
 my $build = Module::Build::WithXSpp->new(
     dist_abstract   => 'lib/Net/Mesos.pm',
@@ -33,7 +37,7 @@ my $build = Module::Build::WithXSpp->new(
         'ExtUtils::Typemaps::ObjectMap' => '0',
         'ExtUtils::Typemaps::STL'       => '0',
     },
-    include_dirs         => [qw(include)],
+    include_dirs         => [@include_dirs],
     early_includes       => [qw(mesos/scheduler.hpp mesos/executor.hpp)],
     extra_compiler_flags => [qw(-std=c++11)],
     extra_linker_flags   => [qw(-lmesos)],

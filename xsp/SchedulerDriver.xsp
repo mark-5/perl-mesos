@@ -1,6 +1,6 @@
 %module{Net::Mesos};
 #include <SchedulerDriver.hpp>
-#include <NetMesosXSUtils.hpp>
+#include <XS/NetMesosUtils.hpp>
 #include <string>
 #include <vector>
 

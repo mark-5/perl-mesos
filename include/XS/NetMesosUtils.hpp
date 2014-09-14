@@ -1,5 +1,5 @@
-#ifndef NET_MESOS_XS_UTILS_
-#define NET_MESOS_XS_UTILS_
+#ifndef XS_NET_MESOS_UTILS_
+#define XS_NET_MESOS_UTILS_
 
 #include <vector>
 #include <string>
@@ -122,4 +122,4 @@ std::vector<T> toMsgVec(SV* sv)
     return return_vec;
 }
 
-#endif // NET_MESOS_XS_UTILS_
+#endif // XS_NET_MESOS_UTILS_

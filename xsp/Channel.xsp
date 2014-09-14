@@ -1,6 +1,6 @@
 %module{Net::Mesos};
 #include <MesosChannel.hpp>
-#include <NetMesosXSUtils.hpp>
+#include <XS/NetMesosUtils.hpp>
 
 
 %name{Net::Mesos::Channel} class mesos::perl::MesosChannel
