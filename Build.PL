@@ -12,7 +12,6 @@ my $build = Module::Build::WithXSpp->new(
     },
     requires        => {
         'AnyEvent'        => 0,
-        'Data::Rmap'      => 0,
         'Exporter'        => 0,
         'Moo'             => 0,
         'Try::Tiny'       => 0,

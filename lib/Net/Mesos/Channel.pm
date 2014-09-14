@@ -16,7 +16,6 @@ Net::Mesos channels are blessed filehandles, so can be passed directly to IO::Se
 =cut
 
 use Net::Mesos;
-use Net::Mesos::Utils qw(encode_protobufs);
 
 sub deserialize_channel_args {
     my (@in) = @_;
