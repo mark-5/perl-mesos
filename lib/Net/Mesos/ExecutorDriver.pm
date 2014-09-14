@@ -55,10 +55,10 @@ after start => sub {
     $self->dispatch_events;
 };
 
-after stop => sub {
+after $_ => sub {
     my ($self) = @_;
     $self->stop_dispatch;
-};
+} for qw(stop abort);
 
 sub run {
     my ($self) = @_;
