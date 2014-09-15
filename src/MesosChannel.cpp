@@ -37,7 +37,8 @@ MesosCommand::MesosCommand()
 }
 
 MesosChannel::MesosChannel()
-: pending_(new CommandQueue), count_(new int(1))
+: pending_(new CommandQueue), count_(new int(1)),
+  mutex_(new std::mutex)
 {
     int fds[2];
     pipe(fds);
@@ -54,6 +55,7 @@ MesosChannel::~MesosChannel()
         fclose(out_);
         delete pending_;
         delete count_;
+        delete mutex_;
     }
 }
 
@@ -65,12 +67,14 @@ MesosChannel* MesosChannel::share()
 
 void MesosChannel::send(const MesosCommand& command)
 {
+    std::lock_guard<std::mutex> lock (*mutex_);
     pending_->push(command);
     fprintf(out_, "%s\n", command.name_.c_str());
 }
 
 const MesosCommand MesosChannel::recv()
 {
+    std::lock_guard<std::mutex> lock (*mutex_);
     char str[100];
     if (fgets(str, 100, in_)) {
         const MesosCommand command = pending_->front();

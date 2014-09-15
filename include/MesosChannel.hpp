@@ -7,6 +7,7 @@
 #include <queue>
 #include <cstdio>
 #include <memory>
+#include <mutex>
 
 #define PUSH_MSG(VEC, MSG, MSG_TYPE) VEC.push_back(CommandArg(MSG.SerializeAsString(), MSG_TYPE))
 
@@ -53,6 +54,7 @@ public:
 
 private:
     int* count_;
+    std::mutex* mutex_;
 };
 
 } // namespace perl {
