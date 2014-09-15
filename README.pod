@@ -31,3 +31,8 @@ Net::Mesos is not fork safe. The underlying Mesos driver creates multiple thread
 =item maybe work on pure perl drivers
 
 =back
+
+=head1 See Also
+ 
+More information about Apache Mesos, projects using Mesos, or the underlying Mesos drivers can be found at the Apache Mesos project's L<home page|http://mesos.apache.org/> or L<mesosphere|http://mesosphere.io>. 
+

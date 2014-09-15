@@ -10,6 +10,10 @@ Net::Mesos
 
 Version 1.00
 
+=head1 AUTHOR
+
+Mark Flickinger E<lt>maf@cpan.orgE<gt>
+
 =cut
 
 use XSLoader;
