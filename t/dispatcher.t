@@ -2,21 +2,21 @@ use strict;
 use warnings;
 use FindBin::libs;
 use Test::More;
-use Net::Mesos::Test::Utils;
+use Mesos::Test::Utils;
 use Try::Tiny;
 use AE;
 
-use Net::Mesos::Test::Scheduler;
-use Net::Mesos::Test::SchedulerDriver;
+use Mesos::Test::Scheduler;
+use Mesos::Test::SchedulerDriver;
 
-my $scheduler = Net::Mesos::Test::Scheduler->new;
-my $schedulerDriver = Net::Mesos::Test::SchedulerDriver->new(scheduler => $scheduler);
+my $scheduler = Mesos::Test::Scheduler->new;
+my $schedulerDriver = Mesos::Test::SchedulerDriver->new(scheduler => $scheduler);
 test_dispatcher($scheduler, $schedulerDriver, 'scheduler');
 
-use Net::Mesos::Test::Executor;
-use Net::Mesos::Test::ExecutorDriver;
-my $executor = Net::Mesos::Test::Executor->new;
-my $executorDriver = Net::Mesos::Test::ExecutorDriver->new(executor => $executor);
+use Mesos::Test::Executor;
+use Mesos::Test::ExecutorDriver;
+my $executor = Mesos::Test::Executor->new;
+my $executorDriver = Mesos::Test::ExecutorDriver->new(executor => $executor);
 test_dispatcher($executor, $executorDriver, 'executor');
 
 

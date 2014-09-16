@@ -1,9 +1,9 @@
-package Net::Mesos::Test::Utils;
+package Mesos::Test::Utils;
 use strict;
 use warnings;
 use Mesos::Messages;
-use Net::Mesos::Test::Scheduler;
-use Net::Mesos::Test::Executor;
+use Mesos::Test::Scheduler;
+use Mesos::Test::Executor;
 use parent 'Exporter';
 our @EXPORT = qw(test_master test_framework test_scheduler test_executor);
 our @EXPORT_OK = @EXPORT;
@@ -15,17 +15,17 @@ sub test_master {
 
 sub test_framework {
     return Mesos::FrameworkInfo->new({
-        user => 'Net_Mesos_test_user',
-        name => 'Net_Mesos_test_name',    
+        user => 'Mesos_test_user',
+        name => 'Mesos_test_name',
     });
 }
 
 sub test_scheduler {
-    return Net::Mesos::Test::Scheduler->new;
+    return Mesos::Test::Scheduler->new;
 }
 
 sub test_executor {
-    return Net::Mesos::Test::Executor->new;
+    return Mesos::Test::Executor->new;
 }
 
 1;

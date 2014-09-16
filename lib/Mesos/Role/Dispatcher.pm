@@ -1,10 +1,10 @@
-package Net::Mesos::Role::Dispatcher;
+package Mesos::Role::Dispatcher;
 use Moo::Role;
 use AnyEvent;
 
 =head1 Name
 
- Net::Mesos::Role::Dispatcher - role to dispatch events in an AnyEvent loop
+ Mesos::Role::Dispatcher - role to dispatch events in an AnyEvent loop
 
 =cut
 

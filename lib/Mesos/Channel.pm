@@ -1,4 +1,4 @@
-package Net::Mesos::Channel;
+package Mesos::Channel;
 use Class::Method::Modifiers;
 use Data::Dumper;
 use Carp;
@@ -7,15 +7,15 @@ use warnings;
 
 =head1 Name
 
-Net::Mesos::Channel - perl interface to the channel proxy schedulers and executors write events to
+Mesos::Channel - perl interface to the channel proxy schedulers and executors write events to
 
 =head1 Synopsis
 
-Net::Mesos channels are blessed filehandles, so can be passed directly to IO::Select, AnyEvent->io, or any other function expecting a filehandle.
+Mesos channels are blessed filehandles, so can be passed directly to IO::Select, AnyEvent->io, or any other function expecting a filehandle.
 
 =cut
 
-use Net::Mesos;
+use Mesos;
 
 sub deserialize_channel_args {
     my (@in) = @_;

@@ -3,9 +3,9 @@ use strict;
 use warnings;
 use FindBin::libs;
 use Test::More;
-use Net::Mesos::Channel;
+use Mesos::Channel;
 
-my $channel = Net::Mesos::Channel->new;
+my $channel = Mesos::Channel->new;
 like(fileno($channel), qr/^\d+$/, 'channel fileno returned int');
 
 is($channel->recv, undef, 'returned undef on empty recv');

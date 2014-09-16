@@ -16,7 +16,7 @@
         $var = ($type) ext_magic->mg_ptr; 
     }%}; 
     %xs_output_code{%{ 
-        HV* stash = gv_stashpv(\"Net::Mesos::SchedulerDriver\", GV_ADDWARN); 
+        HV* stash = gv_stashpv(\"Mesos::SchedulerDriver\", GV_ADDWARN); 
         SV* attr_hash = (SV*) newHV(); 
         sv_magic(attr_hash, Nullsv, PERL_MAGIC_ext, 
                          (const char*) $var, 0); 
@@ -34,7 +34,7 @@
         $var = ($type) ext_magic->mg_ptr; 
     }%}; 
     %xs_output_code{%{ 
-        HV* stash = gv_stashpv(\"Net::Mesos::ExecutorDriver\", GV_ADDWARN); 
+        HV* stash = gv_stashpv(\"Mesos::ExecutorDriver\", GV_ADDWARN); 
         SV* attr_hash = (SV*) newHV(); 
         sv_magic(attr_hash, Nullsv, PERL_MAGIC_ext, 
                          (const char*) $var, 0); 
@@ -61,12 +61,12 @@
         $var = ($type) ext_magic->mg_ptr;
     }%};
     %xs_output_code{%{
-        HV* stash = gv_stashpv(\"Net::Mesos::Channel\", GV_ADDWARN);
+        HV* stash = gv_stashpv(\"Mesos::Channel\", GV_ADDWARN);
         HV* attr_hash = newHV(); 
         sv_magic((SV*) attr_hash, Nullsv, PERL_MAGIC_ext,
                          (const char*) $var, 0);
         SV* attr = sv_bless(newRV_noinc((SV*) attr_hash), stash);
-        SV* glob = (SV*) newGVgen(\"Net::Mesos::Channel\");
+        SV* glob = (SV*) newGVgen(\"Mesos::Channel\");
         GvIOp(glob) = newIO();
         sv_magic((SV*) MUTABLE_SV(GvIOp(glob)), attr, PERL_MAGIC_tiedscalar, Nullch, 0);
         SvREFCNT_dec(attr);

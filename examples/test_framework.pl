@@ -4,7 +4,7 @@ package TestScheduler;
 use Moo;
 use strict;
 use warnings;
-extends 'Net::Mesos::Scheduler';
+extends 'Mesos::Scheduler';
 use Mesos::Messages;
 
 has TOTAL_TASKS => (is => 'ro', default => 5);
@@ -116,7 +116,7 @@ use warnings;
 use Cwd qw(abs_path);
 use FindBin qw($Bin);
 use Mesos::Messages;
-use Net::Mesos::SchedulerDriver;
+use Mesos::SchedulerDriver;
 my $master = shift or die "Usage: $0 master\n";
 
 my $executor = Mesos::ExecutorInfo->new;
@@ -133,7 +133,7 @@ if ($ENV{MESOS_CHECKPOINT}) {
 }
 
 my $scheduler = TestScheduler->new(executor => $executor);
-my $driver = Net::Mesos::SchedulerDriver->new(
+my $driver = Mesos::SchedulerDriver->new(
     scheduler => $scheduler,
     framework => $framework,
     master    => $master,

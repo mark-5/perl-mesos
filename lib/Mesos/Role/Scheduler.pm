@@ -1,16 +1,19 @@
-package Net::Mesos::Role::Executor;
+package Mesos::Role::Scheduler;
 use Moo::Role;
 use strict;
 use warnings;
+use Mesos::Messages;
 
 requires qw(
     registered
     reregistered
     disconnected
-    launchTask
-    killTask
+    resourceOffers
+    offerRescinded
+    statusUpdate
     frameworkMessage
-    shutdown
+    slaveLost
+    executorLost
     error
 );
 

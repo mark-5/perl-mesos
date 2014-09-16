@@ -1,4 +1,4 @@
-package Net::Mesos::Test::Channel;
+package Mesos::Test::Channel;
 use strict;
 use warnings;
 use parent 'Tie::Handle';

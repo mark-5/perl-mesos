@@ -1,10 +1,10 @@
-package Net::Mesos;
+package Mesos;
 use strict;
 use warnings;
 
 =head1 NAME
 
-Net::Mesos
+Mesos
 
 =head1 VERSION
 
@@ -23,6 +23,6 @@ our $VERSION = '1.00';
 our %EXPORT_TAGS = ( 'all' => [] );
 our @EXPORT_OK   = ( @{ $EXPORT_TAGS{'all'} } );
 
-XSLoader::load('Net::Mesos', $VERSION);
+XSLoader::load('Mesos', $VERSION);
 
 1;

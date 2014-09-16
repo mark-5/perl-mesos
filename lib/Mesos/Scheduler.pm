@@ -1,9 +1,9 @@
-package Net::Mesos::Scheduler;
+package Mesos::Scheduler;
 use Moo;
 use strict;
 use warnings;
 
-with 'Net::Mesos::Role::Scheduler';
+with 'Mesos::Role::Scheduler';
 
 sub registered {}
 sub reregistered {}
@@ -19,7 +19,7 @@ sub error {}
 
 =head1 Name
 
-Net::Mesos::Scheduler - base class for Mesos schedulers
+Mesos::Scheduler - base class for Mesos schedulers
 
 =head1 Methods
 

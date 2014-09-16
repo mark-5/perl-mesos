@@ -8,9 +8,9 @@ my @include_dirs;
 find(sub {push @include_dirs, $File::Find::name if -d}, 'include');
 
 my $build = Module::Build::WithXSpp->new(
-    dist_abstract   => 'lib/Net/Mesos.pm',
+    dist_abstract   => 'lib/Mesos.pm',
     dist_author     => 'Mark Flickinger <maf@cpan.org>',
-    module_name     => 'Net::Mesos',
+    module_name     => 'Mesos',
     license         => 'perl',
     recommends      => {
         'Test::LeakTrace' => 0,
@@ -46,16 +46,11 @@ my $build = Module::Build::WithXSpp->new(
     release_status       => "unstable",
     meta_merge           => {
         resources => {
-            homepage => "https://github.com/mark-5/perl-net-mesos",
-            bugtracker => {
-                web => "https://github.com/mark-5/perl-net-mesos/issues",
-            },
-            repository => {
-                web  => "https://github.com/mark-5/perl-net-mesos.git",
-                type => "git",
-            },
-        }
-    }
+            homepage   => "https://github.com/mark-5/perl-mesos",
+            bugtracker => "https://github.com/mark-5/perl-mesos/issues",
+            repository => "https://github.com/mark-5/perl-mesos.git",
+        },
+    },
 );
 
 if (eval {require Devel::CheckLib}) {

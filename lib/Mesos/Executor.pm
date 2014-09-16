@@ -1,9 +1,9 @@
-package Net::Mesos::Executor;
+package Mesos::Executor;
 use Moo;
 use strict;
 use warnings;
 
-with 'Net::Mesos::Role::Executor';
+with 'Mesos::Role::Executor';
 
 sub registered {}
 sub reregistered {}
@@ -17,7 +17,7 @@ sub error {}
 
 =head1 Name
 
-Net::Mesos::Executor - base class for Mesos executors
+Mesos::Executor - base class for Mesos executors
 
 =head1 Methods
 

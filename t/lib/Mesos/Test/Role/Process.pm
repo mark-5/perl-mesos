@@ -1,14 +1,14 @@
-package Net::Mesos::Test::Role::Process;
+package Mesos::Test::Role::Process;
 use Symbol;
 use Moo::Role;
 use strict;
 use warnings;
 
-use Net::Mesos::Channel;
+use Mesos::Channel;
 
 has channel => (
     is      => 'ro',
-    default => sub { Net::Mesos::Channel->new },
+    default => sub { Mesos::Channel->new },
 );
 
 has return => (

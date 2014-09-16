@@ -4,7 +4,7 @@ package TestExecutor;
 use Moo;
 use strict;
 use warnings;
-extends 'Net::Mesos::Executor';
+extends 'Mesos::Executor';
 use Mesos::Messages;
 
 sub launchTask {
@@ -32,7 +32,7 @@ sub frameworkMessage {
 
 package main;
 use Mesos::Messages;
-use Net::Mesos::ExecutorDriver;
+use Mesos::ExecutorDriver;
 print "Starting executor\n";
-my $driver = Net::Mesos::ExecutorDriver->new(executor => TestExecutor->new);
+my $driver = Mesos::ExecutorDriver->new(executor => TestExecutor->new);
 exit( ($driver->run == Mesos::Status::DRIVER_STOPPED) ? 0 : 1 );

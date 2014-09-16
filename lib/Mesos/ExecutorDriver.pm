@@ -1,7 +1,7 @@
-package Net::Mesos::ExecutorDriver;
-use Net::Mesos;
+package Mesos::ExecutorDriver;
+use Mesos;
 use Mesos::Messages;
-use Net::Mesos::Channel;
+use Mesos::Channel;
 use Moo;
 use Types::Standard qw(Str);
 use strict;
@@ -9,7 +9,7 @@ use warnings;
 
 =head1 Name
 
-Net::Mesos::ExecutorDriver - perl driver for Mesos executors
+Mesos::ExecutorDriver - perl driver for Mesos executors
 
 =cut
 
@@ -25,7 +25,7 @@ has executor => (
 
 has channel => (
     is       => 'ro',
-    isa      => sub {shift->isa('Net::Mesos::Channel')},
+    isa      => sub {shift->isa('Mesos::Channel')},
     builder  => 1,
     # this needs to be lazy so that BUILD runs xs_init first
     lazy     => 1,
@@ -48,7 +48,7 @@ sub _build_process {
     return $self->executor;
 }
 # need to apply this after declaring channel and process
-with 'Net::Mesos::Role::Dispatcher';
+with 'Mesos::Role::Dispatcher';
 
 after start => sub {
     my ($self) = @_;

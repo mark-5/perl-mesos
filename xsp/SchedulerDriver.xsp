@@ -1,11 +1,11 @@
-%module{Net::Mesos};
+%module{Mesos};
 #include <SchedulerDriver.hpp>
-#include <XS/NetMesosUtils.hpp>
+#include <XS/MesosUtils.hpp>
 #include <string>
 #include <vector>
 
 
-%name{Net::Mesos::SchedulerDriver} class mesos::perl::SchedulerDriver
+%name{Mesos::SchedulerDriver} class mesos::perl::SchedulerDriver
 {
 
 %{

@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use FindBin::libs;
 use Test::More;
-use Net::Mesos::Test::Utils;
+use Mesos::Test::Utils;
 
 BEGIN {
     plan skip_all => 'require Test::LeakTrace'
@@ -11,22 +11,22 @@ BEGIN {
 }
 use Test::LeakTrace;
 
-use Net::Mesos::SchedulerDriver;
+use Mesos::SchedulerDriver;
 no_leaks_ok {
-    my $driver = Net::Mesos::SchedulerDriver->new(
+    my $driver = Mesos::SchedulerDriver->new(
         scheduler => test_scheduler,
         master    => test_master,
         framework => test_framework,
     );
-} 'Net::Mesos::SchedulerDriver construction does not leak';
+} 'Mesos::SchedulerDriver construction does not leak';
 
-use Net::Mesos::Channel;
+use Mesos::Channel;
 no_leaks_ok {
-    my $channel = Net::Mesos::Channel->new;
-} 'Net::Mesos::Channel construction does not leak';
+    my $channel = Mesos::Channel->new;
+} 'Mesos::Channel construction does not leak';
 
 use Mesos::Messages;
-my $channel = Net::Mesos::Channel->new;
+my $channel = Mesos::Channel->new;
 no_leaks_ok {
     my $sent_command = "test command";
     my @sent_args = ('string',
@@ -36,15 +36,15 @@ no_leaks_ok {
                   );
     $channel->send($sent_command, @sent_args);
     $channel->recv;
-} 'Net::Mesos::Channel sent data without leak';
+} 'Mesos::Channel sent data without leak';
 
 no_leaks_ok {
-    my $driver = Net::Mesos::SchedulerDriver->new(
+    my $driver = Mesos::SchedulerDriver->new(
         scheduler => test_scheduler,
         master    => test_master,
         framework => test_framework,
     );
     my $channel = $driver->channel;
-} 'Net::Mesos::Channel construction from driver does not leak';
+} 'Mesos::Channel construction from driver does not leak';
 
 done_testing();

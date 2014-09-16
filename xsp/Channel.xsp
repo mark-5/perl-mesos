@@ -1,9 +1,9 @@
-%module{Net::Mesos};
+%module{Mesos};
 #include <MesosChannel.hpp>
-#include <XS/NetMesosUtils.hpp>
+#include <XS/MesosUtils.hpp>
 
 
-%name{Net::Mesos::Channel} class mesos::perl::MesosChannel
+%name{Mesos::Channel} class mesos::perl::MesosChannel
 {
 
 int FILENO()

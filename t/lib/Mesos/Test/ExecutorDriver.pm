@@ -1,4 +1,4 @@
-package Net::Mesos::Test::ExecutorDriver;
+package Mesos::Test::ExecutorDriver;
 use Moo;
 use strict;
 use warnings;
@@ -29,7 +29,7 @@ sub BUILD {
     $self->channel($self->executor->channel);
 }
 
-with 'Net::Mesos::Role::Dispatcher';
+with 'Mesos::Role::Dispatcher';
 
 
 1;

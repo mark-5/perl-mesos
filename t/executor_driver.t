@@ -2,19 +2,19 @@ use strict;
 use warnings;
 use FindBin::libs;
 use Test::More;
-use Net::Mesos::Test::Utils;
+use Mesos::Test::Utils;
 
-use_ok('Net::Mesos::ExecutorDriver');
+use_ok('Mesos::ExecutorDriver');
 
-my $driver = Net::Mesos::ExecutorDriver->new(
+my $driver = Mesos::ExecutorDriver->new(
     executor => test_executor,
 );
-isa_ok($driver, 'Net::Mesos::ExecutorDriver');
+isa_ok($driver, 'Mesos::ExecutorDriver');
 
-ok($driver->does('Net::Mesos::Role::Dispatcher'), 'driver does Net::Mesos::Role::Dispatcher');
+ok($driver->does('Mesos::Role::Dispatcher'), 'driver does Mesos::Role::Dispatcher');
 
 my $channel = $driver->channel;
-isa_ok($channel, 'Net::Mesos::Channel');
+isa_ok($channel, 'Mesos::Channel');
 
 
 done_testing;

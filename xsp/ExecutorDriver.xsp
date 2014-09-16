@@ -1,11 +1,11 @@
-%module{Net::Mesos};
+%module{Mesos};
 #include <ExecutorDriver.hpp>
-#include <XS/NetMesosUtils.hpp>
+#include <XS/MesosUtils.hpp>
 #include <string>
 #include <vector>
 
 
-%name{Net::Mesos::ExecutorDriver} class mesos::perl::ExecutorDriver
+%name{Mesos::ExecutorDriver} class mesos::perl::ExecutorDriver
 {
 
 %{

@@ -2,13 +2,13 @@
 
 =head1 Name
 
-Net::Mesos - perl bindings for Apache Mesos
+Mesos - perl bindings for Apache Mesos
 
 =head1 Description
 
 This is a collection of perl bindings for Apache Mesos. This requires having the mesos shared library installed, in order to link against(much like python's mesos library).
 
-The Apache Mesos library is multithreaded, which is problematic when dealing with perl. The solution Net::Mesos currently goes with is to create C++ proxy classes, which registers callbacks that send notifications over a pipe, to perl. In the future this may change to sockets, or even to a pure perl implementation of mesos drivers(the latter would also eliminate the need for linking against the mesos shared library). Net::Mesos then handles these notifications, and executes the corresponding perl code, inside of an AnyEvent loop.
+The Apache Mesos library is multithreaded, which is problematic when dealing with perl. The solution Mesos currently goes with is to create C++ proxy classes, which registers callbacks that send notifications over a pipe, to perl. In the future this may change to sockets, or even to a pure perl implementation of mesos drivers(the latter would also eliminate the need for linking against the mesos shared library). Mesos then handles these notifications, and executes the corresponding perl code, inside of an AnyEvent loop.
 
 =head1 Install
 
@@ -20,7 +20,7 @@ Next just install like any other Module::Build distribution with C<perl Build.PL
 
 Be aware that Mesos drivers are not able to talk to remote servers from behind a NAT. Drivers are required to start an http server that the mesos master will send post requests to.
 
-Net::Mesos is not fork safe. The underlying Mesos driver creates multiple threads during construction, and only exec and POSIX::_exit can be guaranteed to work safely in the child process after forking. One should definitely not call any driver code in the child process.
+Mesos is not fork safe. The underlying Mesos driver creates multiple threads during construction, and only exec and POSIX::_exit can be guaranteed to work safely in the child process after forking. One should definitely not call any driver code in the child process.
 
 =head1 TODO
 
