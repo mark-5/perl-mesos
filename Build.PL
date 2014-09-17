@@ -22,7 +22,6 @@ my $build = Module::Build::WithXSpp->new(
         'Try::Tiny'       => 0,
         'Types::Standard' => 0,
         'ExtUtils::ParseXS' => 3.18,
-        'Class::Method::Modifiers' => 0,
         'Google::ProtocolBuffers'  => 0,
     },
     configure_requires => {

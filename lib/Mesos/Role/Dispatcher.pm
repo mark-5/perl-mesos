@@ -36,7 +36,7 @@ has loop_condvar => (
 sub dispatch_events {
     my ($self) = @_;
     my $w = AnyEvent->io(
-        fh   => $self->channel,
+        fh   => $self->channel->fd,
         poll => 'r',
         cb   => sub {
             $self->clear_watcher;

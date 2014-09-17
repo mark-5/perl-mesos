@@ -1,5 +1,5 @@
 package Mesos::Channel;
-use Class::Method::Modifiers;
+use Moo;
 use Data::Dumper;
 use Carp;
 use strict;
@@ -16,6 +16,11 @@ Mesos channels are blessed filehandles, so can be passed directly to IO::Select,
 =cut
 
 use Mesos;
+
+sub BUILD {
+    my ($self) = @_;
+    return $self->xs_init;
+}
 
 sub deserialize_channel_args {
     my (@in) = @_;
@@ -48,6 +53,11 @@ sub deserialize_channel_args {
 
     The first argument returned is the name of the event logged.
     The remaining return values are the arguments received from MesosSchedulerDriver.
+
+=item fd()
+
+    Return the underlying file descriptor for the read end of the channel.
+    Mainly used for passing to IO::Select or AnyEvent.
 
 =back
 

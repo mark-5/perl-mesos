@@ -6,11 +6,6 @@
 %name{Mesos::Channel} class mesos::perl::MesosChannel
 {
 
-int FILENO()
-    %code{%
-        RETVAL = fileno(THIS->in_);
-    %};
-
 %{
 
 static void
@@ -28,12 +23,14 @@ DESTROY(SV* self)
         delete channel;
         XSRETURN_YES;
 
-static mesos::perl::MesosChannel*
-mesos::perl::MesosChannel::new(...)
-    CODE:
-        RETVAL = new mesos::perl::MesosChannel;
-    OUTPUT:
-        RETVAL
+static void
+xs_init(SV* self)
+    PPCODE:
+        if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
+            mesos::perl::MesosChannel* channel = new mesos::perl::MesosChannel;
+            sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
+                             (const char*) channel, 0);
+        }
 
 mesos::perl::MesosCommand
 mesos::perl::MesosChannel::recv()
@@ -54,6 +51,14 @@ mesos::perl::MesosChannel::send(mesos::perl::MesosCommand command)
     PPCODE:
         THIS->send(command);
         XSRETURN_YES;
+
+int
+mesos::perl::MesosChannel::fd()
+    CODE:
+        RETVAL = fileno(THIS->in_);
+    OUTPUT:
+        RETVAL
+
 %}
 
 };
