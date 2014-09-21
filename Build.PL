@@ -39,7 +39,7 @@ my $build = Module::Build::WithXSpp->new(
     early_includes       => [qw(mesos/scheduler.hpp mesos/executor.hpp)],
     extra_compiler_flags => [qw(-std=c++11)],
     extra_linker_flags   => [qw(-lmesos)],
-    release_status       => "unstable",
+    release_status       => "stable",
     meta_merge           => {
         resources => {
             homepage   => "https://github.com/mark-5/perl-mesos",

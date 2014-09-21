@@ -18,6 +18,8 @@ Install Google Protocol Buffers v2.5.0+.
 
 Next just install like any other Module::Build distribution with C<perl Build.PL && ./Build install>
 
+Note that Mesos before v0.20 has issues with include headers not being very smart(L<MESOS-1504|https://issues.apache.org/jira/browse/MESOS-1504>). Compiling against these earlier versions requires explicitly including the directory for mesos headers. By default Build.PL will check /usr/local/include/mesos, but you will be prompted to enter another path if that directory does not exist.
+
 =head1 Caveats
 
 Be aware that Mesos drivers are not able to talk to remote servers from behind a NAT. Drivers are required to start an http server that the mesos master will send post requests to.
@@ -28,7 +30,7 @@ Mesos is not fork safe. The underlying Mesos driver creates multiple threads dur
 
 =over 4
 
-=item upload to cpan
+=item create perl friendly types/coercions for Mesos::Messages classes
 
 =item maybe work on pure perl drivers
 

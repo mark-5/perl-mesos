@@ -34,27 +34,28 @@ sub resourceOffers {
             $self->tasksLaunched($self->tasksLaunched + 1);
             printf "Accepting offer on %s to start task %d\n", $offer->hostname, $tid;
             
-            my $task = Mesos::TaskInfo->new;
-            $task->task_id(Mesos::TaskID->new({value => $tid}));
-            $task->slave_id($offer->slave_id);
-            $task->name("task $tid");
-            $task->executor($self->executor);
+            my $task = Mesos::TaskInfo->new({
+                task_id  => {value => $tid},
+                slave_id => $offer->slave_id,
+                name     => "task $tid",
+                executor => $self->executor,
+            });
 
             my $cpus = Mesos::Resource->new({
                 name   => "cpus",        
                 type   => Mesos::Value::Type::SCALAR,
-                scalar => Mesos::Value::Scalar->new({value => $self->TOTAL_CPUS}),
+                scalar => {value => $self->TOTAL_CPUS},
             });
 
             my $mem = Mesos::Resource->new({
                 name   => "mem",
                 type   => Mesos::Value::Type::SCALAR,
-                scalar => Mesos::Value::Scalar->new({value => $self->TASK_MEM}),
+                scalar => {value => $self->TASK_MEM},
             });
-            $task->resources($cpus, $mem);
+            $task->resources([$cpus, $mem]);
             
             push @$tasks, $task;
-            $self->taskData->{$task->task_id->value} = [
+            $self->taskData->{$task->task_id->{value}} = [
                 $offer->slave_id, $task->executor->executor_id,
             ];
         }
@@ -119,13 +120,18 @@ use Mesos::Messages;
 use Mesos::SchedulerDriver;
 my $master = shift or die "Usage: $0 master\n";
 
-my $executor = Mesos::ExecutorInfo->new;
-$executor->executor_id(Mesos::ExecutorID->new({value => "default"}));
-$executor->command(Mesos::CommandInfo->new({value => abs_path "$Bin/test_executor.pl"}));
+my $executor = Mesos::ExecutorInfo->new({
+    # executor_id is a Mesos::ExecutorID message
+    executor_id => Mesos::ExecutorID->new({value => "default"}),
+    # command is a Mesos::CommandInfo message
+    #  Google::ProtocolBuffers will let you pass the constructor args, and it will instantiate the message for you 
+    command     => {value => abs_path "$Bin/test_executor.pl"},    
+});
 
-my $framework = Mesos::FrameworkInfo->new;
-$framework->user("");
-$framework->name("Test Framework (Perl)");
+my $framework = Mesos::FrameworkInfo->new({
+    user => "",
+    name => "Test Framework (Perl)",    
+});
 
 if ($ENV{MESOS_CHECKPOINT}) {
     print "Enabling checkpoint for the framework\n";
