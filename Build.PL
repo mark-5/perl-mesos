@@ -1,11 +1,10 @@
 use strict;
-use File::Spec;
 use File::Find;
-use FindBin qw($Bin);
+use File::Temp;
 use Module::Build::WithXSpp;
 
-my @include_dirs;
-find(sub {push @include_dirs, $File::Find::name if -d}, 'include');
+my @mesos_include_dirs;
+find(sub {push @mesos_include_dirs, $File::Find::name if -d}, 'include');
 
 my $build = Module::Build::WithXSpp->new(
     dist_abstract   => 'lib/Mesos.pm',
@@ -21,14 +20,12 @@ my $build = Module::Build::WithXSpp->new(
         'Moo'             => 0,
         'Try::Tiny'       => 0,
         'Types::Standard' => 0,
-        'ExtUtils::ParseXS' => 3.18,
-        'Google::ProtocolBuffers'  => 0,
+        'ExtUtils::ParseXS'       => 3.18,
+        'Google::ProtocolBuffers' => 0,
     },
     configure_requires => {
-        'FindBin'         => 0,
-        'File::Find'      => 0,
-        'File::Spec'      => 0,
-        'Devel::CheckLib' => 0,
+        'File::Find' => 0,
+        'File::Temp' => 0,
     },
     test_requires => {
         'Test::Most'     => 0,
@@ -38,7 +35,6 @@ my $build = Module::Build::WithXSpp->new(
         'ExtUtils::Typemaps::ObjectMap' => '0',
         'ExtUtils::Typemaps::STL'       => '0',
     },
-    include_dirs         => [@include_dirs],
     early_includes       => [qw(mesos/scheduler.hpp mesos/executor.hpp)],
     extra_compiler_flags => [qw(-std=c++11)],
     extra_linker_flags   => [qw(-lmesos)],
@@ -52,41 +48,55 @@ my $build = Module::Build::WithXSpp->new(
     },
 );
 
-if (eval {require Devel::CheckLib}) {
-    Devel::CheckLib::check_lib_or_exit(
-        lib => 'mesos',
-    );
+my $include_dirs = $build->include_dirs;
+my $compiler = $build->config('cc');
+
+unless (check_mesos_libs(compiler => $compiler, include_dirs => $include_dirs)) {
+    my $extra_includes = find_mesos_install_path();
+    push @$include_dirs, $extra_includes;
+    check_mesos_libs(assert => 1, compiler => $compiler, include_dirs => $include_dirs);
 }
 
-
-$build->args('mesos-install', find_mesos_install_path())
-    if not $build->args('mesos-install');
-push @{$build->include_dirs}, $build->args('mesos-install') if $build->args('mesos-install');
-
-if (lc $^O eq 'darwin' and lc $build->config->{cc} eq 'cc') {
+if (lc $^O eq 'darwin' and lc $compiler eq 'cc') {
     push @{$build->extra_compiler_flags}, '-Wno-reserved-user-defined-literal';
 }
+
+push @$include_dirs, @mesos_include_dirs; 
 
 $build->create_build_script;
 
 
-generate_protobufs($build->args('mesos-install'));
+sub check_mesos_libs {
+    my (%args) = @_;
+    my $include = join ' ', map {"-I$_"} @{$args{include_dirs}||[]};
+    my $in = write_lib_check();
+    (my $out = $in) =~ s/\.cpp$//;
 
+    my $command = "$args{compiler} $include -lmesos -o $out $in";
+    my $output = qx|$command 2>&1|;
+    my $failed = $?;
+    -e $_ and unlink $_ for $in, $out;
+
+    if ($failed and $args{assert}) {
+        my $message = "Can't link/include mesos C++ library:\n";
+        $message .= "\t" . $output;
+        die $message;
+    }
+    return !$failed;
+}
+
+sub write_lib_check {
+    my($fh, $in) = File::Temp::tempfile(SUFFIX => '.cpp');
+    print $fh "#include <mesos/mesos.hpp>\n";
+    print $fh "int main(void) { return 0; }\n";
+    close $fh;
+    return $in;
+}
 
 sub find_mesos_install_path {
     my ($path) = grep {-d} map {"$_/mesos"} qw(/usr/include /usr/local/include);
-    $path ||= Module::Build->prompt("Please enter path to mesos install", "/usr/local/include/mesos");
-    return $path;
-}
-
-sub generate_protobufs {
-    my ($dir) = @_;
-    my $command = File::Spec->catfile($Bin, qw(bin generate_messages));
-    my $proto = File::Spec->catfile($dir, 'mesos.proto');
-    unless (-f $proto) {
-        warn "Couldn't find mesos proto file at $proto. Defaulting to 0.18 message format.\n";
-        return;
+    unless ($path) {
+        $path = Module::Build->prompt("Please enter path to mesos headers", "/usr/local/include/mesos");
     }
-    my $out = File::Spec->catfile($Bin, qw(lib Mesos Messages.pm));
-    system $command, $proto, $out;
+    return $path;
 }

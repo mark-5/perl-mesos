@@ -5,7 +5,7 @@ use Google::ProtocolBuffers;
 use File::Temp qw(tempfile);
 
 my ($in, $out) = @ARGV;
-die "USAGE: IN OUT\n" unless $in and $out;
+die "USAGE: PROTO_INPUT PERL_OUTPUT\n" unless $in and $out;
 
 my $clean_proto = scrub_file($in);
 my $opts = {
