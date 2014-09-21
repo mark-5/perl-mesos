@@ -14,6 +14,8 @@ The Apache Mesos library is multithreaded, which is problematic when dealing wit
 
 First make sure the apache mesos library is installed. This is easiest either with your native package manager, or with a package from L<mesosphere|http://mesosphere.io/downloads/>.
 
+Install Google Protocol Buffers v2.5.0+.
+
 Next just install like any other Module::Build distribution with C<perl Build.PL && ./Build install>
 
 =head1 Caveats

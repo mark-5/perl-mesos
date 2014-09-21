@@ -51,6 +51,8 @@ my $build = Module::Build::WithXSpp->new(
 my $include_dirs = $build->include_dirs;
 my $compiler = $build->config('cc');
 
+assert_protobuf_libs(compiler => $compiler, include_dirs => $include_dirs);
+
 unless (check_mesos_libs(compiler => $compiler, include_dirs => $include_dirs)) {
     my $extra_includes = find_mesos_install_path();
     push @$include_dirs, $extra_includes;
@@ -65,11 +67,10 @@ push @$include_dirs, @mesos_include_dirs;
 
 $build->create_build_script;
 
-
 sub check_mesos_libs {
     my (%args) = @_;
     my $include = join ' ', map {"-I$_"} @{$args{include_dirs}||[]};
-    my $in = write_lib_check();
+    my $in = write_lib_check(headers => "mesos/mesos.hpp");
     (my $out = $in) =~ s/\.cpp$//;
 
     my $command = "$args{compiler} $include -lmesos -o $out $in";
@@ -85,10 +86,36 @@ sub check_mesos_libs {
     return !$failed;
 }
 
+sub assert_protobuf_libs {
+    my (%args) = @_;
+    my $include = join ' ', map {"-I$_"} @{$args{include_dirs}||[]};
+    my $code = q|printf("%d", GOOGLE_PROTOBUF_VERSION);|;
+    my $in = write_lib_check(code => $code, headers => ["google/protobuf/message.h", "cstdio"]);
+    (my $out = $in) =~ s/\.cpp$//;
+
+    my $output = qx|$args{compiler} $include -o $out $in 2>&1|;
+    my $failed = $?;
+
+    if ($failed) {
+        my $message = "Can't link/include mesos C++ library:\n";
+        $message .= "\t" . $output;
+        die $message;
+    }
+
+    my $version = qx|$out|;
+    unless ($version and $version >= 2005000) {
+        die "Protobuf version must 2.5.0 or above. Detected $version";
+    }
+
+    -e $_ and unlink $_ for $in, $out;
+    return 1;
+}
+
 sub write_lib_check {
+    my (%args) = @_;
     my($fh, $in) = File::Temp::tempfile(SUFFIX => '.cpp');
-    print $fh "#include <mesos/mesos.hpp>\n";
-    print $fh "int main(void) { return 0; }\n";
+    print $fh "#include <$_>\n" for ref $args{headers} ? @{$args{headers}} : $args{headers};
+    print $fh "int main(void) { $args{code} return 0; }\n";
     close $fh;
     return $in;
 }
