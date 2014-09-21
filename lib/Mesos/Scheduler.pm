@@ -21,6 +21,10 @@ sub error {}
 
 Mesos::Scheduler - base class for Mesos schedulers
 
+=head1 Synopsis
+
+Mesos::Scheduler methods are callbacks which will are invoked by Mesos::SchedulerDriver.
+
 =head1 Methods
 
 =over 4
@@ -31,7 +35,7 @@ Mesos::Scheduler - base class for Mesos schedulers
 
 =item  disconnected($driver)
 
-=item  resourceOffers($driver, $offers)
+=item  resourceOffers($driver, @$offers)
 
 =item  offerRescinded($driver, $offerId)
 

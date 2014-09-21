@@ -19,6 +19,10 @@ sub error {}
 
 Mesos::Executor - base class for Mesos executors
 
+=head1 Synopsis
+
+Mesos::Executor methods are callbacks which will are invoked by Mesos::ExecutorDriver.
+
 =head1 Methods
 
 =over 4
