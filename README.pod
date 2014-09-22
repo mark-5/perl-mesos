@@ -8,7 +8,55 @@ Mesos - perl bindings for Apache Mesos
 
 This is a collection of perl bindings for Apache Mesos. This requires having the mesos shared library installed, in order to link against(much like python's mesos library).
 
+=head2 Protobuf Messages
+
+Frameworks, masters, and slaves all communicate using google protocol buffers. The Mesos module handles protobuf messages using the Google::ProtocolBuffers library, which is what's used to generate the message classes in Mesos::Messages from resources/mesos.proto. It is encouraged to look over Google::ProtocolBuffers documentation before using Mesos.
+
+=head2 Internal POSIX Threads
+
 The Apache Mesos library is multithreaded, which is problematic when dealing with perl. The solution Mesos currently goes with is to create C++ proxy classes, which registers callbacks that send notifications over a pipe, to perl. In the future this may change to sockets, or even to a pure perl implementation of mesos drivers(the latter would also eliminate the need for linking against the mesos shared library). Mesos then handles these notifications, and executes the corresponding perl code, inside of an AnyEvent loop.
+
+The internal POSIX threads also means that Mesos drivers are not fork safe, and only exec and POSIX::_exit can be guaranteed to work safely in the child process after forking. One should definitely not call any driver code in the child process after forking.
+
+=head1 SYNOPSIS
+
+    package MyScheduler {
+        use Moo;
+        extends 'Mesos::Scheduler';
+        use Mesos::Messages; # load protobuf messages
+
+        sub resourceOffers {
+                my ($self, $driver, $offers) = @_;
+                for my $offer (@$offers) {
+                    my $task = Mesos::TaskInfo->new({
+                        # task_id is a Mesos::TaskID message
+                        task_id   => Mesos::TaskID->new({value => "a unique id"}),
+                        slave_id  => $offer->slave_id,
+                        name      => "does something cool",
+                        # executor is a Mesos::ExecutorInfo message
+                        # Google::ProtocolBuffers will let you pass the constructor args
+                        #  and will instantiate the message for you
+                        executor  => {
+                            executor_id => {value => "does cool tasks"},
+                            command     => {value => "/path/to/executor"},
+                        },
+                        resources => [
+                            {name => "cpus", type => Mesos::Value::Type::SCALAR, scalar => {value => 1}},
+                            {name => "mem",  type => Mesos::Value::Type::SCALAR, scalar => {value => 32}},
+                        ],
+                    });
+                    $driver->launchTasks([$offer->{id}], [$task]);
+                }
+        }
+    };
+
+    use Mesos::SchedulerDriver;
+    my $driver = Mesos::SchedulerDriver->new(
+        master    => "mesoshost:5050",
+        framework => {user => "mesos user", name => "awesome framework"},
+        scheduler => MyScheduler->new,
+    );
+    $driver->run;
 
 =head1 Install
 
@@ -24,8 +72,6 @@ Note that Mesos before v0.20 has issues with include headers not being very smar
 
 Be aware that Mesos drivers are not able to talk to remote servers from behind a NAT. Drivers are required to start an http server that the mesos master will send post requests to.
 
-Mesos is not fork safe. The underlying Mesos driver creates multiple threads during construction, and only exec and POSIX::_exit can be guaranteed to work safely in the child process after forking. One should definitely not call any driver code in the child process.
-
 =head1 TODO
 
 =over 4
@@ -40,3 +86,8 @@ Mesos is not fork safe. The underlying Mesos driver creates multiple threads dur
  
 More information about Apache Mesos, projects using Mesos, or the underlying Mesos drivers can be found at the Apache Mesos project's L<home page|http://mesos.apache.org/> or L<mesosphere|http://mesosphere.io>. 
 
+=head1 AUTHOR
+
+Mark Flickinger E<lt>maf@cpan.orgE<gt>
+
+=cut
