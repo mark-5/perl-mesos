@@ -62,6 +62,8 @@ mesos::perl::CommandArg sv_to_CommandArg(SV* msg) {
         }
         return mesos::perl::CommandArg(data_vec, av_type(args_av));
     }
+    // control shouldnt reach here, but compilers complain so just return empty command arg
+    return mesos::perl::CommandArg();
 }
 
 SV* CommandArg_to_sv(const mesos::perl::CommandArg arg) {

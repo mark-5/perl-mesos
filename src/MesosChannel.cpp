@@ -63,6 +63,7 @@ MesosChannel* MesosChannel::share()
 {
     ++*count_;
     MesosChannel* to_share = new MesosChannel(*this);
+    return to_share;
 }
 
 void MesosChannel::send(const MesosCommand& command)
