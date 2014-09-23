@@ -82,7 +82,8 @@ sub check_mesos_libs {
     if ($failed and $args{assert}) {
         my $message = "Can't link/include mesos C++ library:\n";
         $message .= "\t" . $output;
-        die $message;
+        warn $message;
+        exit 0;
     }
     return !$failed;
 }
@@ -100,12 +101,14 @@ sub assert_protobuf_libs {
     if ($failed) {
         my $message = "Can't link/include mesos C++ library:\n";
         $message .= "\t" . $output;
-        die $message;
+        warn $message;
+        exit 0;
     }
 
     my $version = qx|$out|;
     unless ($version and $version >= 2005000) {
-        die "Protobuf version must 2.5.0 or above. Detected $version";
+        warn "Protobuf version must 2.5.0 or above. Detected $version";
+        exit 0;
     }
 
     -e $_ and unlink $_ for $in, $out;

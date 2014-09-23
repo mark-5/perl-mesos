@@ -12,7 +12,7 @@ This is a collection of perl bindings for Apache Mesos. This requires having the
 
 Frameworks, masters, and slaves all communicate using google protocol buffers. The Mesos module handles protobuf messages using the Google::ProtocolBuffers library, which is what's used to generate the message classes in Mesos::Messages from resources/mesos.proto. It is encouraged to look over Google::ProtocolBuffers documentation before using Mesos.
 
-The Mesos module ships with message classes generated from v0.20.0. Messages are still backwards compatible with previous versions, but please make sure to check the mesos.proto file for your installed version, to see what fields are and are not allowed.
+The Mesos module ships with message classes generated from v0.20.0. Messages are still backwards compatible with previous versions, but please make sure to check the mesos.proto file from your Mesos installation, to see what fields are and are not allowed.
 
 =head2 Internal POSIX Threads
 
@@ -64,7 +64,7 @@ Launching internal POSIX threads also means that Mesos drivers are not fork safe
 
 First make sure the apache mesos library is installed. This is easiest either with your native package manager, or with a package from L<mesosphere|http://mesosphere.io/downloads/>.
 
-Install Google Protocol Buffers v2.5.0+.
+Make sure Google Protocol Buffers headers are installed, and the version is compatible with your Mesos installation.
 
 Next just install like any other Module::Build distribution with C<perl Build.PL && ./Build install>
 
@@ -74,7 +74,7 @@ Note that Mesos before v0.20 has issues with include headers not being very smar
 
 Be aware that Mesos drivers are not able to talk to remote servers from behind a NAT. Drivers are required to start an http server that the mesos master will send post requests to.
 
-=head1 TODO
+=head1 Todo
 
 =over 4
 
