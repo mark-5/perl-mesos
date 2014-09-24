@@ -22,6 +22,11 @@ sub BUILD {
     return $self->xs_init;
 }
 
+sub is_message_class_loaded {
+    my ($type) = @_;
+    return eval { $type->can('decode') };
+}
+
 sub deserialize_channel_args {
     my (@in) = @_;
     return map {
@@ -30,12 +35,11 @@ sub deserialize_channel_args {
         my ($data, $type) = @$from_xs;
         my $deserialized = $data;
         if ($type and $type ne 'String') {
-            require Class::Load;            
-            if (not Class::Load::is_class_loaded($type)) {
+            unless (is_message_class_loaded($type)) {
                 $type = "Mesos::$type";
-                croak "$type is not loaded" unless Class::Load::is_class_loaded($type);
+                croak "$type is either not a message class or is not loaded"
+                    unless is_message_class_loaded($type);
             }
-            croak("$type must provide a decode method") unless $type->can('decode');
             $deserialized = ref $data eq 'ARRAY' ? [map {$type->decode($_)} @$data] : $type->decode($data);
         }
         $deserialized;
