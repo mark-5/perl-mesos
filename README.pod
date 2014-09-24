@@ -92,4 +92,3 @@ More information about Apache Mesos, projects using Mesos, or the underlying Mes
 
 Mark Flickinger E<lt>maf@cpan.orgE<gt>
 
-=cut
