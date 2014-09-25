@@ -9,7 +9,7 @@ use Mesos::Types qw(:all);
 use strict;
 use warnings;
 
-=head1 Name
+=head1 NAME
 
 Mesos::SchedulerDriver - perl driver for Mesos schedulers
 
@@ -130,7 +130,7 @@ around reconcileTasks => sub {
     return $self->$orig(validate(\@args, ArrayRef[TaskStatus]));
 };
 
-=head1 Methods
+=head1 METHODS
 
 =over 4
 

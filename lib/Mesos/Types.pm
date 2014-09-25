@@ -2,6 +2,18 @@ package Mesos::Types;
 use strict;
 use warnings;
 
+=head1 NAME
+
+Mesos::Types
+
+=head1 DESCRIPTION
+
+A basic type library for Mesos classes.
+This includes driver classes, all message classes used by drivers, and Mesos::Executor, and Mesos::Scheduler.
+Coercions are also provided for message classes, from hash ref constructors.
+
+=cut
+
 use Type::Library
    -base;
 use Type::Utils -all;

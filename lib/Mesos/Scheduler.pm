@@ -17,15 +17,15 @@ sub executorLost {}
 sub error {}
 
 
-=head1 Name
+=head1 NAME
 
 Mesos::Scheduler - base class for Mesos schedulers
 
-=head1 Synopsis
+=head1 SYNOPSIS
 
 Mesos::Scheduler methods are callbacks which will are invoked by Mesos::SchedulerDriver.
 
-=head1 Methods
+=head1 METHODS
 
 =over 4
 

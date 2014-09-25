@@ -9,7 +9,7 @@ use Mesos::Types qw(:all);
 use strict;
 use warnings;
 
-=head1 Name
+=head1 NAME
 
 Mesos::ExecutorDriver - perl driver for Mesos executors
 
@@ -85,7 +85,7 @@ around sendFrameworkMessage => sub {
     return $self->$orig(validate(\@args, Str));
 };
 
-=head1 Methods
+=head1 METHODS
 
 =over 4
 

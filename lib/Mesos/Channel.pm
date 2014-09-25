@@ -5,11 +5,11 @@ use Carp;
 use strict;
 use warnings;
 
-=head1 Name
+=head1 NAME
 
 Mesos::Channel - perl interface to the channel proxy schedulers and executors write events to
 
-=head1 Synopsis
+=head1 SYNOPSIS
 
 Mesos channels are blessed filehandles, so can be passed directly to IO::Select, AnyEvent->io, or any other function expecting a filehandle.
 
@@ -46,7 +46,7 @@ sub deserialize_channel_args {
     } @in;
 }
 
-=head1 Methods
+=head1 METHODS
 
 =over 4
 

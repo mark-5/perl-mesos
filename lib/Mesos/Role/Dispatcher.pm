@@ -2,7 +2,7 @@ package Mesos::Role::Dispatcher;
 use Moo::Role;
 use AnyEvent;
 
-=head1 Name
+=head1 NAME
 
  Mesos::Role::Dispatcher - role to dispatch events in an AnyEvent loop
 
@@ -23,7 +23,7 @@ has loop_condvar => (
     predicate => 1,
 );
 
-=head1 Methods
+=head1 METHODS
 
 =over 4
 

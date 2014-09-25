@@ -15,15 +15,15 @@ sub shutdown {}
 sub error {}
 
 
-=head1 Name
+=head1 NAME
 
 Mesos::Executor - base class for Mesos executors
 
-=head1 Synopsis
+=head1 SYNOPSIS
 
 Mesos::Executor methods are callbacks which will are invoked by Mesos::ExecutorDriver.
 
-=head1 Methods
+=head1 METHODS
 
 =over 4
 
