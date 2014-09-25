@@ -3,7 +3,9 @@ use Mesos;
 use Mesos::Messages;
 use Mesos::Channel;
 use Moo;
-use Types::Standard qw(Str);
+use Types::Standard qw(:all);
+use Type::Params qw(validate);
+use Mesos::Types qw(:all);
 use strict;
 use warnings;
 
@@ -15,17 +17,19 @@ Mesos::SchedulerDriver - perl driver for Mesos schedulers
 
 sub BUILD {
     my ($self) = @_;
-    return $self->xs_init(grep {$_} map {$self->$_} qw(framework master credentials));
+    return $self->xs_init(grep {$_} map {$self->$_} qw(framework master credential));
 }
 
 has scheduler => (
     is       => 'ro',
+    isa      => Scheduler,
     required => 1,
 );
 
 has framework => (
     is       => 'ro',
-    isa      => sub {shift->isa('Mesos::FrameworkInfo')},
+    isa      => FrameworkInfo,
+    coerce   => 1,
     required => 1,
 );
 
@@ -35,14 +39,15 @@ has master => (
     required => 1,
 );
 
-has credentials => (
-    is => 'ro',
-    isa => sub {shift->isa('Mesos::Credential')},
+has credential => (
+    is     => 'ro',
+    isa    => Credential,
+    coerce => 1,
 );
 
 has channel => (
     is       => 'ro',
-    isa      => sub {shift->isa('Mesos::Channel')},
+    isa      => Channel,
     builder  => 1,
     # this needs to be lazy so that BUILD runs xs_init first
     lazy     => 1,
@@ -89,6 +94,41 @@ sub join {
     $self->dispatch_loop;
     return $self->status;
 }
+
+around requestResources => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate(\@args, ArrayRef[Request]));
+};
+
+around launchTasks => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate(\@args, ArrayRef[OfferID], ArrayRef[TaskInfo], Optional[Filters]));
+};
+
+around launchTask => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate(\@args, OfferID, ArrayRef[TaskInfo], Optional[Filters]));
+};
+
+around killTask => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate(\@args, TaskID));
+};
+
+around declineOffer => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate(\@args, OfferID, Optional[Filters]));
+};
+
+around sendFrameworkMessage => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate(\@args, ExecutorID, SlaveID, Str));
+};
+
+around reconcileTasks => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate(\@args, ArrayRef[TaskStatus]));
+};
 
 =head1 Methods
 

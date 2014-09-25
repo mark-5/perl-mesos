@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-
 package TestScheduler;
 use Moo;
 use strict;
@@ -20,7 +19,7 @@ has messagesReceived => (is => 'rw', default => 0);
 
 sub registered {
     my ($self, $driver, $frameworkId, $masterInfo) = @_;
-    printf "Registered with framework ID %s\n", $frameworkId->value;
+    printf "Registered with framework ID %s\n", $frameworkId->{value};
 }
 
 sub resourceOffers {
@@ -28,58 +27,54 @@ sub resourceOffers {
     printf "Got %d resource offers\n", scalar @$offers;
     for my $offer (@$offers) {
         my $tasks = [];
-        printf "Got resource offer %s\n", $offer->id->value;
+        printf "Got resource offer %s\n", $offer->{id}{value};
         if ($self->tasksLaunched < $self->TOTAL_TASKS) {
             my $tid = $self->tasksLaunched;
             $self->tasksLaunched($self->tasksLaunched + 1);
-            printf "Accepting offer on %s to start task %d\n", $offer->hostname, $tid;
+            printf "Accepting offer on %s to start task %d\n", $offer->{hostname}, $tid;
             
             my $task = Mesos::TaskInfo->new({
-                task_id  => {value => $tid},
-                slave_id => $offer->slave_id,
-                name     => "task $tid",
-                executor => $self->executor,
+                task_id   => {value => $tid},
+                slave_id  => $offer->{slave_id},
+                name      => "task $tid",
+                executor  => $self->executor,
+                resources => [{
+                    name   => "cpus",
+                    type   => Mesos::Value::Type::SCALAR,
+                    scalar => {value => $self->TOTAL_CPUS},
+                }, {
+                    name   => "mem",
+                    type   => Mesos::Value::Type::SCALAR,
+                    scalar => {value => $self->TASK_MEM},
+                }],
             });
-
-            my $cpus = Mesos::Resource->new({
-                name   => "cpus",        
-                type   => Mesos::Value::Type::SCALAR,
-                scalar => {value => $self->TOTAL_CPUS},
-            });
-
-            my $mem = Mesos::Resource->new({
-                name   => "mem",
-                type   => Mesos::Value::Type::SCALAR,
-                scalar => {value => $self->TASK_MEM},
-            });
-            $task->resources([$cpus, $mem]);
             
             push @$tasks, $task;
-            $self->taskData->{$task->task_id->{value}} = [
-                $offer->slave_id, $task->executor->executor_id,
+            $self->taskData->{$task->{task_id}{value}} = [
+                $offer->{slave_id}, $task->{executor}{executor_id},
             ];
         }
-        $driver->launchTasks([$offer->id], $tasks);
+        $driver->launchTasks([$offer->{id}], $tasks);
     }
 }
 
 sub statusUpdate {
     my ($self, $driver, $update) = @_;
-    printf "Task %s is in state %d\n", $update->task_id->value, $update->state;
+    printf "Task %s is in state %d\n", $update->{task_id}{value}, $update->{state};
 
-    if ($update->data ne "data with a \0 byte") {
+    if ($update->{data} ne "data with a \0 byte") {
         print "The update data did not match!\n";
         print "\tExpected 'data with a \\x00 byte'\n";
-        print "\tActual: " . $update->data . "\n";
+        print "\tActual: " . $update->{data} . "\n";
         exit 1;
     }
 
-    if ($update->state == Mesos::TaskState::TASK_FINISHED) {
+    if ($update->{state} == Mesos::TaskState::TASK_FINISHED) {
         $self->tasksFinished($self->tasksFinished + 1);
         print "All tasks done, waiting for final framework message\n"
             if $self->tasksFinished == $self->TOTAL_TASKS;
 
-        my ($slave_id, $executor_id) = @{$self->taskData->{$update->task_id->value}||[]};
+        my ($slave_id, $executor_id) = @{$self->taskData->{$update->{task_id}{value}}||[]};
 
         $self->messagesSent($self->messagesSent + 1);
         $driver->sendFrameworkMessage(
@@ -121,11 +116,8 @@ use Mesos::SchedulerDriver;
 my $master = shift or die "Usage: $0 master\n";
 
 my $executor = Mesos::ExecutorInfo->new({
-    # executor_id is a Mesos::ExecutorID message
-    executor_id => Mesos::ExecutorID->new({value => "default"}),
-    # command is a Mesos::CommandInfo message
-    #  Google::ProtocolBuffers will let you pass the constructor args, and it will instantiate the message for you 
-    command     => {value => abs_path "$Bin/test_executor.pl"},    
+    executor_id => {value => "default"},
+    command     => {value => abs_path("$Bin/test_executor.pl")},
 });
 
 my $framework = Mesos::FrameworkInfo->new({
