@@ -99,7 +99,7 @@ Mark Flickinger E<lt>maf@cpan.orgE<gt>
 use XSLoader;
 use Exporter 5.57 'import';
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 our %EXPORT_TAGS = ( 'all' => [] );
 our @EXPORT_OK   = ( @{ $EXPORT_TAGS{'all'} } );
 
