@@ -86,5 +86,9 @@ const MesosCommand MesosChannel::recv()
     }
 }
 
+int MesosChannel::fd() {
+    return fileno(in_);
+}
+
 } // namespace perl {
 } // namespace mesos {

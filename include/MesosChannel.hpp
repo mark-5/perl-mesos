@@ -42,19 +42,20 @@ class MesosChannel
 {
 public:
     typedef std::queue<MesosCommand> CommandQueue;
-
-    FILE* in_;
-    FILE* out_;
-    MesosChannel();
-    ~MesosChannel();
     CommandQueue* pending_;
-    void send(const MesosCommand& command);
-    const MesosCommand recv();
-    MesosChannel* share();
+
+    MesosChannel();
+    virtual ~MesosChannel();
+    virtual void send(const MesosCommand& command);
+    virtual const MesosCommand recv();
+    virtual MesosChannel* share();
+    virtual int fd ();
 
 private:
     int* count_;
     std::mutex* mutex_;
+    FILE* in_;
+    FILE* out_;
 };
 
 } // namespace perl {

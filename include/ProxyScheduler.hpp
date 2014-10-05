@@ -16,7 +16,7 @@ class ProxyScheduler : public Scheduler
 public:
     MesosChannel* channel_;
 
-    ProxyScheduler(): channel_(new MesosChannel) {};
+    ProxyScheduler(MesosChannel* channel = (new MesosChannel)): channel_(channel) {};
     virtual ~ProxyScheduler(){};
 
     virtual void registered(SchedulerDriver* driver,

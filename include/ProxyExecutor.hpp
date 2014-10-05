@@ -16,7 +16,7 @@ class ProxyExecutor : public Executor
 public:
     MesosChannel* channel_;
 
-    ProxyExecutor(): channel_(new MesosChannel) {};
+    ProxyExecutor(MesosChannel* channel = (new MesosChannel)): channel_(channel) {};
     virtual ~ProxyExecutor(){};
 
     virtual void registered(ExecutorDriver* driver,

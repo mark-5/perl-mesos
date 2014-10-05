@@ -48,16 +48,9 @@ mesos::perl::MesosChannel::recv()
 
 void
 mesos::perl::MesosChannel::send(mesos::perl::MesosCommand command)
-    PPCODE:
-        THIS->send(command);
-        XSRETURN_YES;
 
 int
 mesos::perl::MesosChannel::fd()
-    CODE:
-        RETVAL = fileno(THIS->in_);
-    OUTPUT:
-        RETVAL
 
 %}
 
