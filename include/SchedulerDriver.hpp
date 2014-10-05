@@ -18,10 +18,12 @@ public:
     ProxyScheduler* proxyScheduler_;
 
     SchedulerDriver(const FrameworkInfo& framework,
-                        const std::string& master);
+                    const std::string& master,
+                    ProxyScheduler* proxyScheduler = (new ProxyScheduler));
     SchedulerDriver(const FrameworkInfo& framework,
-                        const std::string& master,
-                        const Credential& credential);
+                    const std::string& master,
+                    const Credential& credential,
+                    ProxyScheduler* proxyScheduler = (new ProxyScheduler));
     virtual ~SchedulerDriver();
 
     MesosChannel* get_proxy_channel();

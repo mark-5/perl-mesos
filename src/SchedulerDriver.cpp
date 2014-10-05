@@ -4,18 +4,22 @@ namespace mesos {
 namespace perl {
 
 SchedulerDriver::SchedulerDriver(const FrameworkInfo& framework,
-                    const std::string& master)
+                                 const std::string& master,
+                                 ProxyScheduler* proxyScheduler)
+: proxyScheduler_(proxyScheduler),
+  driver_(new MesosSchedulerDriver(proxyScheduler_, framework, master))
 {
-    proxyScheduler_ = new ProxyScheduler();
-    driver_ = new MesosSchedulerDriver(proxyScheduler_, framework, master);
+
 }
 
 SchedulerDriver::SchedulerDriver(const FrameworkInfo& framework,
-                    const std::string& master,
-                    const Credential& credential)
+                                 const std::string& master,
+                                 const Credential& credential,
+                                 ProxyScheduler* proxyScheduler)
+: proxyScheduler_(proxyScheduler),
+  driver_(new MesosSchedulerDriver(proxyScheduler_, framework, master))
 {
-    proxyScheduler_ = new ProxyScheduler();
-    driver_ = new MesosSchedulerDriver(proxyScheduler_, framework, master, credential);
+
 }
 
 SchedulerDriver::~SchedulerDriver()
