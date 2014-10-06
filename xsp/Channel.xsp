@@ -1,5 +1,5 @@
 %module{Mesos};
-#include <MesosChannel.hpp>
+#include <PipeChannel.hpp>
 #include <XS/MesosUtils.hpp>
 
 
@@ -27,7 +27,7 @@ static void
 xs_init(SV* self)
     PPCODE:
         if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
-            mesos::perl::MesosChannel* channel = new mesos::perl::MesosChannel;
+            mesos::perl::MesosChannel* channel = new mesos::perl::PipeChannel;
             sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
                              (const char*) channel, 0);
         }
@@ -35,7 +35,7 @@ xs_init(SV* self)
 mesos::perl::MesosCommand
 mesos::perl::MesosChannel::recv()
     CODE:
-        if (!THIS->pending_->size()) {
+        if (!THIS->size()) {
             if (GIMME_V == G_ARRAY) {
                 XSRETURN_EMPTY;
             } else {

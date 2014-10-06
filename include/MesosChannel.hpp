@@ -5,9 +5,6 @@
 #include <string>
 #include <vector>
 #include <queue>
-#include <cstdio>
-#include <memory>
-#include <mutex>
 
 #define PUSH_MSG(VEC, MSG, MSG_TYPE) VEC.push_back(CommandArg(MSG.SerializeAsString(), MSG_TYPE))
 
@@ -41,21 +38,12 @@ public:
 class MesosChannel
 {
 public:
-    typedef std::queue<MesosCommand> CommandQueue;
-    CommandQueue* pending_;
-
-    MesosChannel();
-    virtual ~MesosChannel();
-    virtual void send(const MesosCommand& command);
-    virtual const MesosCommand recv();
-    virtual MesosChannel* share();
-    virtual int fd ();
-
-private:
-    int* count_;
-    std::mutex* mutex_;
-    FILE* in_;
-    FILE* out_;
+    virtual ~MesosChannel(){};
+    virtual void send(const MesosCommand& command) = 0;
+    virtual const MesosCommand recv() = 0;
+    virtual MesosChannel* share() = 0;
+    virtual size_t size() = 0;
+    virtual int fd () = 0;
 };
 
 } // namespace perl {

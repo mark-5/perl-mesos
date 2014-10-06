@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 #include <mesos/scheduler.hpp>
-#include <MesosChannel.hpp>
+#include <PipeChannel.hpp>
 
 using namespace mesos;
 
@@ -16,7 +16,7 @@ class ProxyScheduler : public Scheduler
 public:
     MesosChannel* channel_;
 
-    ProxyScheduler(MesosChannel* channel = (new MesosChannel)): channel_(channel) {};
+    ProxyScheduler(MesosChannel* channel = (new PipeChannel)): channel_(channel) {};
     virtual ~ProxyScheduler(){};
 
     virtual void registered(SchedulerDriver* driver,
