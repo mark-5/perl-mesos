@@ -1,25 +1,28 @@
 %module{Mesos};
 #include <SchedulerDriver.hpp>
+#include <ProxyScheduler.hpp>
 #include <XS/MesosUtils.hpp>
 #include <string>
 #include <vector>
 
 
-%name{Mesos::SchedulerDriver} class mesos::perl::SchedulerDriver
+%name{Mesos::XS::SchedulerDriver} class mesos::perl::SchedulerDriver
 {
 
 %{
 
 static void
-xs_init(SV* self, mesos::FrameworkInfo framework, std::string master, ...)
+xs_init(SV* self, mesos::FrameworkInfo framework, std::string master, mesos::perl::MesosChannel* channel, ...)
     PPCODE:
         if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
             mesos::perl::SchedulerDriver* driver;
-            if (items > 3) {
-                mesos::Credential credential( toMsg<mesos::Credential>(ST(3)) );
-                driver = new mesos::perl::SchedulerDriver(framework, master, credential);
+            // make sure channel ref gets incremented
+            mesos::perl::ProxyScheduler* proxy = new mesos::perl::ProxyScheduler(channel->share());
+            if (items > 4) {
+                mesos::Credential credential( toMsg<mesos::Credential>(ST(4)) );
+                driver = new mesos::perl::SchedulerDriver(framework, master, credential, proxy);
             } else {
-                driver = new mesos::perl::SchedulerDriver(framework, master);
+                driver = new mesos::perl::SchedulerDriver(framework, master, proxy);
             }
             sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
                              (const char*) driver, 0);

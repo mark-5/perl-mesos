@@ -14,7 +14,7 @@ isa_ok($driver, 'Mesos::ExecutorDriver');
 ok($driver->does('Mesos::Role::Dispatcher'), 'driver does Mesos::Role::Dispatcher');
 
 my $channel = $driver->channel;
-isa_ok($channel, 'Mesos::Channel');
+ok($channel->does('Mesos::Role::Channel'), 'driver returned a channel');
 
 
 done_testing;

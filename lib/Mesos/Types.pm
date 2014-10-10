@@ -40,8 +40,7 @@ for my $message (@messages) {
         from HashRef, via { $protobuf_class->new($_) };
 }
 
-role_type  $_, {role => "Mesos::Role::$_"} for qw(Scheduler       Executor);
-class_type $_, {class => "Mesos::$_"}      for qw(SchedulerDriver ExecutorDriver Channel);
+role_type  $_, {role => "Mesos::Role::$_"} for qw(Scheduler Executor SchedulerDriver ExecutorDriver Channel);
 
 
 __PACKAGE__->meta->make_immutable;

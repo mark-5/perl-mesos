@@ -11,39 +11,20 @@ use warnings;
 
 =head1 NAME
 
-Mesos::SchedulerDriver - perl driver for Mesos schedulers
+Mesos::SchedulerDriver - perl driver for Mesos scheduler drivers
 
 =cut
 
-sub BUILD {
+sub init {
     my ($self) = @_;
-    return $self->xs_init(grep {$_} map {$self->$_} qw(framework master credential));
+    return $self->xs_init(grep {$_} map {$self->$_} qw(framework master channel credential));
 }
 
-has scheduler => (
-    is       => 'ro',
-    isa      => Scheduler,
-    required => 1,
-);
-
-has framework => (
-    is       => 'ro',
-    isa      => FrameworkInfo,
-    coerce   => 1,
-    required => 1,
-);
-
-has master => (
-    is       => 'ro',
-    isa      => Str,
-    required => 1,
-);
-
-has credential => (
-    is     => 'ro',
-    isa    => Credential,
-    coerce => 1,
-);
+sub join {
+    my ($self) = @_;
+    $self->dispatch_loop;
+    return $self->status;
+}
 
 has channel => (
     is       => 'ro',
@@ -54,10 +35,9 @@ has channel => (
 );
 
 sub _build_channel {
-    my ($self) = @_;
-    return $self->_channel;
+    require Mesos::Channel::Pipe;
+    return Mesos::Channel::Pipe->new;
 }
-
 
 has process => (
     is      => 'ro',
@@ -71,99 +51,8 @@ sub _build_process {
 }
 
 # need to apply this after declaring channel and process
+with 'Mesos::Role::SchedulerDriver';
 with 'Mesos::Role::Dispatcher';
 
-after start => sub {
-    my ($self) = @_;
-    $self->dispatch_events;
-};
-
-after $_ => sub {
-    my ($self) = @_;
-    $self->stop_dispatch;
-} for qw(stop abort);
-
-sub run {
-    my ($self) = @_;
-    $self->start;
-    $self->join;
-}
-
-sub join {
-    my ($self) = @_;
-    $self->dispatch_loop;
-    return $self->status;
-}
-
-around requestResources => sub {
-    my ($orig, $self, @args) = @_;
-    return $self->$orig(validate(\@args, ArrayRef[Request]));
-};
-
-around launchTasks => sub {
-    my ($orig, $self, @args) = @_;
-    return $self->$orig(validate(\@args, ArrayRef[OfferID], ArrayRef[TaskInfo], Optional[Filters]));
-};
-
-around launchTask => sub {
-    my ($orig, $self, @args) = @_;
-    return $self->$orig(validate(\@args, OfferID, ArrayRef[TaskInfo], Optional[Filters]));
-};
-
-around killTask => sub {
-    my ($orig, $self, @args) = @_;
-    return $self->$orig(validate(\@args, TaskID));
-};
-
-around declineOffer => sub {
-    my ($orig, $self, @args) = @_;
-    return $self->$orig(validate(\@args, OfferID, Optional[Filters]));
-};
-
-around sendFrameworkMessage => sub {
-    my ($orig, $self, @args) = @_;
-    return $self->$orig(validate(\@args, ExecutorID, SlaveID, Str));
-};
-
-around reconcileTasks => sub {
-    my ($orig, $self, @args) = @_;
-    return $self->$orig(validate(\@args, ArrayRef[TaskStatus]));
-};
-
-=head1 METHODS
-
-=over 4
-
-=item new(scheduler => $scheduler, framework => $frameworkInfo, master => $master, credentials => $credentials)
-
-=item start()
-
-=item stop($failover)
-
-=item abort()
-
-=item join()
-
-=item run()
-
-=item requestResources($requests)
-
-=item launchTasks($offerIds, $tasks, $filters)
-
-=item launchTask($offerId, $tasks, $filters)
-
-=item killTask($taskId)
-
-=item declineOffer($offerId, $filters)
-
-=item reviveOffers()
-
-=item sendFrameworkMessage($executorId, $slaveId, $data)
-
-=item reconcileTasks($statuses)
-
-=back
-
-=cut
 
 1;

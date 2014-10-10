@@ -20,6 +20,7 @@ my $build = Module::Build::WithXSpp->new(
         'Moo'             => 1.006000,
         'Try::Tiny'       => 0,
         'Type::Tiny'      => 0,
+        'Package::Stash'  => 0,
         'ExtUtils::ParseXS'       => 3.18,
         'Google::ProtocolBuffers' => 0,
     },

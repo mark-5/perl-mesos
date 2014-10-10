@@ -1,9 +1,10 @@
 %module{Mesos};
 #include <PipeChannel.hpp>
 #include <XS/MesosUtils.hpp>
+#include <string>
 
 
-%name{Mesos::Channel} class mesos::perl::MesosChannel
+%name{Mesos::XS::Channel} class mesos::perl::MesosChannel
 {
 
 %{
@@ -24,10 +25,17 @@ DESTROY(SV* self)
         XSRETURN_YES;
 
 static void
-xs_init(SV* self)
+xs_init(SV* self, std::string type = "pipe")
     PPCODE:
         if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
-            mesos::perl::MesosChannel* channel = new mesos::perl::PipeChannel;
+            mesos::perl::MesosChannel* channel;
+            if (type == "pipe") {
+                channel = new mesos::perl::PipeChannel;
+            } else if (type == "interrupt") {
+
+            } else {
+                Perl_croak(aTHX_ "Channel type '%s' is not implemented", type.c_str());
+            }
             sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
                              (const char*) channel, 0);
         }
