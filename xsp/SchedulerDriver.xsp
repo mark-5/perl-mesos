@@ -12,7 +12,7 @@
 %{
 
 static void
-xs_init(SV* self, mesos::FrameworkInfo framework, std::string master, mesos::perl::MesosChannel* channel, ...)
+_xs_init(SV* self, mesos::FrameworkInfo framework, std::string master, mesos::perl::MesosChannel* channel, ...)
     PPCODE:
         if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
             mesos::perl::SchedulerDriver* driver;

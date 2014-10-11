@@ -14,9 +14,9 @@ Mesos::ExecutorDriver - perl driver for Mesos executor drivers
 
 =cut
 
-sub init {
+sub xs_init {
     my ($self) = @_;
-    return $self->xs_init($self->channel);
+    return $self->_xs_init($self->channel);
 }
 
 sub join {

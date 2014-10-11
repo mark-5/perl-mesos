@@ -25,7 +25,7 @@ DESTROY(SV* self)
         XSRETURN_YES;
 
 static void
-xs_init(SV* self, std::string type = "pipe")
+_xs_init(SV* self, std::string type = "pipe")
     PPCODE:
         if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
             mesos::perl::MesosChannel* channel;

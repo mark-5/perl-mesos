@@ -11,11 +11,11 @@ import_methods('Mesos::XS::Channel');
 
 
 requires qw(
-    init
+    xs_init
     recv
     send
 );
-sub BUILD { shift->init(@_) }
+sub BUILD { shift->xs_init(@_) }
 
 
 sub is_message_class_loaded {

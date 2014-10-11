@@ -2,9 +2,9 @@ package Mesos::Channel::Pipe;
 use Moo;
 with 'Mesos::Role::Channel';
 
-sub init {
+sub xs_init {
     my ($self) = @_;
-    $self->xs_init('pipe');
+    $self->_xs_init('pipe');
 }
 
 1;

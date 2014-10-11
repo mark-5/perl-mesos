@@ -16,10 +16,10 @@ Mesos::Role::SchedulerDriver - role for perl Mesos scheduler drivers
 
 =cut
 
-sub BUILD { shift->init(@_) }
+sub BUILD { shift->xs_init(@_) }
 
 requires qw(
-    init
+    xs_init
     channel
     start
     stop

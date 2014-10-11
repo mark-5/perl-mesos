@@ -12,7 +12,7 @@
 %{
 
 static void
-xs_init(SV* self, mesos::perl::MesosChannel* channel)
+_xs_init(SV* self, mesos::perl::MesosChannel* channel)
     PPCODE:
         if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
             // make sure channel ref gets incremented

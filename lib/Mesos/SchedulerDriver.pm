@@ -15,9 +15,9 @@ Mesos::SchedulerDriver - perl driver for Mesos scheduler drivers
 
 =cut
 
-sub init {
+sub xs_init {
     my ($self) = @_;
-    return $self->xs_init(grep {$_} map {$self->$_} qw(framework master channel credential));
+    return $self->_xs_init(grep {$_} map {$self->$_} qw(framework master channel credential));
 }
 
 sub join {

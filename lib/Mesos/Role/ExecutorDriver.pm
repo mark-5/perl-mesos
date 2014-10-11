@@ -16,10 +16,10 @@ Mesos::Role::ExecutorDriver - role for perl Mesos executor drivers
 
 =cut
 
-sub BUILD { shift->init(@_) }
+sub BUILD { shift->xs_init(@_) }
 
 requires qw(
-    init
+    xs_init
     start
     stop
     abort
