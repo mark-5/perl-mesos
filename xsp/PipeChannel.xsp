@@ -47,12 +47,12 @@ mesos::perl::PipeChannel::recv()
     OUTPUT:
         RETVAL
 
-void
-mesos::perl::PipeChannel::send(mesos::perl::MesosCommand command)
-
-int
-mesos::perl::PipeChannel::fd()
-
 %}
+
+void send(mesos::perl::MesosCommand command);
+
+int fd();
+
+int size();
 
 };

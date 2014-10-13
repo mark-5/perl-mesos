@@ -52,11 +52,11 @@ sub _build_process {
 
 # need to apply this after declaring channel and process
 with 'Mesos::Role::ExecutorDriver';
-with 'Mesos::Role::Dispatcher';
+with 'Mesos::Role::Dispatcher::AnyEvent';
 
 after start => sub {
     my ($self) = @_;
-    $self->dispatch_events;
+    $self->setup_watcher;
 };
 
 after $_ => sub {

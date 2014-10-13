@@ -13,7 +13,7 @@
             Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\"); 
         SV* tied_hash = SvRV($arg); 
         MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext); 
-        if (!ext_magic) Perl_croak(aTHX_ \"$var has not been initialized by Mesos::Channel XS\");
+        if (!ext_magic) Perl_croak(aTHX_ \"$var has not been initialized by Mesos::XS::SchedulerDriver\");
         $var = ($type) ext_magic->mg_ptr; 
     }%}; 
     %xs_output_code{%{ 
@@ -32,7 +32,7 @@
             Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\"); 
         SV* tied_hash = SvRV($arg); 
         MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext); 
-        if (!ext_magic) Perl_croak(aTHX_ \"$var has not been initialized by Mesos::Channel XS\");
+        if (!ext_magic) Perl_croak(aTHX_ \"$var has not been initialized by Mesos::XS::ExecutorDriver\");
         $var = ($type) ext_magic->mg_ptr; 
     }%}; 
     %xs_output_code{%{ 
@@ -51,7 +51,7 @@
             Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\");
         SV* tied_hash = SvRV($arg);
         MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext);
-        if (!ext_magic) Perl_croak(aTHX_ \"$var has not been initialized by Mesos::Channel XS\");
+        if (!ext_magic) Perl_croak(aTHX_ \"$var has not been initialized by Mesos XS\");
         $var = ($type) ext_magic->mg_ptr;
     }%};
 };

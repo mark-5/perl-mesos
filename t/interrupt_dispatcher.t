@@ -7,16 +7,16 @@ use Try::Tiny;
 use AE;
 
 use Mesos::Test::Scheduler;
-use Mesos::Test::SchedulerDriver;
+use Mesos::Test::SchedulerDriver::Interrupt;
 
 my $scheduler = Mesos::Test::Scheduler->new;
-my $schedulerDriver = Mesos::Test::SchedulerDriver->new(scheduler => $scheduler);
+my $schedulerDriver = Mesos::Test::SchedulerDriver::Interrupt->new(scheduler => $scheduler);
 test_dispatcher($scheduler, $schedulerDriver, 'scheduler');
 
 use Mesos::Test::Executor;
-use Mesos::Test::ExecutorDriver;
+use Mesos::Test::ExecutorDriver::Interrupt;
 my $executor = Mesos::Test::Executor->new;
-my $executorDriver = Mesos::Test::ExecutorDriver->new(executor => $executor);
+my $executorDriver = Mesos::Test::ExecutorDriver::Interrupt->new(executor => $executor);
 test_dispatcher($executor, $executorDriver, 'executor');
 
 
@@ -42,10 +42,8 @@ sub no_timeout {
 sub test_dispatcher {
     my ($process, $driver, $test_name) = @_;
 
-    ok no_timeout(cb => sub {$driver->dispatch_event}), "$test_name dispatch_event does not block";
-    ok !no_timeout(cb => sub {$driver->dispatch_loop}), "$test_name dispatch_loop blocks";
+    ok no_timeout(cb => sub {$driver->dispatch_events}), "$test_name dispatch_event does not block";
 
-    $driver->setup_watcher;
     my $ev1_cv = AE::cv;
     my @ev1 = qw(event_1 return_value_1);
     $process->create_method('event_1', sub {
@@ -57,9 +55,6 @@ sub test_dispatcher {
     ok no_timeout(cb => sub {$ev1_cv->recv}), "successfully recv'd $test_name event_1";
     is_deeply($process->return->{event_1}, [$driver, $ev1[1]], "$test_name event_1 passed expected args");
     undef $ev1_cv;
-
-
-    ok !no_timeout(cb => sub {$driver->dispatch_loop}), "no pending $test_name events after recv";
 
 
     my $ev2_cv = AE::cv;

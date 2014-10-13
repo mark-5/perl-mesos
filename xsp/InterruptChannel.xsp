@@ -47,10 +47,10 @@ mesos::perl::InterruptChannel::recv()
     OUTPUT:
         RETVAL
 
-void
-mesos::perl::InterruptChannel::send(mesos::perl::MesosCommand command)
-
-
 %}
+
+void send(mesos::perl::MesosCommand command);
+
+int size();
 
 };

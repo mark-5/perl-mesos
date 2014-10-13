@@ -23,11 +23,11 @@ no_leaks_ok {
 use Mesos::Channel::Pipe;
 no_leaks_ok {
     my $channel = Mesos::Channel::Pipe->new;
-} 'Mesos::Channel construction does not leak';
+} 'Mesos::Channel::Pipe construction does not leak';
 
 use Mesos::Messages;
-my $channel = Mesos::Channel::Pipe->new;
 no_leaks_ok {
+    my $channel = Mesos::Channel::Pipe->new;
     my $sent_command = "test command";
     my @sent_args = ('string',
                      [qw(array of strings)],
@@ -36,15 +36,24 @@ no_leaks_ok {
                   );
     $channel->send($sent_command, @sent_args);
     $channel->recv;
-} 'Mesos::Channel sent data without leak';
+} 'Mesos::Channel::Pipe sent data without leak';
+
+use Mesos::Channel::Interrupt;
+no_leaks_ok {
+    my $channel = Mesos::Channel::Interrupt->new(callback => sub {});
+} 'Mesos::Channel::Interrupt does not leak';
 
 no_leaks_ok {
-    my $driver = Mesos::SchedulerDriver->new(
-        scheduler => test_scheduler,
-        master    => test_master,
-        framework => test_framework,
-    );
-    my $channel = $driver->channel;
-} 'Mesos::Channel construction from driver does not leak';
+    my $channel = Mesos::Channel::Interrupt->new(callback => sub {});
+    my $sent_command = "test command";
+    my @sent_args = ('string',
+                     [qw(array of strings)],
+                     Mesos::FrameworkID->new({value => 'single'}),
+                     [Mesos::FrameworkID->new({value => 'an'}), Mesos::FrameworkID->new({value => 'array'})]
+                  );
+    $channel->send($sent_command, @sent_args);
+    $channel->recv;
+} 'Mesos::Channel::Interrupt sent data without leak';
+
 
 done_testing();

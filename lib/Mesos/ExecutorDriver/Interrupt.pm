@@ -17,7 +17,21 @@ sub _build_channel {
     return Mesos::Channel::Interrupt->new(callback => sub { $self->dispatch_events });
 }
 
-with 'Mesos::Role::ExecutorDriver';
+has process => (
+    is      => 'ro',
+    builder => 1,
+    lazy    => 1,
+);
+
+sub _build_process {
+    my ($self) = @_;
+    return $self->executor;
+}
+
+with qw(
+    Mesos::Role::ExecutorDriver
+    Mesos::Role::Dispatcher
+);
 
 
 sub xs_init {
@@ -28,14 +42,6 @@ sub xs_init {
 sub join {
     my ($self) = @_;
     sleep 1 while $self->status == Mesos::Status::DRIVER_RUNNING;
-}
-
-sub dispatch_events {
-    my ($self) = @_;
-    my $channel = $self->channel;
-    while (my ($event, @args) = $channel->recv) {
-        $self->executor->$event($self, @args);
-    }
 }
 
 1;

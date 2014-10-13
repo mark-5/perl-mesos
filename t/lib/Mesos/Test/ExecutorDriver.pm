@@ -29,7 +29,7 @@ sub BUILD {
     $self->channel($self->executor->channel);
 }
 
-with 'Mesos::Role::Dispatcher';
+with 'Mesos::Role::Dispatcher::AnyEvent';
 
 
 1;
