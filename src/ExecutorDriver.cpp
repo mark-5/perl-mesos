@@ -16,11 +16,6 @@ ExecutorDriver::~ExecutorDriver()
     delete proxyExecutor_;
 }
 
-MesosChannel* ExecutorDriver::get_proxy_channel()
-{
-    return proxyExecutor_->channel_;
-}
-
 Status ExecutorDriver::start()
 {
     return status_ = driver_->start();

@@ -4,11 +4,11 @@ use Moo::Role;
 use strict;
 use warnings;
 
-use Mesos::Channel;
+use Mesos::Channel::Pipe;
 
 has channel => (
     is      => 'ro',
-    default => sub { Mesos::Channel->new },
+    default => sub { Mesos::Channel::Pipe->new },
 );
 
 has return => (

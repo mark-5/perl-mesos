@@ -28,11 +28,6 @@ SchedulerDriver::~SchedulerDriver()
     delete proxyScheduler_;
 }
 
-MesosChannel* SchedulerDriver::get_proxy_channel()
-{
-    return proxyScheduler_->channel_;
-}
-
 Status SchedulerDriver::start()
 {
     return status_ = driver_->start();

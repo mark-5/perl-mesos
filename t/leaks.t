@@ -20,13 +20,13 @@ no_leaks_ok {
     );
 } 'Mesos::SchedulerDriver construction does not leak';
 
-use Mesos::Channel;
+use Mesos::Channel::Pipe;
 no_leaks_ok {
-    my $channel = Mesos::Channel->new;
+    my $channel = Mesos::Channel::Pipe->new;
 } 'Mesos::Channel construction does not leak';
 
 use Mesos::Messages;
-my $channel = Mesos::Channel->new;
+my $channel = Mesos::Channel::Pipe->new;
 no_leaks_ok {
     my $sent_command = "test command";
     my @sent_args = ('string',

@@ -22,13 +22,6 @@ _xs_init(SV* self, mesos::perl::MesosChannel* channel)
                              (const char*) driver, 0);
         }
 
-mesos::perl::MesosChannel*
-mesos::perl::ExecutorDriver::_channel()
-    CODE:
-        RETVAL = THIS->get_proxy_channel()->share();
-    OUTPUT:
-        RETVAL
-
 %}
 
 // for now, dont call the c++ destructor

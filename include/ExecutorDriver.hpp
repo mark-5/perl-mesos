@@ -20,8 +20,6 @@ public:
     ExecutorDriver(ProxyExecutor* proxyExecutor = (new ProxyExecutor));
     virtual ~ExecutorDriver();
 
-    MesosChannel* get_proxy_channel();
-
     virtual Status start();
     virtual Status stop();
     virtual Status abort();

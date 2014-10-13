@@ -3,6 +3,8 @@
 #include <MesosChannel.hpp>
 #include <mutex>
 
+typedef void (*interrupt_cb_t) (void *, int);
+
 namespace mesos        {
 namespace perl         {
 
@@ -11,15 +13,12 @@ class InterruptChannel : public MesosChannel
 public:
     std::queue<MesosCommand>* pending_;
 
-    typedef void (*interrupt_cb_t) (void *, int);
-
     InterruptChannel(interrupt_cb_t interrupt_cb = NULL, void* interrupt_arg = NULL);
     ~InterruptChannel();
     void send(const MesosCommand& command);
     const MesosCommand recv();
     MesosChannel* share();
     size_t size();
-    int fd (){ return -1; };
 
 private:
     int* count_;

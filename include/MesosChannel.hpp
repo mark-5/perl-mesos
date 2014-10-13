@@ -43,7 +43,6 @@ public:
     virtual const MesosCommand recv() = 0;
     virtual MesosChannel* share() = 0;
     virtual size_t size() = 0;
-    virtual int fd () = 0;
 };
 
 } // namespace perl {

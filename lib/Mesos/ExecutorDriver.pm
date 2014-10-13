@@ -49,9 +49,20 @@ sub _build_process {
     my ($self) = @_;
     return $self->executor;
 }
+
 # need to apply this after declaring channel and process
 with 'Mesos::Role::ExecutorDriver';
 with 'Mesos::Role::Dispatcher';
+
+after start => sub {
+    my ($self) = @_;
+    $self->dispatch_events;
+};
+
+after $_ => sub {
+    my ($self) = @_;
+    $self->stop_dispatch;
+} for qw(stop abort);
 
 
 1;

@@ -28,13 +28,6 @@ _xs_init(SV* self, mesos::FrameworkInfo framework, std::string master, mesos::pe
                              (const char*) driver, 0);
         }
 
-mesos::perl::MesosChannel*
-mesos::perl::SchedulerDriver::_channel()
-    CODE:
-        RETVAL = THIS->get_proxy_channel()->share();
-    OUTPUT:
-        RETVAL
-
 %}
 
 ~SchedulerDriver();
@@ -65,5 +58,3 @@ Status status()
     %code{% RETVAL = THIS->status_; %};
 
 };
-
-

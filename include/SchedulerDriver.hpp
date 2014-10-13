@@ -26,8 +26,6 @@ public:
                     ProxyScheduler* proxyScheduler = (new ProxyScheduler));
     virtual ~SchedulerDriver();
 
-    MesosChannel* get_proxy_channel();
-
     virtual Status start();
     virtual Status stop(bool failover = false);
     virtual Status abort();

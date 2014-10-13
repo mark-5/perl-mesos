@@ -35,16 +35,6 @@ has executor => (
     required => 1,
 );
 
-after start => sub {
-    my ($self) = @_;
-    $self->dispatch_events;
-};
-
-after $_ => sub {
-    my ($self) = @_;
-    $self->stop_dispatch;
-} for qw(stop abort);
-
 sub run {
     my ($self) = @_;
     $self->start;

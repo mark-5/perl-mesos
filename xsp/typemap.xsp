@@ -54,13 +54,14 @@
         if (!ext_magic) Perl_croak(aTHX_ \"$var has not been initialized by Mesos::Channel XS\");
         $var = ($type) ext_magic->mg_ptr;
     }%};
-    %xs_output_code{%{
-        HV* stash = gv_stashpv(\"Mesos::Channel\", GV_ADDWARN);
-        SV* attr_hash = (SV*) newHV();
-        sv_magic(attr_hash, Nullsv, PERL_MAGIC_ext,
-                         (const char*) $var, 0);
-        $arg = sv_bless(sv_2mortal(newRV_noinc(attr_hash)), stash);
-    }%};
+};
+
+%typemap{mesos::perl::PipeChannel*}{simple}{
+    %xs_type{O_MESOS_CHANNEL};
+};
+
+%typemap{mesos::perl::InterruptChannel*}{simple}{
+    %xs_type{O_MESOS_CHANNEL};
 };
 
 %typemap{mesos::perl::MesosCommand}{parsed}{

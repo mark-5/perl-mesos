@@ -40,6 +40,7 @@ for my $message (@messages) {
         from HashRef, via { $protobuf_class->new($_) };
 }
 
+class_type "Async::Interrupt";
 role_type  $_, {role => "Mesos::Role::$_"} for qw(Scheduler Executor SchedulerDriver ExecutorDriver Channel);
 
 

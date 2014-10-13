@@ -54,5 +54,15 @@ sub _build_process {
 with 'Mesos::Role::SchedulerDriver';
 with 'Mesos::Role::Dispatcher';
 
+after start => sub {
+    my ($self) = @_;
+    $self->dispatch_events;
+};
+
+after $_ => sub {
+    my ($self) = @_;
+    $self->stop_dispatch;
+} for qw(stop abort);
+
 
 1;

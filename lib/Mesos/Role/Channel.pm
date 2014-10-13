@@ -1,13 +1,10 @@
 package Mesos::Role::Channel;
 use strict;
 use warnings;
-use Mesos;
-use Mesos::Utils qw(import_methods);
 use Data::Dumper;
 use Carp;
 
 use Moo::Role;
-import_methods('Mesos::XS::Channel');
 
 
 requires qw(
