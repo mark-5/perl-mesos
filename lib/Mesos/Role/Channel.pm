@@ -6,14 +6,24 @@ use Carp;
 
 use Moo::Role;
 
-
 requires qw(
     xs_init
     recv
     send
+    size
 );
+
 sub BUILD { shift->xs_init(@_) }
 
+=head1 NAME
+
+Mesos::Role::Channel
+
+=head1 DESCRIPTION
+
+A role for channels between drivers and event handlers.
+
+=cut
 
 sub is_message_class_loaded {
     my ($type) = @_;
@@ -41,22 +51,13 @@ sub deserialize_channel_args {
 
 =head1 METHODS
 
-=over 4
-
-=item recv()
+=head2 recv()
 
     Main entry point to this class. Returns and deserializes any events logged by proxy schedulers or drivers.
     This is non-blocking and will immediately return undef if no events are queued.
 
     The first argument returned is the name of the event logged.
     The remaining return values are the arguments received from MesosSchedulerDriver.
-
-=item fd()
-
-    Return the underlying file descriptor for the read end of the channel.
-    Mainly used for passing to IO::Select or AnyEvent.
-
-=back
 
 =cut
 
@@ -72,5 +73,10 @@ around send => sub {
     return $self->$orig(\@args);
 };
 
+=head2 size()
+
+    Returns the number of pending events.
+
+=cut
 
 1;

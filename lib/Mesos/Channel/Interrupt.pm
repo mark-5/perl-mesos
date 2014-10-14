@@ -8,6 +8,24 @@ use Async::Interrupt;
 import_methods('Mesos::XS::InterruptChannel');
 with 'Mesos::Role::Channel';
 
+=head1 NAME
+
+Mesos::Channel::Interrupt
+
+=head1 DESCRIPTION
+
+The channel implementation for Async::Interrupt event handling.
+
+=head1 METHODS
+
+=head2 new(callback => $coderef)
+
+    my $channel = Mesos::Channel::Interrupt->new(
+        callback => $coderef, # required - perl callback for Async::Interrupt events
+    );
+
+=cut
+
 has interrupt => (
     is       => 'ro',
     isa      => AsyncInterrupt,

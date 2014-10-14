@@ -4,7 +4,11 @@ use AnyEvent;
 
 =head1 NAME
 
- Mesos::Role::Dispatcher::AnyEvent - role to dispatch events in an AnyEvent loop
+Mesos::Role::Dispatcher::AnyEvent
+
+=head1 DESCRIPTION
+
+Handle driver events in an AnyEvent loop.
 
 =cut
 
@@ -24,11 +28,6 @@ has loop_condvar => (
 
 =head1 METHODS
 
-=over 4
-
-=item dispatch_events()
-
-    Instantiates the channel's initial IO watcher.
 
 =cut
 
@@ -46,7 +45,7 @@ sub setup_watcher {
     $self->watcher($w);
 }
 
-=item dispatch_loop()
+=head2 dispatch_loop()
 
     Enter into the AnyEvent loop. The loop can be broke by calling stop_dispatch.
 
@@ -59,7 +58,7 @@ sub dispatch_loop {
     $condvar->recv;
 }
 
-=item stop_dispatch()
+=head2 stop_dispatch()
 
     If in the middle of a dispatch loop, this will delete the condvar used, and break the loop.
 
@@ -71,8 +70,5 @@ sub stop_dispatch {
     $self->loop_condvar->send if $self->has_loop_condvar;
 }
 
-=back
-
-=cut
 
 1;

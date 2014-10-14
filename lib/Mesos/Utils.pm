@@ -2,7 +2,21 @@ package Mesos::Utils;
 use parent 'Exporter';
 use Package::Stash;
 
+=head1 NAME
+
+Mesos::Utils
+
+=head1 FUNCTIONS
+
+=cut
+
 our @EXPORT_OK = qw(import_methods);
+
+=head2 import_methods($from_class)
+
+Import methods into the caller namespace. Primarily used to add XS methods to a role.
+
+=cut
 
 sub import_methods {
     my $to_class = caller;

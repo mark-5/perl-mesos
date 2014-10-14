@@ -4,6 +4,16 @@ use Mesos::Types qw(Channel);
 use Mesos::Messages;
 use Moo;
 
+=head1 NAME
+
+Mesos::ExecutorDriver::Interrupt
+
+=head1 DESCRIPTION
+
+An ExecutorDriver that uses Async::Interrupt for event handling.
+
+=cut
+
 has channel => (
     is       => 'ro',
     isa      => Channel,
