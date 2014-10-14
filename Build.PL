@@ -15,6 +15,7 @@ my $build = Module::Build::WithXSpp->new(
         'Test::LeakTrace' => 0,
     },
     requires        => {
+        'version'          => 0,
         'AnyEvent'         => 0,
         'Exporter'         => 0,
         'Moo'              => 1.006000,

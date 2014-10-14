@@ -1,3 +1,6 @@
+1.05.1 - 2014-10-13
+  - added Async::Interrupt drivers
+
 1.04 - 2014-09-24
   - added Mesos::Types type library
   - added Mesos::Types param validation to driver methods
