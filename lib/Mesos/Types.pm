@@ -23,6 +23,7 @@ use Mesos::Messages;
 my @messages = qw(
     Credential
     ExecutorID
+    ExecutorInfo
     Filters
     FrameworkInfo
     OfferID

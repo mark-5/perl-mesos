@@ -1,16 +1,15 @@
 #!/usr/bin/perl
 package TestScheduler;
-use Moo;
-use strict;
-use warnings;
-extends 'Mesos::Scheduler';
 use Mesos::Messages;
+use Mesos::Types qw(ExecutorInfo TaskInfo);
+use Moo;
+extends 'Mesos::Scheduler';
 
 has TOTAL_TASKS => (is => 'ro', default => 5);
 has TOTAL_CPUS => (is => 'ro', default => 1);
 has TASK_MEM => (is => 'ro', default => 32);
 
-has executor => (is => 'ro');
+has executor => (is => 'ro', isa => ExecutorInfo, coerce => 1);
 has taskData => (is => 'rw', default => sub { {} });
 has tasksLaunched => (is => 'rw', default => 0);
 has tasksFinished => (is => 'rw', default => 0);
@@ -33,7 +32,7 @@ sub resourceOffers {
             $self->tasksLaunched($self->tasksLaunched + 1);
             printf "Accepting offer on %s to start task %d\n", $offer->{hostname}, $tid;
             
-            my $task = Mesos::TaskInfo->new({
+            my $task = TaskInfo->new({
                 task_id   => {value => $tid},
                 slave_id  => $offer->{slave_id},
                 name      => "task $tid",
@@ -111,16 +110,16 @@ use strict;
 use warnings;
 use Cwd qw(abs_path);
 use FindBin qw($Bin);
-use Mesos::Messages;
+use Mesos::Types qw(ExecutorInfo FrameworkInfo);
 use Mesos::SchedulerDriver;
 my $master = shift or die "Usage: $0 master\n";
 
-my $executor = Mesos::ExecutorInfo->new({
+my $executor = ExecutorInfo->new({
     executor_id => {value => "default"},
     command     => {value => abs_path("$Bin/test_executor.pl")},
 });
 
-my $framework = Mesos::FrameworkInfo->new({
+my $framework = FrameworkInfo->new({
     user => "",
     name => "Test Framework (Perl)",    
 });
