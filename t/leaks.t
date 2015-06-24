@@ -2,16 +2,11 @@
 use strict;
 use warnings;
 use FindBin::libs;
-use Test::More;
+use Mesos::SchedulerDriver;
 use Mesos::Test::Utils;
-
-BEGIN {
-    plan skip_all => 'require Test::LeakTrace'
-        unless eval{ require Test::LeakTrace };
-}
+use Test::More;
 use Test::LeakTrace;
 
-use Mesos::SchedulerDriver;
 no_leaks_ok {
     my $driver = Mesos::SchedulerDriver->new(
         scheduler => test_scheduler,
@@ -20,40 +15,34 @@ no_leaks_ok {
     );
 } 'Mesos::SchedulerDriver construction does not leak';
 
-use Mesos::Channel::Pipe;
+use Mesos::Channel;
 no_leaks_ok {
-    my $channel = Mesos::Channel::Pipe->new;
-} 'Mesos::Channel::Pipe construction does not leak';
+    my $channel = Mesos::Channel->new;
+} 'Mesos::Channel construction does not leak';
 
 use Mesos::Messages;
 no_leaks_ok {
-    my $channel = Mesos::Channel::Pipe->new;
+    my $channel = Mesos::Channel->new;
     my $sent_command = "test command";
-    my @sent_args = ('string',
-                     [qw(array of strings)],
-                     Mesos::FrameworkID->new({value => 'single'}),
-                     [Mesos::FrameworkID->new({value => 'an'}), Mesos::FrameworkID->new({value => 'array'})]
-                  );
+    my @sent_args = (
+        'string',
+        [qw(array of strings)],
+        Mesos::FrameworkID->new({value => 'single'}),
+        [Mesos::FrameworkID->new({value => 'an'}), Mesos::FrameworkID->new({value => 'array'})]
+    );
     $channel->send($sent_command, @sent_args);
     $channel->recv;
-} 'Mesos::Channel::Pipe sent data without leak';
+} 'Mesos::Channel sent data without leak';
 
-use Mesos::Channel::Interrupt;
+use Mesos::Dispatcher::AnyEvent;
 no_leaks_ok {
-    my $channel = Mesos::Channel::Interrupt->new(callback => sub {});
-} 'Mesos::Channel::Interrupt does not leak';
+    my $channel = Mesos::Dispatcher::AnyEvent->new;
+} 'Mesos::Dispatcher::AnyEvent does not leak';
 
+use Mesos::Dispatcher::Interrupt;
 no_leaks_ok {
-    my $channel = Mesos::Channel::Interrupt->new(callback => sub {});
-    my $sent_command = "test command";
-    my @sent_args = ('string',
-                     [qw(array of strings)],
-                     Mesos::FrameworkID->new({value => 'single'}),
-                     [Mesos::FrameworkID->new({value => 'an'}), Mesos::FrameworkID->new({value => 'array'})]
-                  );
-    $channel->send($sent_command, @sent_args);
-    $channel->recv;
-} 'Mesos::Channel::Interrupt sent data without leak';
+    my $channel = Mesos::Dispatcher::Interrupt->new;
+} 'Meso::Dispatcher::Interrupt does not leak';
 
 
 done_testing();

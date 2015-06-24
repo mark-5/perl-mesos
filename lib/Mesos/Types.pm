@@ -1,6 +1,12 @@
 package Mesos::Types;
 use strict;
 use warnings;
+use Mesos::Messages;
+use Module::Runtime qw(require_module);
+use Type::Library
+   -base;
+use Types::Standard -types;
+use Type::Utils -all;
 
 =head1 NAME
 
@@ -13,12 +19,6 @@ This includes driver classes, all message classes used by drivers, and Mesos::Ex
 Coercions are also provided for message classes, from hash ref constructors.
 
 =cut
-
-use Type::Library
-   -base;
-use Type::Utils -all;
-use Types::Standard -types;
-use Mesos::Messages;
 
 my @messages = qw(
     Credential
@@ -42,9 +42,22 @@ for my $message (@messages) {
 }
 
 class_type "Async::Interrupt";
-role_type  $_, {role => "Mesos::Role::$_"} for qw(Scheduler Executor SchedulerDriver ExecutorDriver Channel);
+declare $_, as InstanceOf["Mesos::$_"] for qw(
+    Channel
+    Dispatcher
+    Executor
+    ExecutorDriver
+    Scheduler
+    SchedulerDriver
+);
 
+coerce "Dispatcher",
+    from Str, via {
+        my ($class) = @_;
+        $class = "Mesos::Dispatcher::$class" unless $class =~ s/^\+//;
+        require_module($class);
+        return $class->new;
+    };
 
 __PACKAGE__->meta->make_immutable;
-
 1;

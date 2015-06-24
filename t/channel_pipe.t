@@ -3,11 +3,9 @@ use strict;
 use warnings;
 use FindBin::libs;
 use Test::More;
-use Mesos::Channel::Pipe;
+use Mesos::Channel;
 
-my $channel = Mesos::Channel::Pipe->new;
-like($channel->fd, qr/^\d+$/, 'channel fd returned int');
-
+my $channel = Mesos::Channel->new;
 is($channel->recv, undef, 'returned undef on empty recv');
 
 my $sent_command = "test command";

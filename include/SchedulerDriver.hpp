@@ -3,7 +3,7 @@
 
 #include <mesos/scheduler.hpp>
 #include <ProxyScheduler.hpp>
-#include <MesosChannel.hpp>
+#include <CommandChannel.hpp>
 #include <memory>
 
 using namespace mesos;
@@ -19,11 +19,11 @@ public:
 
     SchedulerDriver(const FrameworkInfo& framework,
                     const std::string& master,
-                    ProxyScheduler* proxyScheduler = (new ProxyScheduler));
+                    ProxyScheduler* proxyScheduler);
     SchedulerDriver(const FrameworkInfo& framework,
                     const std::string& master,
                     const Credential& credential,
-                    ProxyScheduler* proxyScheduler = (new ProxyScheduler));
+                    ProxyScheduler* proxyScheduler);
     virtual ~SchedulerDriver();
 
     virtual Status start();

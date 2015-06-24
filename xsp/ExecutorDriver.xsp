@@ -3,24 +3,21 @@
 #include <ProxyExecutor.hpp>
 #include <XS/MesosUtils.hpp>
 #include <string>
-#include <vector>
 
 
-%name{Mesos::XS::ExecutorDriver} class mesos::perl::ExecutorDriver
+%name{Mesos::ExecutorDriver} class mesos::perl::ExecutorDriver
 {
 
 %{
 
 static void
-_xs_init(SV* self, mesos::perl::MesosChannel* channel)
+_xs_init(SV* self, mesos::perl::CommandDispatcher* dispatcher)
     PPCODE:
-        if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
-            // make sure channel ref gets incremented
-            mesos::perl::ProxyExecutor* proxy = new mesos::perl::ProxyExecutor(channel->share());
-            mesos::perl::ExecutorDriver* driver = new mesos::perl::ExecutorDriver(proxy);
-            sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
-                             (const char*) driver, 0);
-        }
+        if (!SvROK(self) || (SvTYPE(SvRV(self)) != SVt_PVHV)) XSRETURN_EMPTY;
+
+        mesos::perl::ProxyExecutor* proxy = new mesos::perl::ProxyExecutor(dispatcher);
+        mesos::perl::ExecutorDriver* driver = new mesos::perl::ExecutorDriver(proxy);
+        sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext, (const char*) driver, 0);
 
 %}
 

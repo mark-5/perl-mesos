@@ -1,68 +1,137 @@
 package Mesos::SchedulerDriver;
-use Mesos;
-use Mesos::Messages;
-use Mesos::Channel;
-use Moo;
-use Types::Standard qw(:all);
-use Type::Params qw(validate);
+use Mesos::XS;
 use Mesos::Types qw(:all);
-use strict;
-use warnings;
+use Type::Params qw(validate);
+use Types::Standard qw(:all);
+use Moo;
+with 'Mesos::Role::HasDispatcher';
 
 =head1 NAME
 
-Mesos::SchedulerDriver - perl driver for Mesos scheduler drivers
+Mesos::SchedulerDriver - base clas for Mesos scheduler drivers
 
 =cut
 
-sub xs_init {
-    my ($self) = @_;
-    return $self->_xs_init(grep {$_} map {$self->$_} qw(framework master channel credential));
-}
+has credential => (
+    is     => 'ro',
+    isa    => Credential,
+    coerce => 1,
+);
 
-sub join {
-    my ($self) = @_;
-    $self->dispatch_loop;
-    return $self->status;
-}
-
-has channel => (
+has framework => (
     is       => 'ro',
-    isa      => Channel,
-    builder  => 1,
-    # this needs to be lazy so that BUILD runs xs_init first
-    lazy     => 1,
+    isa      => FrameworkInfo,
+    coerce   => 1,
+    required => 1,
 );
 
-sub _build_channel {
-    require Mesos::Channel::Pipe;
-    return Mesos::Channel::Pipe->new;
-}
-
-has process => (
-    is      => 'ro',
-    builder => 1,
-    lazy    => 1,
+has master => (
+    is       => 'ro',
+    isa      => Str,
+    required => 1,
 );
 
-sub _build_process {
+has scheduler => (
+    is       => 'ro',
+    isa      => Scheduler,
+    required => 1,
+);
+sub event_handler { shift->scheduler }
+
+sub run {
     my ($self) = @_;
-    return $self->scheduler;
+    $self->start;
+    $self->join;
 }
 
-# need to apply this after declaring channel and process
-with 'Mesos::Role::SchedulerDriver';
-with 'Mesos::Role::Dispatcher::AnyEvent';
-
-after start => sub {
-    my ($self) = @_;
-    $self->setup_watcher;
+around requestResources => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate \@args, ArrayRef[Request]);
 };
 
-after $_ => sub {
-    my ($self) = @_;
-    $self->stop_dispatch;
-} for qw(stop abort);
+around launchTasks => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(
+        validate \@args,
+        ArrayRef[OfferID],
+        ArrayRef[TaskInfo],
+        Optional[Filters],
+    );
+};
 
+around launchTask => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(
+        validate \@args,
+        OfferID,
+        ArrayRef[TaskInfo],
+        Optional[Filters],
+    );
+};
+
+around killTask => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate \@args, TaskID);
+};
+
+around declineOffer => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate \@args, OfferID, Optional[Filters]);
+};
+
+around sendFrameworkMessage => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate \@args, ExecutorID, SlaveID, Str);
+};
+
+around reconcileTasks => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate \@args, ArrayRef[TaskStatus]);
+};
+
+sub BUILD {
+    my ($self) = @_;
+
+    my @xs_args = map $self->$_, qw(dispatcher framework master);
+    push @xs_args, $self->credential if $self->credential;
+
+    $self->_xs_init(@xs_args);
+}
+
+=head1 METHODS
+
+=over 4
+
+=item new(scheduler => $scheduler, framework => $frameworkInfo, master => $master, credentials => $credentials)
+
+=item start()
+
+=item stop($failover)
+
+=item abort()
+
+=item join()
+
+=item run()
+
+=item requestResources($requests)
+
+=item launchTasks($offerIds, $tasks, $filters)
+
+=item launchTask($offerId, $tasks, $filters)
+
+=item killTask($taskId)
+
+=item declineOffer($offerId, $filters)
+
+=item reviveOffers()
+
+=item sendFrameworkMessage($executorId, $slaveId, $data)
+
+=item reconcileTasks($statuses)
+
+=back
+
+=cut
 
 1;

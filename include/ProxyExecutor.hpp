@@ -1,10 +1,10 @@
 #ifndef PROXY_EXECUTOR_HPP_
 #define PROXY_EXECUTOR_HPP_
+#include <mesos/executor.hpp>
+#include <CommandDispatcher.hpp>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include <mesos/executor.hpp>
-#include <PipeChannel.hpp>
 
 using namespace mesos;
 
@@ -14,9 +14,9 @@ namespace perl {
 class ProxyExecutor : public Executor
 {
 public:
-    MesosChannel* channel_;
+    CommandDispatcher* dispatcher_;
 
-    ProxyExecutor(MesosChannel* channel = (new PipeChannel)): channel_(channel) {};
+    ProxyExecutor(CommandDispatcher* dispatcher);
     virtual ~ProxyExecutor(){};
 
     virtual void registered(ExecutorDriver* driver,

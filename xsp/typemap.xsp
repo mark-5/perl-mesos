@@ -5,63 +5,56 @@
 %typemap{Status}{parsed}{
     %xs_type{T_ENUM};
 };
+%typemap{size_t}{parsed}{
+    %xs_type{T_UV};
+};
 
 %typemap{mesos::perl::SchedulerDriver*}{simple}{
     %xs_type{O_SCHEDULER_DRIVER};
-    %xs_input_code{%{ 
-        if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVHV))
-            Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\"); 
-        SV* tied_hash = SvRV($arg); 
-        MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext); 
-        if (!ext_magic) Perl_croak(aTHX_ \"$var has not been initialized by Mesos::XS::SchedulerDriver\");
-        $var = ($type) ext_magic->mg_ptr; 
-    }%}; 
-    %xs_output_code{%{ 
-        HV* stash = gv_stashpv(\"Mesos::SchedulerDriver\", GV_ADDWARN); 
-        SV* attr_hash = (SV*) newHV(); 
-        sv_magic(attr_hash, Nullsv, PERL_MAGIC_ext, 
-                         (const char*) $var, 0); 
-        $arg = sv_bless(sv_2mortal(newRV_noinc(attr_hash)), stash); 
-    }%}; 
+    %xs_input_code{%{
+        $var = ($type) tied_object_to_ptr(aTHX_ $arg, \"$var\", \"Mesos::SchedulerDriver\");
+    }%};
+    %xs_output_code{%{
+        $arg = ptr_to_tied_object(aTHX_ (void*) $var, \"Mesos::SchedulerDriver\\");
+    }%};
 };
 
 %typemap{mesos::perl::ExecutorDriver*}{simple}{
     %xs_type{O_EXECUTOR_DRIVER};
-    %xs_input_code{%{ 
-        if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVHV))
-            Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\"); 
-        SV* tied_hash = SvRV($arg); 
-        MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext); 
-        if (!ext_magic) Perl_croak(aTHX_ \"$var has not been initialized by Mesos::XS::ExecutorDriver\");
-        $var = ($type) ext_magic->mg_ptr; 
-    }%}; 
-    %xs_output_code{%{ 
-        HV* stash = gv_stashpv(\"Mesos::ExecutorDriver\", GV_ADDWARN); 
-        SV* attr_hash = (SV*) newHV(); 
-        sv_magic(attr_hash, Nullsv, PERL_MAGIC_ext, 
-                         (const char*) $var, 0); 
-        $arg = sv_bless(sv_2mortal(newRV_noinc(attr_hash)), stash); 
-    }%}; 
-};
-
-%typemap{mesos::perl::MesosChannel*}{simple}{
-    %xs_type{O_MESOS_CHANNEL};
     %xs_input_code{%{
-        if (!SvROK($arg) || !(SvTYPE(SvRV($arg)) == SVt_PVHV))
-            Perl_croak(aTHX_ \"$var is not a blessed reference of type ${ntype}\");
-        SV* tied_hash = SvRV($arg);
-        MAGIC* ext_magic = mg_find(tied_hash, PERL_MAGIC_ext);
-        if (!ext_magic) Perl_croak(aTHX_ \"$var has not been initialized by Mesos XS\");
-        $var = ($type) ext_magic->mg_ptr;
+        $var = ($type) tied_object_to_ptr(aTHX_ $arg, \"$var\", \"Mesos::ExecutorDriver\");
+    }%};
+    %xs_output_code{%{
+        $arg = ptr_to_tied_object(aTHX_ (void*) $var, \"Mesos::ExecutorDriver\\");
     }%};
 };
 
-%typemap{mesos::perl::PipeChannel*}{simple}{
-    %xs_type{O_MESOS_CHANNEL};
+%typemap{mesos::perl::CommandChannel*}{simple}{
+    %xs_type{O_COMMAND_CHANNEL};
+    %xs_input_code{%{
+        $var = ($type) tied_object_to_ptr(aTHX_ $arg, \"$var\", \"Mesos::Channel\");
+    }%};
+    %xs_output_code{%{
+        $arg = ptr_to_tied_object(aTHX_ (void*) $var, \"Mesos::Channel\");
+    }%};
 };
 
-%typemap{mesos::perl::InterruptChannel*}{simple}{
-    %xs_type{O_MESOS_CHANNEL};
+%typemap{mesos::perl::CommandDispatcher*}{simple}{
+    %xs_type{O_COMMAND_DISPATCHER};
+    %xs_input_code{%{
+        $var = ($type) tied_object_to_ptr(aTHX_ $arg, \"$var\", \"Mesos::Dispatcher\");
+    }%};
+    %xs_output_code{%{
+        $arg = ptr_to_tied_object(aTHX_ (void*) $var, \"Mesos::Dispatcher\");
+    }%};
+};
+
+%typemap{mesos::perl::PipeDispatcher*}{simple}{
+    %xs_type{O_COMMAND_DISPATCHER};
+};
+
+%typemap{mesos::perl::InterruptDispatcher*}{simple}{
+    %xs_type{O_COMMAND_DISPATCHER};
 };
 
 %typemap{mesos::perl::MesosCommand}{parsed}{
@@ -96,42 +89,42 @@
     %xs_type{O_MESOS_FRAMEWORKINFO};
     %xs_input_code{%{
         $var = ($type) toMsg<mesos::FrameworkInfo>($arg);
-    }%};   
+    }%};
 };
 
 %typemap{mesos::Credential}{parsed}{
     %xs_type{O_MESOS_CREDENTIAL};
     %xs_input_code{%{
         $var = ($type) toMsg<mesos::Credential>($arg);
-    }%};   
+    }%};
 };
 
 %typemap{mesos::Filters}{parsed}{
     %xs_type{O_MESOS_FILTERS};
     %xs_input_code{%{
         $var = ($type) toMsg<mesos::Filters>($arg);
-    }%};   
+    }%};
 };
 
 %typemap{mesos::OfferID}{parsed}{
     %xs_type{O_MESOS_OFFERID};
     %xs_input_code{%{
         $var = ($type) toMsg<mesos::OfferID>($arg);
-    }%};   
+    }%};
 };
 
 %typemap{mesos::TaskID}{parsed}{
     %xs_type{O_MESOS_TASKID};
     %xs_input_code{%{
         $var = ($type) toMsg<mesos::TaskID>($arg);
-    }%};   
+    }%};
 };
 
 %typemap{mesos::ExecutorID}{parsed}{
     %xs_type{O_MESOS_EXECUTORID};
     %xs_input_code{%{
         $var = ($type) toMsg<mesos::ExecutorID>($arg);
-    }%};   
+    }%};
 };
 
 
@@ -139,14 +132,14 @@
     %xs_type{O_MESOS_SLAVEID};
     %xs_input_code{%{
         $var = ($type) toMsg<mesos::SlaveID>($arg);
-    }%};   
+    }%};
 };
 
 %typemap{mesos::TaskStatus}{parsed}{
     %xs_type{O_MESOS_TASKSTATUS};
     %xs_input_code{%{
         $var = ($type) toMsg<mesos::TaskStatus>($arg);
-    }%};   
+    }%};
 };
 
 
@@ -154,7 +147,7 @@
     %xs_type{O_MESOS_REQUEST_VEC};
     %xs_input_code{%{
         $var = ($type) toMsgVec<mesos::Request>($arg);
-    }%};   
+    }%};
 };
 
 
@@ -162,20 +155,20 @@
     %xs_type{O_MESOS_OFFERID_VEC};
     %xs_input_code{%{
         $var = ($type) toMsgVec<mesos::OfferID>($arg);
-    }%};   
+    }%};
 };
 
 %typemap{std::vector<mesos::TaskInfo>}{parsed}{
     %xs_type{O_MESOS_TASKINFO_VEC};
     %xs_input_code{%{
         $var = ($type) toMsgVec<mesos::TaskInfo>($arg);
-    }%};   
+    }%};
 };
 
 %typemap{std::vector<mesos::TaskStatus>}{parsed}{
     %xs_type{O_MESOS_TASKSTATUS_VEC};
     %xs_input_code{%{
         $var = ($type) toMsgVec<mesos::TaskStatus>($arg);
-    }%};   
+    }%};
 };
 

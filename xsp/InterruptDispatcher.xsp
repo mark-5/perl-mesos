@@ -1,0 +1,30 @@
+%module{Mesos};
+#include <CommandChannel.hpp>
+#include <InterruptDispatcher.hpp>
+#include <XS/MesosUtils.hpp>
+
+
+%name{Mesos::Dispatcher::Interrupt} class mesos::perl::InterruptDispatcher
+{
+
+%{
+
+static void
+_xs_init(self, channel, interrupt_cb, interrupt_arg)
+        SV*                          self
+        mesos::perl::CommandChannel* channel
+        void*                        interrupt_cb
+        void*                        interrupt_arg
+    PPCODE:
+        if (!SvROK(self) || (SvTYPE(SvRV(self)) != SVt_PVHV)) XSRETURN_EMPTY;
+
+        mesos::perl::InterruptDispatcher* dispatcher = new mesos::perl::InterruptDispatcher(channel, (interrupt_cb_t) interrupt_cb, interrupt_arg);
+        sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext, (const char*) dispatcher, 0);
+
+%}
+
+mesos::perl::MesosCommand recv();
+
+void send(mesos::perl::MesosCommand command);
+
+};

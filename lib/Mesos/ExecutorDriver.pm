@@ -1,68 +1,68 @@
 package Mesos::ExecutorDriver;
-use Mesos::Messages;
-use Mesos::Channel;
-use Moo;
-use Types::Standard qw(Str);
-use Type::Params qw(validate);
+use Mesos::XS;
 use Mesos::Types qw(:all);
-use strict;
-use warnings;
+use Type::Params qw(validate);
+use Types::Standard qw(Str);
+use Moo;
+with 'Mesos::Role::HasDispatcher';
 
 =head1 NAME
 
-Mesos::ExecutorDriver - perl driver for Mesos executor drivers
+Mesos::ExecutorDriver - base class for Mesos executor drivers
 
 =cut
 
-sub xs_init {
-    my ($self) = @_;
-    return $self->_xs_init($self->channel);
-}
-
-sub join {
-    my ($self) = @_;
-    $self->dispatch_loop;
-    return $self->status;
-}
-
-has channel => (
+has executor => (
     is       => 'ro',
-    isa      => Channel,
-    builder  => 1,
-    # this needs to be lazy so that BUILD runs xs_init first
-    lazy     => 1,
+    isa      => Executor,
+    required => 1,
 );
+sub event_handler { shift->executor }
 
-sub _build_channel {
-    require Mesos::Channel::Pipe;
-    return Mesos::Channel::Pipe->new;
+sub run {
+    my ($self) = @_;
+    $self->start;
+    $self->join;
 }
 
-
-has process => (
-    is      => 'ro',
-    builder => 1,
-    lazy    => 1,
-);
-
-sub _build_process {
-    my ($self) = @_;
-    return $self->executor;
-}
-
-# need to apply this after declaring channel and process
-with 'Mesos::Role::ExecutorDriver';
-with 'Mesos::Role::Dispatcher::AnyEvent';
-
-after start => sub {
-    my ($self) = @_;
-    $self->setup_watcher;
+around sendStatusUpdate => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate \@args, TaskStatus);
 };
 
-after $_ => sub {
+around sendFrameworkMessage => sub {
+    my ($orig, $self, @args) = @_;
+    return $self->$orig(validate \@args, Str);
+};
+
+sub BUILD {
     my ($self) = @_;
-    $self->stop_dispatch;
-} for qw(stop abort);
+    $self->_xs_init($self->dispatcher);
+}
+
+=head1 METHODS
+
+=over 4
+
+=item new(executor => $executor)
+
+=item Status start()
+
+=item Status stop()
+
+=item Status abort()
+
+=item Status join()
+
+=item Status run()
+
+=item Status sendStatusUpdate($status)
+
+=item Status sendFrameworkMessage($data)
+
+=back
+
+=cut
 
 
 1;

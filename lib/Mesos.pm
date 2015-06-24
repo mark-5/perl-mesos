@@ -1,6 +1,14 @@
 package Mesos;
 use strict;
 use warnings;
+use Exporter 5.57 'import';
+use version;
+
+our $VERSION = qv( 1.05.1 );
+
+our %EXPORT_TAGS = ( 'all' => [] );
+our @EXPORT_OK   = ( @{ $EXPORT_TAGS{'all'} } );
+
 
 =pod
 
@@ -95,14 +103,5 @@ More information about Apache Mesos, projects using Mesos, or the underlying Mes
 Mark Flickinger E<lt>maf@cpan.orgE<gt>
 
 =cut
-
-use XSLoader;
-use Exporter 5.57 'import';
-
-use version; our $VERSION = qv( 1.05.1 );
-our %EXPORT_TAGS = ( 'all' => [] );
-our @EXPORT_OK   = ( @{ $EXPORT_TAGS{'all'} } );
-
-XSLoader::load('Mesos', $VERSION);
 
 1;

@@ -1,9 +1,6 @@
 package Mesos::Executor;
+use Mesos::Messages;
 use Moo;
-use strict;
-use warnings;
-
-with 'Mesos::Role::Executor';
 
 sub registered {}
 sub reregistered {}

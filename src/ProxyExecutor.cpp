@@ -3,6 +3,12 @@
 namespace mesos {
 namespace perl {
 
+ProxyExecutor::ProxyExecutor(CommandDispatcher* dispatcher)
+: dispatcher_(dispatcher)
+{
+
+}
+
 void ProxyExecutor::registered(ExecutorDriver* driver,
                                const ExecutorInfo& executorInfo,
                                const FrameworkInfo& frameworkInfo,
@@ -12,7 +18,7 @@ void ProxyExecutor::registered(ExecutorDriver* driver,
     PUSH_MSG(args, executorInfo, "ExecutorInfo");
     PUSH_MSG(args, frameworkInfo, "FrameworkInfo");
     PUSH_MSG(args, slaveInfo, "SlaveInfo");
-    channel_->send( MesosCommand("registered", args) );
+    dispatcher_->send( MesosCommand("registered", args) );
 }
 
 void ProxyExecutor::reregistered(ExecutorDriver* driver,
@@ -20,21 +26,21 @@ void ProxyExecutor::reregistered(ExecutorDriver* driver,
 {
     CommandArgs args;
     PUSH_MSG(args, slaveInfo, "SlaveInfo");
-    channel_->send( MesosCommand("reregistered", args) );
+    dispatcher_->send( MesosCommand("reregistered", args) );
 }
 
 void ProxyExecutor::disconnected(ExecutorDriver* driver)
 {
     CommandArgs args;
-    channel_->send( MesosCommand("disconnected", args) );
+    dispatcher_->send( MesosCommand("disconnected", args) );
 }
 
 void ProxyExecutor::launchTask(ExecutorDriver* driver,
-                              const TaskInfo& task)
+                               const TaskInfo& task)
 {
     CommandArgs args;
     PUSH_MSG(args, task, "TaskInfo");
-    channel_->send( MesosCommand("launchTask", args) );
+    dispatcher_->send( MesosCommand("launchTask", args) );
 
 }
 
@@ -42,7 +48,7 @@ void ProxyExecutor::killTask(ExecutorDriver* driver, const TaskID& taskId)
 {
     CommandArgs args;
     PUSH_MSG(args, taskId, "TaskID");
-    channel_->send( MesosCommand("killTask", args) );
+    dispatcher_->send( MesosCommand("killTask", args) );
 }
 
 void ProxyExecutor::frameworkMessage(ExecutorDriver* driver,
@@ -50,20 +56,20 @@ void ProxyExecutor::frameworkMessage(ExecutorDriver* driver,
 {
     CommandArgs args;
     args.push_back(CommandArg(data));
-    channel_->send( MesosCommand("frameworkMessage", args) );
+    dispatcher_->send( MesosCommand("frameworkMessage", args) );
 }
 
 void ProxyExecutor::shutdown(ExecutorDriver* driver)
 {
     CommandArgs args;
-    channel_->send( MesosCommand("shutdown", args) );
+    dispatcher_->send( MesosCommand("shutdown", args) );
 }
 
 void ProxyExecutor::error(ExecutorDriver* driver, const std::string& message)
 {
     CommandArgs args;
     args.push_back(CommandArg(message));
-    channel_->send( MesosCommand("error", args) );
+    dispatcher_->send( MesosCommand("error", args) );
 }
 
 

@@ -3,7 +3,7 @@
 
 #include <mesos/executor.hpp>
 #include <ProxyExecutor.hpp>
-#include <MesosChannel.hpp>
+#include <CommandChannel.hpp>
 #include <memory>
 
 using namespace mesos;
@@ -17,7 +17,7 @@ public:
     Status status_;
     ProxyExecutor* proxyExecutor_;
 
-    ExecutorDriver(ProxyExecutor* proxyExecutor = (new ProxyExecutor));
+    ExecutorDriver(ProxyExecutor* proxyExecutor);
     virtual ~ExecutorDriver();
 
     virtual Status start();

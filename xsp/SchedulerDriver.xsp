@@ -6,28 +6,30 @@
 #include <vector>
 
 
-%name{Mesos::XS::SchedulerDriver} class mesos::perl::SchedulerDriver
+%name{Mesos::SchedulerDriver} class mesos::perl::SchedulerDriver
 {
 
 %{
 
 static void
-_xs_init(SV* self, mesos::FrameworkInfo framework, std::string master, mesos::perl::MesosChannel* channel, ...)
+_xs_init(self, dispatcher, framework, master, ...)
+        SV*                             self
+        mesos::perl::CommandDispatcher* dispatcher
+        mesos::FrameworkInfo            framework
+        std::string                     master
     PPCODE:
-        if (SvROK(self) && SvTYPE(SvRV(self)) == SVt_PVHV) {
-            mesos::perl::SchedulerDriver* driver;
-            // make sure channel ref gets incremented
-            mesos::perl::ProxyScheduler* proxy = new mesos::perl::ProxyScheduler(channel->share());
-            if (items > 4) {
-                mesos::Credential credential( toMsg<mesos::Credential>(ST(4)) );
-                driver = new mesos::perl::SchedulerDriver(framework, master, credential, proxy);
-            } else {
-                driver = new mesos::perl::SchedulerDriver(framework, master, proxy);
-            }
-            sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext,
-                             (const char*) driver, 0);
+        if (!SvROK(self) || (SvTYPE(SvRV(self)) != SVt_PVHV)) XSRETURN_EMPTY;
+
+        mesos::perl::SchedulerDriver* driver;
+        mesos::perl::ProxyScheduler* proxy = new mesos::perl::ProxyScheduler(dispatcher);
+        if (items > 4) {
+            mesos::Credential credential( toMsg<mesos::Credential>(ST(4)) );
+            driver = new mesos::perl::SchedulerDriver(framework, master, credential, proxy);
+        } else {
+            driver = new mesos::perl::SchedulerDriver(framework, master, proxy);
         }
 
+        sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext, (const char*) driver, 0);
 %}
 
 ~SchedulerDriver();
