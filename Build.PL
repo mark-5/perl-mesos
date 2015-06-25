@@ -7,23 +7,23 @@ my @mesos_include_dirs;
 find(sub {push @mesos_include_dirs, $File::Find::name if -d}, 'include');
 
 my $build = Module::Build::WithXSpp->new(
-    dist_abstract   => 'lib/Mesos.pm',
-    dist_author     => 'Mark Flickinger <maf@cpan.org>',
-    module_name     => 'Mesos',
-    license         => 'perl',
-    recommends      => {
+    dist_abstract => 'lib/Mesos.pm',
+    dist_author   => 'Mark Flickinger <maf@cpan.org>',
+    module_name   => 'Mesos',
+    license       => 'perl',
+    recommends    => {
         'Test::LeakTrace' => 0,
     },
-    requires        => {
-        'version'          => 0,
-        'AnyEvent'         => 0,
-        'Exporter'         => 0,
-        'Moo'              => 1.006000,
-        'Try::Tiny'        => 0,
-        'Type::Tiny'       => 0,
-        'Package::Stash'   => 0,
-        'Async::Interrupt' => 0,
-        'ExtUtils::ParseXS'       => 3.18,
+    requires => {
+        'version'            => 0,
+        'AnyEvent'           => 0,
+        'Exporter'           => 0,
+        'Moo'                => 1.006000,
+        'Test::Class::Moose' => 0.55,
+        'Try::Tiny'          => 0,
+        'Type::Tiny'         => 0,
+        'Async::Interrupt'   => 0,
+        'ExtUtils::ParseXS'  => 3.18,
         'Google::ProtocolBuffers' => 0,
     },
     configure_requires => {
@@ -31,8 +31,8 @@ my $build = Module::Build::WithXSpp->new(
         'File::Temp' => 0,
     },
     test_requires => {
-        'Test::Most'     => 0,
-        'FindBin::libs'  => 0,
+        'Test::Most'    => 0,
+        'FindBin::libs' => 0,
     },
     extra_typemap_modules => {
         'ExtUtils::Typemaps::ObjectMap' => '0',

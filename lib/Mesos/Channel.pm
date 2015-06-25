@@ -29,7 +29,6 @@ sub BUILD { shift->_xs_init }
 around recv => sub {
     my ($orig, $self, @input_args) = @_;
     my ($command, @output_args) = @{$self->$orig(@input_args)||[]};
-use Data::Dumper; warn Dumper \@output_args;
     return wantarray ? () : undef if !$command and !@output_args;
     return ($command, deserialize_channel_args(@output_args));
 };

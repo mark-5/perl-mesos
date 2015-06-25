@@ -11,7 +11,7 @@ CommandArg::CommandArg()
 }
 
 CommandArg::CommandArg(const std::string& data, const std::string type)
-: scalar_data_(std::string("")), type_(type),
+: scalar_data_(std::string(data)), type_(type),
   context_(context::SCALAR)
 {
 
