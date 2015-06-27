@@ -1,0 +1,20 @@
+%module{Mesos};
+#include <CommandDispatcher.hpp>
+#include <XS/MesosUtils.hpp>
+
+%name{Mesos::Dispatcher} class mesos::perl::CommandDispatcher
+{
+
+%{
+
+static void
+DEMOLISH(SV* self, ...)
+    PPCODE:
+        mesos::perl::CommandDispatcher* dispatcher = (mesos::perl::CommandDispatcher*) unsafe_tied_object_to_ptr(aTHX_ self);
+        if (dispatcher) delete dispatcher;
+
+%}
+
+void notify();
+
+};

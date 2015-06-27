@@ -15,14 +15,12 @@ _xs_init(SV* self, mesos::perl::CommandChannel* channel)
         if (!SvROK(self) || (SvTYPE(SvRV(self)) != SVt_PVHV)) XSRETURN_EMPTY;
 
         mesos::perl::PipeDispatcher* dispatcher = new mesos::perl::PipeDispatcher(channel);
-        sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext, (const char*) channel, 0);
+        sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext, (const char*) dispatcher, 0);
 
 %}
 
-mesos::perl::MesosCommand recv();
-
-void send(mesos::perl::MesosCommand command);
-
 int fd();
+
+int read_pipe();
 
 };

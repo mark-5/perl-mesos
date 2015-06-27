@@ -15,6 +15,12 @@ _xs_init(SV* self)
         mesos::perl::CommandChannel* channel = new mesos::perl::CommandChannel();
         sv_magic(SvRV(self), Nullsv, PERL_MAGIC_ext, (const char*) channel, 0);
 
+static void
+DEMOLISH(SV* self, ...)
+    PPCODE:
+        mesos::perl::CommandChannel* channel = (mesos::perl::CommandChannel*) unsafe_tied_object_to_ptr(aTHX_ self);
+        if (channel) delete channel;
+
 %}
 
 void send(mesos::perl::MesosCommand command);

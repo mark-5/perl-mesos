@@ -23,8 +23,4 @@ _xs_init(self, channel, interrupt_cb, interrupt_arg)
 
 %}
 
-mesos::perl::MesosCommand recv();
-
-void send(mesos::perl::MesosCommand command);
-
 };

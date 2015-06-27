@@ -23,6 +23,7 @@ sub dispatch_event {
     } else {
         warn "Event handler can't process event type $event";
     }
+    return ($event, @args);
 }
 
 after BUILD => sub {
