@@ -1,13 +1,10 @@
 package Mesos;
 use strict;
 use warnings;
-use Exporter 5.57 'import';
+use 5.10.1;
+
 use version;
-
 our $VERSION = qv( 1.05.1 );
-
-our %EXPORT_TAGS = ( 'all' => [] );
-our @EXPORT_OK   = ( @{ $EXPORT_TAGS{'all'} } );
 
 
 =pod
@@ -101,6 +98,10 @@ More information about Apache Mesos, projects using Mesos, or the underlying Mes
 =head1 AUTHOR
 
 Mark Flickinger E<lt>maf@cpan.orgE<gt>
+
+=head1 LICENSE
+
+This software is licensed under the same terms as Perl itself.
 
 =cut
 

@@ -90,3 +90,10 @@ More information about Apache Mesos, projects using Mesos, or the underlying Mes
 
 Mark Flickinger E<lt>maf@cpan.orgE<gt>
 
+=head1 LICENSE
+
+This software is licensed under the same terms as Perl itself.
+
+
+=cut
+
