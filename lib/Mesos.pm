@@ -2,10 +2,33 @@ package Mesos;
 use strict;
 use warnings;
 use 5.10.1;
+our $VERSION = '1.05.1';
+use Scalar::Util qw(looks_like_number);
+use parent 'Exporter';
 
-use version;
-our $VERSION = qv( 1.05.1 );
+our @EXPORT_OK = qw(trace);
 
+our @_log_levels = qw(QUIET ERROR WARNING INFO);
+sub trace {
+    my ($level, $dir) = @_;
+    if (looks_like_number($level)) {
+        $level = $_log_levels[-1] if $level >= @_log_levels;
+        $level = $_log_levels[$level];
+    }
+    if ($level eq 'QUIET') {
+        $ENV{MESOS_quiet} = 1;
+        return;
+    }
+    $ENV{MESOS_logging_level} = $level;
+
+    if ($dir) {
+        $ENV{MESOS_quiet} = 1;
+        $ENV{MESOS_log_dir} = $dir;
+    } else {
+        $ENV{MESOS_quiet} = 0;
+        delete $ENV{MESOS_log_dir};
+    }
+}
 
 =pod
 
