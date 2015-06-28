@@ -19,12 +19,6 @@ has executor => (
 );
 sub event_handler { shift->executor }
 
-sub run {
-    my ($self) = @_;
-    $self->start;
-    $self->join;
-}
-
 around sendStatusUpdate => sub {
     my ($orig, $self, @args) = @_;
     return $self->$orig(validate \@args, TaskStatus);

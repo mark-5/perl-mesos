@@ -38,12 +38,6 @@ has scheduler => (
 );
 sub event_handler { shift->scheduler }
 
-sub run {
-    my ($self) = @_;
-    $self->start;
-    $self->join;
-}
-
 around requestResources => sub {
     my ($orig, $self, @args) = @_;
     return $self->$orig(validate \@args, ArrayRef[Request]);

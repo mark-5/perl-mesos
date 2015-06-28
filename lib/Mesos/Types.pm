@@ -21,6 +21,7 @@ Coercions are also provided for message classes, from hash ref constructors.
 =cut
 
 my @messages = qw(
+    CommandInfo
     Credential
     ExecutorID
     ExecutorInfo

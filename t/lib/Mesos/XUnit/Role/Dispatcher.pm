@@ -44,7 +44,11 @@ sub new_driver {
             ),
         ],
         methods => {
-            BUILD => sub {},
+            start  => sub {},
+            stop   => sub {},
+            abort  => sub {},
+            status => sub {},
+            BUILD  => sub {},
         },
     );
     $class->make_immutable;

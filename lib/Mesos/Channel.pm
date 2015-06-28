@@ -18,6 +18,8 @@ sub deserialize_channel_args {
         my ($data, $type) = @$_;
         my $deserialized  = $data;
         if (($type||'') ne 'String') {
+            # allow for XS to not use the package prefix
+            $type = "Mesos::$type" unless $type =~ /^Mesos::/;
             $deserialized = _decode_arg($data, $type);
         }
         $deserialized;

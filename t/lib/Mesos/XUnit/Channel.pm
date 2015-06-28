@@ -40,8 +40,10 @@ sub test_mesos_messages {
 sub test_constructor_leaks {
     my ($test) = @_;
 
+    # this leaks under some setups unless Mesos::Channel has already been loaded
+    $test->new_channel;
     no_leaks_ok {
-        my $channel = $test->new_channel;
+        $test->new_channel;
     } 'Mesos::Channel construction does not leak';
 }
 

@@ -3,7 +3,13 @@ use Mesos::Types qw(Dispatcher);
 use Module::Runtime qw(require_module);
 use Scalar::Util qw(weaken);
 use Moo::Role;
-requires 'event_handler';
+requires qw(
+    event_handler
+    status
+    start
+    stop
+    abort
+);
 
 has dispatcher => (
     is      => 'ro',
@@ -11,6 +17,30 @@ has dispatcher => (
     coerce  => 1,
     default => sub { 'AnyEvent' },
 );
+
+has running => (
+    is      => 'rw',
+    default => sub { 0 },
+);
+
+after  start => sub { shift->running(1) };
+after  $_    => sub { shift->running(0) } for qw(stop abort);
+before $_    => sub {
+    my ($self) = @_;
+    $self->start unless $self->running;
+} for qw(run run_once);
+
+sub run {
+    my ($self) = @_;
+    $self->dispatcher->wait while $self->running;
+    return $self->status;
+}
+
+sub run_once {
+    my ($self) = @_;
+    $self->dispatcher->wait;
+    return $self->status;
+}
 
 sub dispatch_event {
     my ($self) = @_;
