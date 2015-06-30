@@ -4,6 +4,7 @@ author_requires 'ExtUtils::ParseXS', '3.18';
 author_requires 'ExtUtils::Typemaps';
 author_requires 'ExtUtils::Typemaps::ObjectMap';
 author_requires 'ExtUtils::Typemaps::STL';
+author_requires 'FindBin';
 author_requires 'IO::Async::Handle';
 author_requires 'Module::Install::AuthorTests';
 author_requires 'Module::Install::CPANfile';
@@ -17,6 +18,17 @@ configure_requires 'ExtUtils::ParseXS', '3.18';
 configure_requires 'ExtUtils::Typemaps::ObjectMap';
 configure_requires 'ExtUtils::Typemaps::STL';
 configure_requires 'File::Temp';
+
+feature 'async-interrupt', 'Async::Interrupt support' => sub {
+    recommends 'Async::Interrupt';
+};
+feature 'io-async', 'IO::Async support' => sub {
+    recommends 'IO::Async::Handle';
+};
+feature 'poe', 'POE support' => sub {
+    recommends 'POE';
+    recommends 'POE::Future';
+};
 
 requires 'AnyEvent';
 requires 'Carp';

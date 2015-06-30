@@ -2,6 +2,7 @@ package Mesos::XUnit::Dispatcher::POE;
 use Try::Tiny;
 use Test::Class::Moose;
 with 'Mesos::XUnit::Role::Dispatcher';
+with 'Mesos::XUnit::Role::Dispatcher::CheckWait';
 
 sub load_poe {
         require POE::Kernel;

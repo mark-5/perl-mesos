@@ -4,7 +4,6 @@ use Mesos::Test::Scheduler;
 use Mesos::Test::Utils qw(
     test_framework
     test_master
-    xt_root
 );
 use Test::Class::Moose::Role;
 requires qw(new_driver);
@@ -12,7 +11,10 @@ requires qw(new_driver);
 sub test_scheduler_without_executor {
     my ($test) = @_;
 
-    my $scheduler = Mesos::Test::Scheduler->new;
+    my $scheduler = Mesos::Test::Scheduler->new(
+        registered     => sub {},
+        resourceOffers => sub {},
+    );
     my $driver    = $test->new_driver(
         framework => test_framework,
         master    => test_master,

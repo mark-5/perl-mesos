@@ -1,33 +1,27 @@
 package Mesos::XUnit::Role::Dispatcher;
 use Scalar::Util qw(weaken);
-use Moose::Meta::Attribute;
 use Moose::Meta::Class;
 use Test::Class::Moose::Role;
 requires qw(new_delay new_dispatcher);
 
 sub new_handler {
     my ($test, %methods) = @_;
-    my @attrs = map {
-        Moose::Meta::Attribute->new("_$_", is => 'rw', init_arg => $_)
-    } keys %methods;
-    push @attrs, Moose::Meta::Attribute->new('last_event', is => 'rw');
 
-    my %wrapped; for my $method (keys %methods) {
-        my $attr = "_$method";
-        $wrapped{$method} = sub {
+    while (my ($name, $code) = each %methods) {
+        $methods{$name} = sub {
             my ($self, $driver, @args) = @_;
-            $self->last_event([$method, @args]);
-            $self->$attr->(@args);
+            $self->last_event([$name, @args]);
+            return $code->(@_);
         };
     }
 
     my $class = Moose::Meta::Class->create_anon_class(
-        cache        => 1,
         superclasses => [qw(Moose::Object)],
-        attributes   => \@attrs,
-        methods      => \%wrapped,
+        attributes   => [
+            Moose::Meta::Attribute->new('last_event', is => 'rw')
+        ],
+        methods => \%methods,
     );
-    $class->make_immutable;
     return $class->new_object(%methods);
 }
 

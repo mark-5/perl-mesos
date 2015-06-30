@@ -4,6 +4,7 @@ use Try::Tiny;
 use Test::Class::Moose;
 with 'Mesos::XUnit::Role::Dispatcher';
 with 'Mesos::XUnit::Role::Dispatcher::CheckLeaks';
+with 'Mesos::XUnit::Role::Dispatcher::CheckWait';
 
 has ticker => (
     is      => 'ro',

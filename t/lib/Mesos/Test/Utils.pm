@@ -4,13 +4,24 @@ use warnings;
 use Cwd qw(abs_path);
 use File::Basename qw(dirname);
 use Mesos::Types qw(ExecutorInfo FrameworkInfo);
+use Try::Tiny;
 use parent 'Exporter';
 our @EXPORT = qw(
+    root
     test_executor
     test_framework
     test_master
-    xt_root
+    timeout
 );
+
+our $_ROOT;
+sub root {
+    $_ROOT //= do {
+        my $current_dir = abs_path(dirname __FILE__);
+        (my $root = $current_dir) =~ s#/t/.*?$##;
+        $root;
+    };
+}
 
 sub test_executor {
     my ($command) = @_;
@@ -32,13 +43,23 @@ sub test_master {
     $ENV{MESOS_TEST_MASTER} // 'localhost:5050';
 }
 
-our $_XT_ROOT;
-sub xt_root {
-    $_XT_ROOT //= do {
-        my $current_dir = abs_path(dirname __FILE__);
-        (my $xt_root = $current_dir) =~ s#/xt/.*?$#/xt#;
-        $xt_root;
+sub timeout (&;$) {
+    my ($code, $time) = @_;
+    my $timeout = "TIMEOUT\n";
+
+    my $timedout;
+    try {
+        local $SIG{ALRM} = sub { die $timeout };
+        alarm($time // 1);
+        $code->();
+        alarm(0);
+    } catch {
+        die $_ unless /^$timeout/;
+        $timedout++;
     };
+    alarm(0);
+
+    return !!$timedout;
 }
 
 1;
