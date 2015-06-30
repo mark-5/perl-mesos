@@ -5,6 +5,24 @@ use Scope::Guard qw(guard);
 use Moo;
 extends 'Mesos::Dispatcher::Pipe';
 
+=head1 NAME
+
+Mesos::Dispatcher::IOAsync
+
+=head1 DESCRIPTION
+
+A Mesos::Dispatcher implementation, and subclass of Mesos::Dispatcher::Pipe.
+
+Creates an IO::Async::Handle to handle reading from the pipe.
+
+=head1 ATTRIBUTES
+
+=head2 loop
+
+The IO::Async::Loop to use for event handling.
+
+=cut
+
 has loop => (
     is       => 'ro',
     required => 1,

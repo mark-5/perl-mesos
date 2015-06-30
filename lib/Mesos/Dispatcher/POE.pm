@@ -5,6 +5,18 @@ use Scope::Guard qw(guard);
 use Moo;
 extends 'Mesos::Dispatcher::Pipe';
 
+=head1 NAME
+
+Mesos::Dispatcher::POE
+
+=head1 DESCRIPTION
+
+A Mesos::Dispatcher implementation, and subclass of Mesos::Dispatcher::Pipe.
+
+Creates a POE::Session to handle reading from the pipe.
+
+=cut
+
 has fh => (
     is      => 'ro',
     lazy    => 1,

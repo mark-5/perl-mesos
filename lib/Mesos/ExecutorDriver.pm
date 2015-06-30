@@ -8,7 +8,19 @@ with 'Mesos::Role::HasDispatcher';
 
 =head1 NAME
 
-Mesos::ExecutorDriver - base class for Mesos executor drivers
+Mesos::ExecutorDriver - perl interface to MesosExecutorDriver
+
+=head1 ATTRIBUTES
+
+=head2 dispatcher
+
+Either a Mesos::Dispatcher instance, or the short name of a dispatcher to instantiate(such as AnyEvent). The short name cannot be used if the dispatcher has required arguments.
+
+Defaults to AnyEvent
+
+=head2 executor
+
+A Mesos::Executor instance
 
 =cut
 
@@ -37,6 +49,15 @@ sub BUILD {
 =head1 METHODS
 
 =over 4
+
+=item new(%args)
+
+    my $driver = Mesos::ExecutorDriver->new(%args);
+
+        %args
+            REQUIRED executor
+            OPTIONAL dispatcher
+
 
 =item new(executor => $executor)
 

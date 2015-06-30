@@ -3,6 +3,24 @@ use Mesos::XS;
 use Mesos::Messages;
 use Moo;
 
+=head1 NAME
+
+Mesos::Channel
+
+=head1 DESCRIPTION
+
+A channel for sending and receiving events between C and Perl.
+
+=head1 METHODS
+
+=head2 new
+
+=head2 recv
+
+=head2 send
+
+=cut
+
 sub _decode_arg {
     my ($data, $type) = @_;
     if (ref $data eq 'ARRAY') {

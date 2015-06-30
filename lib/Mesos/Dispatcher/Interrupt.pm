@@ -6,6 +6,21 @@ use Scope::Guard qw(guard);
 use Moo;
 extends 'Mesos::Dispatcher';
 
+=head1 NAME
+
+Mesos::Dispatcher::Interrupt
+
+=head1 DESCRIPTION
+
+A Mesos::Dispatcher implementation that uses Async::Interrupt for dispatching.
+
+In order to interrupt AnyEvent, during Mesos::Dispatcher's wait call,
+the Interrupt implementation creates an AnyEvent timer to trigger every
+100ms. This is needed because AnyEvent's recv blocks on a select call,
+which Async::Interrupt cannot interrupt by itself.
+
+=cut
+
 has interrupt => (
     is      => 'ro',
     builder => '_build_interrupt',

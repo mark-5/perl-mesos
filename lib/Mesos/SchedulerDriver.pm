@@ -8,7 +8,31 @@ with 'Mesos::Role::HasDispatcher';
 
 =head1 NAME
 
-Mesos::SchedulerDriver - base clas for Mesos scheduler drivers
+Mesos::SchedulerDriver - perl interface to MesosSchedulerDriver
+
+=head1 ATTRIBUTES
+
+=head2 credential
+
+A Mesos::Credential message
+
+=head2 dispatcher
+
+Either a Mesos::Dispatcher instance, or the short name of a dispatcher to instantiate(such as AnyEvent). The short name cannot be used if the dispatcher has required arguments.
+
+Defaults to AnyEvent
+
+=head2 framework
+
+A Mesos::FrameworkInfo message
+
+=head2 master
+
+The address of a Mesos master
+
+=head2 scheduler
+
+A Mesos::Scheduler instance
 
 =cut
 
@@ -96,7 +120,16 @@ sub BUILD {
 
 =over 4
 
-=item new(scheduler => $scheduler, framework => $frameworkInfo, master => $master, credentials => $credentials)
+=item new(%args)
+
+    my $driver = Mesos::SchedulerDriver(%args)
+
+        %args
+            REQUIRED framework
+            REQUIRED scheduler
+            REQUIRED master
+            OPTIONAL credential
+            OPTIONAL dispatcher
 
 =item start()
 

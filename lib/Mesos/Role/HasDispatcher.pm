@@ -11,6 +11,40 @@ requires qw(
     abort
 );
 
+=head1 NAME
+
+=head1 DESCRIPTION
+
+Handles constructing and dispatching events from a Mesos::Dispatcher.
+
+=head1 ATTRIBUTES
+
+=head2 dispatcher
+
+=head2 running
+
+=head1 METHODS
+
+=head2 dispatch_event
+
+=head2 run
+
+=head2 run_once
+
+=head1 REQUIRES
+
+=head2 event_handler
+
+=head2 status
+
+=head2 start
+
+=head2 stop
+
+=head2 abort
+
+=cut
+
 has dispatcher => (
     is      => 'ro',
     isa     => Dispatcher,

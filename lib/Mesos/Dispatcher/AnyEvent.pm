@@ -4,6 +4,18 @@ use Scalar::Util qw(weaken);
 use Moo;
 extends 'Mesos::Dispatcher::Pipe';
 
+=head1 NAME
+
+Mesos::Dispatcher::AnyEvent
+
+=head1 DESCRIPTION
+
+A Mesos::Dispatcher implementation, and subclass of Mesos::Dispatcher::Pipe.
+
+Creates an AnyEvent I/O watcher to handle reading from the pipe.
+
+=cut
+
 has ae_watcher => (
     is => 'rw',
 );

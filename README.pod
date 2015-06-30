@@ -8,6 +8,48 @@ Mesos - perl bindings for Apache Mesos
 
 This is a collection of perl bindings for Apache Mesos. This requires having the mesos shared library installed, in order to link against(much like python's mesos library).
 
+=head2 Dispatchers
+
+Mesos uses Mesos::Dispatchers for communicating with the underlying C++ drivers. If a dispatcher does not require any arguments, the short name may be passed, and the dispatcher will be automatically constructed. If a dispatcher is not explicitly passed, Mesos::Dispatcher::AnyEvent will be used.
+
+    my $driver = Mesos::SchedulerDriver->new(
+        dispatcher => 'AnyEvent',
+        %args,
+    );
+
+=over 4
+
+=item AnyEvent
+
+Mesos writes to a Unix pipe with an attached AnyEvent I/O watcher. This means that perl callbacks for watchers will be executed by the AnyEvent event loop.
+
+=item Interrupt
+
+Mesos uses Async::Interrupt callbacks. This means the perl interpreter will be safely interrupted(waits for the current op to finish) in order to execute the corresponding perl callback. See Async::Interrupt for more details on how callbacks are executed. Be aware that this does not interrupt system calls(such as select) and XS code. This means if your code is blocking on a select(such as during an AnyEvent recv), the interrupt callback will not execute until the call has finished.
+
+=item IOAsync
+
+Mesos writes to a Unix pipe with an attached IO::Async::Handle.
+
+The IOAsync dispatcher requires an IO::Async::Loop, and needs to be constructed manually
+
+    my $loop = IO::Async::Loop->new;
+    my $disp = Mesos::Dispatcher::IOAsync->new(loop => $loop);
+    my $driver = Mesos::SchedulerDriver->new(
+        dispatcher => $disp,
+        %args,
+    );
+
+=item POE
+
+Mesos writes to a Unix pipe with an attached POE::Session.
+
+=back
+
+=head2 Logging
+
+Logging is controlled by the PERL_MESOS_TRACE environmental variable. Valid logging levels are ERROR, WARNING, and INFO, which can be referred to by numbers 1, 2, and 3 respectively). PERL_MESOS_TRACE can alse be set to $level=$dir, which will write log files to $dir.
+
 =head2 Protobuf Messages
 
 Frameworks, masters, and slaves all communicate using google protocol buffers. The Mesos module handles protobuf messages using the Google::ProtocolBuffers library, which is what's used to generate the message classes in Mesos::Messages from resources/mesos.proto. It is encouraged to look over Google::ProtocolBuffers documentation before using Mesos.

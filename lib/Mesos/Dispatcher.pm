@@ -6,6 +6,42 @@ use Scalar::Util qw(weaken);
 use Scope::Guard qw(guard);
 use Moo;
 
+=head1 NAME
+
+Mesos::Dispatcher
+
+=head1 DESCRIPTION
+
+A parent class for event dispatchers to inherit from.
+
+=head1 ATTRIBUTES
+
+=head2 channel
+
+=head2 cb
+
+=head1 METHODS
+
+=head2 new
+
+    my $dispatcher = Mesos::Dispatcher->new(%args)
+
+        %args
+            REQUIRED cb
+            OPTIONAL channel
+
+=head2 call
+
+=head2 notify
+
+=head2 recv
+
+=head2 send
+
+=head2 wait
+
+=cut
+
 has channel => (
     is      => 'ro',
     handles => [qw(recv send)],
