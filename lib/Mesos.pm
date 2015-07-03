@@ -12,7 +12,7 @@ our @_log_levels = qw(QUIET ERROR WARNING INFO);
 sub trace {
     my ($level, $dir) = @_;
     if (looks_like_number($level)) {
-        $level = $_log_levels[-1] if $level >= @_log_levels;
+        $level = $#_log_levels if $level >= @_log_levels;
         $level = $_log_levels[$level];
     }
     if ($level eq 'QUIET') {
