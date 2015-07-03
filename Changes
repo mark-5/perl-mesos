@@ -1,3 +1,7 @@
+1.06.0 - 2015-7-2
+  - added IO::Async and POE drivers
+  - added PERL_MESOS_TRACE support
+
 1.05.1 - 2014-10-13
   - added Async::Interrupt drivers
 
