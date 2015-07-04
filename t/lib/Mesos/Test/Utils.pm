@@ -4,6 +4,7 @@ use warnings;
 use Cwd qw(abs_path);
 use File::Basename qw(dirname);
 use Mesos::Types qw(ExecutorInfo FrameworkInfo);
+use Time::HiRes qw(alarm);
 use Try::Tiny;
 use parent 'Exporter';
 our @EXPORT = qw(
@@ -33,9 +34,11 @@ sub test_executor {
 }
 
 sub test_framework {
+    my ($name) = @_;
+    $name //= 'Test Framework (Perl)';
     FrameworkInfo->new({
         user => $ENV{USER},
-        name => 'Test Framework (Perl)',
+        name => $name,
     });
 }
 

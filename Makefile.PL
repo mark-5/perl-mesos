@@ -28,6 +28,7 @@ use_ppport;
 author_tests 'xt';
 
 no_index directory => 'bin';
+clean_files 'inc', 'Makefile', 'MANIFEST.SKIP.', 'META.*', 'MYMETA.*', 'ppport.h';
 cpanfile;
 WriteAll;
 
