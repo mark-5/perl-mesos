@@ -60,6 +60,12 @@ sub wait {
     return @return;
 }
 
+sub run {
+    my ($self) = @_;
+    POE::Kernel->run;
+    return $self->status;
+}
+
 sub BUILD {
     my ($self) = @_;
     weaken($self);

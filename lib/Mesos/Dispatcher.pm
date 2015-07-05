@@ -45,7 +45,6 @@ A parent class for event dispatchers to inherit from.
 has channel => (
     is      => 'ro',
     handles => [qw(recv send)],
-    lazy    => 1,
     default => sub { Mesos::Channel->new },
 );
 

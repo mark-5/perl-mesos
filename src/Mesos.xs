@@ -181,7 +181,7 @@ Status
 mesos::perl::SchedulerDriver::killTask(mesos::TaskID taskId);
 
 Status
-mesos::perl::SchedulerDriver::declineOffer(mesos::OfferID offerId, mesos::Filters filters);
+mesos::perl::SchedulerDriver::declineOffer(mesos::OfferID offerId, mesos::Filters filters = mesos::Filters());
 
 Status
 mesos::perl::SchedulerDriver::reviveOffers();

@@ -72,6 +72,12 @@ sub wait {
     return @return;
 }
 
+sub run {
+    my ($self) = @_;
+    $self->loop->run;
+    return $self->status;
+}
+
 sub BUILD {
     my ($self) = @_;
     $self->loop->add($self->notifier);
