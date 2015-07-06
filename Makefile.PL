@@ -4,6 +4,7 @@ use ExtUtils::CppGuess;
 use ExtUtils::Typemaps;
 use ExtUtils::Typemaps::ObjectMap;
 use ExtUtils::Typemaps::STL;
+use List::Util qw(first);
 
 all_from 'lib/Mesos.pm';
 readme_pod_from 'lib/Mesos.pm';
@@ -46,21 +47,56 @@ sub create_typemap {
 }
 
 sub assert_mesos_libs {
+    my $result = _assert_mesos_libs();
+    return if $result->{success};
+
+    my %extra = _find_mesos_extra_args();
+    if (%extra) {
+        my $inc = "-I$extra{inc}" if $extra{inc};
+        my $lib = "-L$extra{lib}" if $extra{lib};
+        $result = _assert_mesos_libs($inc, $lib);
+        cc_include_paths $extra{inc} if $extra{inc};
+        cc_libs $lib if $lib;
+    }
+
+    if (!$result->{success}) {
+        my $message = "Can't link/include mesos C++ library:\n";
+        $message .= "$result->{cmd}\n\n";
+        $message .= "$result->{output}\n\n";
+        warn $message;
+        exit 0;
+    }
+}
+
+sub _assert_mesos_libs {
+    my ($inc, $lib) = @_;
     my $src = write_cpp(headers => ["mesos/mesos.hpp"]);
     (my $bin = $src) =~ s/\.cpp$//;
 
-    my $cmd = sprintf "%s -lmesos -o $bin $src", cpp_compiler();
+    my $cmd = sprintf "%s %s %s -lmesos -o $bin $src", cpp_compiler(), $inc//"", $lib//"";
     my $output = `$cmd 2>&1`;
     my $failed = $?;
     -e $_ and unlink $_ for $bin, $src;
 
-    if ($failed) {
-        my $message = "Can't link/include mesos C++ library:\n";
-        $message .= "$cmd\n\n";
-        $message .= "$output\n";
-        warn $message;
-        exit 0;
-    }
+    return {
+        cmd     => $cmd,
+        output  => $output,
+        success => !$failed,
+    };
+}
+
+sub _find_mesos_extra_args {
+    my %extra;
+    my $inc = $ENV{PERL_MESOS_INCLUDE} // first {-e "$_/mesos.hpp"} qw(
+        /usr/include
+        /usr/local/include
+    );
+    $extra{inc} = $inc if $inc;
+
+    my $lib = $ENV{PERL_MESOS_LIB};
+    $extra{lib} = $lib if $lib;
+
+    return %extra;
 }
 
 sub assert_protobuf_headers {

@@ -142,7 +142,9 @@ Make sure Google Protocol Buffers headers are installed, and the version is comp
 
 Next just install like any other Module::Build distribution with C<perl Build.PL && ./Build install>
 
-Note that Mesos before v0.20 has issues with include headers not being very smart(L<MESOS-1504|https://issues.apache.org/jira/browse/MESOS-1504>). Compiling against these earlier versions requires explicitly including the directory for mesos headers. By default Build.PL will check /usr/local/include/mesos, but you will be prompted to enter another path if that directory does not exist.
+Note that Mesos before v0.20 has issues with include headers not being very smart(L<MESOS-1504|https://issues.apache.org/jira/browse/MESOS-1504>). Compiling against these earlier versions requires explicitly including the directory for mesos headers. By default Makefile.PL will check /usr/local/include/mesos, otherwise you may need to specify an include path using the PERL_MESOS_INCLUDE env var.
+
+If the Mesos library/headers are installed in non-standard locations, you will need to specify these paths using the PERL_MESOS_LIB and PERL_MESOS_INCLUDE env vars.
 
 =head1 CAVEATS
 

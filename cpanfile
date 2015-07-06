@@ -6,6 +6,7 @@ author_requires 'ExtUtils::Typemaps::ObjectMap';
 author_requires 'ExtUtils::Typemaps::STL';
 author_requires 'FindBin';
 author_requires 'IO::Async::Handle';
+author_requires 'List::Util';
 author_requires 'Module::Install::AuthorTests';
 author_requires 'Module::Install::CPANfile';
 author_requires 'Module::Install::ReadmePodFromPod';
@@ -18,6 +19,7 @@ configure_requires 'ExtUtils::ParseXS', '3.18';
 configure_requires 'ExtUtils::Typemaps::ObjectMap';
 configure_requires 'ExtUtils::Typemaps::STL';
 configure_requires 'File::Temp';
+configure_requires 'List::Util';
 
 feature 'async-interrupt', 'Async::Interrupt support' => sub {
     recommends 'Async::Interrupt';
