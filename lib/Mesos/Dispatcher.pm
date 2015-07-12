@@ -8,7 +8,7 @@ use Moo;
 
 =head1 NAME
 
-Mesos::Dispatcher
+Mesos::Dispatcher - base class for Mesos dispatchers
 
 =head1 DESCRIPTION
 
