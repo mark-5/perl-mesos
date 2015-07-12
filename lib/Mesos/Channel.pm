@@ -19,6 +19,10 @@ A channel for sending and receiving events between C and Perl.
 
 =head2 send
 
+=head2 size
+
+The current size of the channel. Indicates the number of pending events, waiting to be dispatched.
+
 =cut
 
 sub _decode_arg {
