@@ -1,6 +1,7 @@
 package Mesos::Executor;
 use Mesos::Messages;
 use Moo;
+use namespace::autoclean;
 
 sub registered {}
 sub reregistered {}

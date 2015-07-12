@@ -4,6 +4,7 @@ use Mesos::Types qw(:all);
 use Type::Params qw(validate);
 use Types::Standard qw(:all);
 use Moo;
+use namespace::autoclean;
 with 'Mesos::Role::HasDispatcher';
 
 =head1 NAME

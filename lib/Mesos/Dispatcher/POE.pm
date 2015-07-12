@@ -3,6 +3,7 @@ use POE;
 use Scalar::Util qw(weaken);
 use Scope::Guard qw(guard);
 use Moo;
+use namespace::autoclean;
 extends 'Mesos::Dispatcher::Pipe';
 
 =head1 NAME

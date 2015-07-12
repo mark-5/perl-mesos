@@ -2,6 +2,7 @@ package Mesos::Dispatcher::AnyEvent;
 use AnyEvent;
 use Scalar::Util qw(weaken);
 use Moo;
+use namespace::autoclean;
 extends 'Mesos::Dispatcher::Pipe';
 
 =head1 NAME

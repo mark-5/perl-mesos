@@ -5,6 +5,7 @@ use Mesos::Channel;
 use Scalar::Util qw(weaken);
 use Scope::Guard qw(guard);
 use Moo;
+use namespace::autoclean;
 
 =head1 NAME
 

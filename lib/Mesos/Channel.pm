@@ -2,6 +2,7 @@ package Mesos::Channel;
 use Mesos::XS;
 use Mesos::Messages;
 use Moo;
+use namespace::autoclean;
 
 =head1 NAME
 

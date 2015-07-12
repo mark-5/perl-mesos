@@ -32,6 +32,7 @@ feature 'poe', 'POE support' => sub {
     recommends 'POE::Future';
 };
 
+requires 'namespace::autoclean', '0.16';
 requires 'AnyEvent';
 requires 'Carp';
 requires 'Digest::SHA';

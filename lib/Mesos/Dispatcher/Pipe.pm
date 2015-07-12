@@ -1,5 +1,6 @@
 package Mesos::Dispatcher::Pipe;
 use Moo;
+use namespace::autoclean;
 extends 'Mesos::Dispatcher';
 
 =head1 NAME

@@ -1,6 +1,7 @@
 package Mesos::Scheduler;
 use Mesos::Messages;
 use Moo;
+use namespace::autoclean;
 
 sub registered {}
 sub reregistered {}

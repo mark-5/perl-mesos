@@ -3,6 +3,7 @@ use Mesos::Types qw(Dispatcher);
 use Module::Runtime qw(require_module);
 use Scalar::Util qw(weaken);
 use Moo::Role;
+use namespace::autoclean;
 requires qw(
     event_handler
     status
