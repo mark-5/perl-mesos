@@ -1,7 +1,9 @@
 package Mesos::XUnit::Role::Dispatcher::CheckWait;
 use Mesos::Test::Utils qw(timeout);
+use Scalar::Util qw(weaken);
 use Test::Class::Moose::Role;
 requires qw(new_delay new_dispatcher);
+
 sub test_wait {
     my ($self) = @_;
     my $dispatcher = $self->new_dispatcher;
@@ -19,7 +21,8 @@ sub test_wait {
     is scalar(@rv), 0, 'returned empty list when no events';
 
     my @command = qw(some command and args);
-    $dispatcher->set_cb(sub { $dispatcher->recv });
+    weaken(my $wdispatcher = $dispatcher);
+    $dispatcher->set_cb(sub { $wdispatcher->recv });
     my $delay = $self->new_delay(0.1, sub {
         $dispatcher->send(@command);
     });

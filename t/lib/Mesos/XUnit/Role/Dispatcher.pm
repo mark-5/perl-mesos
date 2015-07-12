@@ -59,7 +59,8 @@ sub test_basic_dispatch {
 
     my @expected = qw(some results here);
     my $future = $test->new_future;
-    $dispatcher->set_cb(sub { $future->done($dispatcher->recv) });
+    weaken(my $wdispatcher = $dispatcher);
+    $dispatcher->set_cb(sub { $future->done($wdispatcher->recv) });
     $dispatcher->send(@expected);
     is_deeply [$future->get], \@expected, 'dispatcher cb triggered with sent args';
 }

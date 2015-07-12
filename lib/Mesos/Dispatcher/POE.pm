@@ -88,8 +88,6 @@ sub BUILD {
 
 sub DEMOLISH {
     my ($self) = @_;
-    return unless $self->session;
-
     POE::Kernel->call($self->session, 'shutdown');
     $self->clear_session;
 }

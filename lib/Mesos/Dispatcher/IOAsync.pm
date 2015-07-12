@@ -85,8 +85,6 @@ sub BUILD {
 
 sub DEMOLISH {
     my ($self) = @_;
-    return unless $self->loop and $self->notifier;
-
     $self->loop->remove($self->notifier);
 }
 
