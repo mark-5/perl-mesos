@@ -41,7 +41,6 @@ requires 'Module::Runtime';
 requires 'Moo';
 requires 'Scalar::Util';
 requires 'Scope::Guard';
-requires 'Throwable';
 requires 'Type::Tiny';
 requires 'XSLoader';
 
