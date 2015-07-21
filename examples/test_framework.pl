@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 package TestScheduler;
 use Mesos::Messages;
-use Mesos::Types qw(ExecutorInfo TaskInfo);
+use Mesos::Types qw(ExecutorInfo);
 use Moo;
 extends 'Mesos::Scheduler';
 
@@ -32,7 +32,7 @@ sub resourceOffers {
             $self->tasksLaunched($self->tasksLaunched + 1);
             printf "Accepting offer on %s to start task %d\n", $offer->{hostname}, $tid;
             
-            my $task = TaskInfo->new({
+            my $task = Mesos::TaskInfo->new({
                 task_id   => {value => $tid},
                 slave_id  => $offer->{slave_id},
                 name      => "task $tid",
@@ -108,18 +108,17 @@ sub frameworkMessage {
 package main;
 use strict;
 use warnings;
-use Cwd qw(abs_path);
 use FindBin qw($Bin);
-use Mesos::Types qw(ExecutorInfo FrameworkInfo);
+use Mesos::Messages;
 use Mesos::SchedulerDriver;
 my $master = shift or die "Usage: $0 master\n";
 
-my $executor = ExecutorInfo->new({
+my $executor = Mesos::ExecutorInfo->new({
     executor_id => {value => "default"},
     command     => {value => abs_path("$Bin/test_executor.pl")},
 });
 
-my $framework = FrameworkInfo->new({
+my $framework = Mesos::FrameworkInfo->new({
     user => "",
     name => "Test Framework (Perl)",    
 });

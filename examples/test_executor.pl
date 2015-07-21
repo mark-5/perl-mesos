@@ -1,13 +1,13 @@
 #!/usr/bin/perl
 package TestExecutor;
-use Mesos::Types qw(TaskStatus);
+use Mesos::Messages;
 use Moo;
 extends 'Mesos::Executor';
 
 sub launchTask {
     my ($self, $driver, $task) = @_;
     printf "Running task %s\n", $task->{task_id}{value};
-    my $update = TaskStatus->new({
+    my $update = Mesos::TaskStatus->new({
         task_id => $task->{task_id},
         state   => Mesos::TaskState::TASK_RUNNING,
         data    => "data with a \0 byte",    
@@ -15,7 +15,7 @@ sub launchTask {
     $driver->sendStatusUpdate($update);
 
     print "Sending status update...\n";
-    $update = TaskStatus->new({
+    $update = Mesos::TaskStatus->new({
         task_id => $task->{task_id},
         state   => Mesos::TaskState::TASK_FINISHED,
         data    => "data with a \0 byte",    
