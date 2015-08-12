@@ -2,7 +2,7 @@ package Mesos::Types;
 use strict;
 use warnings;
 use Mesos::Messages;
-use Module::Runtime qw(require_module);
+use Module::Runtime qw();
 use Type::Library
    -base;
 use Types::Standard -types;
@@ -39,7 +39,7 @@ for my $message (@messages) {
     my $protobuf_class = "Mesos::$message";
     class_type $message, {class => $protobuf_class};
     coerce $message,
-        from HashRef, via { $protobuf_class->new($_) };
+        from HashRef, "$protobuf_class->new(\$_)";
 }
 
 class_type "Async::Interrupt";
@@ -53,12 +53,14 @@ declare $_, as InstanceOf["Mesos::$_"] for qw(
 );
 
 coerce "Dispatcher",
-    from Str, via {
-        my ($class) = @_;
-        $class = "Mesos::Dispatcher::$class" unless $class =~ s/^\+//;
-        require_module($class);
-        return $class->new;
-    };
+    from Str, <<'__END__';
+do {
+    my $class = $_;
+    $class = "Mesos::Dispatcher::$class" unless $class =~ s/^\+//;
+    Module::Runtime::require_module($class);
+    $class->new;
+}
+__END__
 
 __PACKAGE__->meta->make_immutable;
 1;
