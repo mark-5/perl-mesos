@@ -1,3 +1,8 @@
+1.06.2 - 2015-8-12
+  - autoclean moo classes
+  - automatically autoflush STDOUT for Mesos::ExecutorDrivers
+  - make type coercions inlineable
+
 1.06.1 - 2015-7-5
   - update to mesos-0.22.1 messages
 
