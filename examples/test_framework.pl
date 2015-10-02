@@ -108,6 +108,7 @@ sub frameworkMessage {
 package main;
 use strict;
 use warnings;
+use Cwd qw(abs_path);
 use FindBin qw($Bin);
 use Mesos::Messages;
 use Mesos::SchedulerDriver;
