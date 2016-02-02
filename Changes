@@ -1,3 +1,6 @@
+1.06.4
+  - add support for older compilers, fixes github issues #1 and #2
+
 1.06.3 - 2015-10-10
   - fix missing import in examples
 
