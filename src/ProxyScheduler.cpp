@@ -95,7 +95,9 @@ void ProxyScheduler::executorLost(SchedulerDriver* driver,
     CommandArgs args;
     PUSH_MSG(args, executorId, "ExecutorID");
     PUSH_MSG(args, slaveId, "SlaveID");
-    args.push_back(CommandArg(std::to_string(status)));
+    // older compilers might not have std::to_string overloaded for int
+    // so cast to long long int
+    args.push_back(CommandArg(std::to_string(static_cast<long long int> (status))));
 
     dispatcher_->send( MesosCommand("executorLost", args) );
 }
