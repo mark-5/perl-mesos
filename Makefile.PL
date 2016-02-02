@@ -17,7 +17,7 @@ assert_mesos_libs();
 assert_protobuf_headers(2005000);
 
 requires_cplusplus;
-cc_append_to_ccflags '-std=c++11';
+cc_append_to_ccflags guess_cpp_standard();
 cc_include_paths 'include';
 cc_libs '-lmesos';
 cc_src_paths 'src';
@@ -143,4 +143,23 @@ sub cpp_compiler {
         my $guess = ExtUtils::CppGuess->new->guess_compiler;
         sprintf join " ", $Config{cc}, @{$guess}{qw(extra_cflags extra_lflags)};
     };
+}
+
+sub guess_cpp_standard {
+    my @standards = qw(-std=c++11 -std=c++0x);
+    for my $std (@standards) {
+        my $src = write_cpp(code => '');
+        (my $bin = $src) =~ s/\.cpp$//;
+        my $cmd = sprintf "%s $std -o $bin $src", cpp_compiler();
+
+        my $output = `$cmd 2>&1`;
+        my $failed = $?;
+        -e $_ and unlink $_ for $bin, $src;
+
+        return $std unless $failed;
+    }
+
+    warn "Couldn't guess language standard flag that works with $Config{cc}.\n";
+    warn "Tried @standards.\n";
+    exit 0;
 }
