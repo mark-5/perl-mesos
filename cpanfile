@@ -5,12 +5,14 @@ author_requires 'ExtUtils::Typemaps';
 author_requires 'ExtUtils::Typemaps::ObjectMap';
 author_requires 'ExtUtils::Typemaps::STL';
 author_requires 'FindBin';
+author_requires 'Future::Mojo';
 author_requires 'IO::Async::Handle';
 author_requires 'List::Util';
 author_requires 'Module::Install::AuthorTests';
 author_requires 'Module::Install::CPANfile';
 author_requires 'Module::Install::ReadmePodFromPod';
 author_requires 'Module::Install::XSUtil';
+author_requires 'Mojolicious';
 author_requires 'POE';
 author_requires 'POE::Future';
 
@@ -26,6 +28,10 @@ feature 'async-interrupt', 'Async::Interrupt support' => sub {
 };
 feature 'io-async', 'IO::Async support' => sub {
     recommends 'IO::Async::Handle';
+};
+feature 'mojo', 'Mojolicious support' => sub {
+    recommends 'Mojolicious';
+    recommends 'Future::Mojo';
 };
 feature 'poe', 'POE support' => sub {
     recommends 'POE';
