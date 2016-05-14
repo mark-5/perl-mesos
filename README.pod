@@ -40,6 +40,10 @@ The IOAsync dispatcher requires an IO::Async::Loop, and needs to be constructed 
         %args,
     );
 
+=item Mojo
+
+Mesos writes to a Unix pipe with an attached Mojo::Reactor watcher.
+
 =item POE
 
 Mesos writes to a Unix pipe with an attached POE::Session.
@@ -58,7 +62,7 @@ The Mesos module ships with message classes generated from v0.20.0. Messages are
 
 =head2 Internal POSIX Threads
 
-The Apache Mesos library is multithreaded, which is problematic when dealing with perl. The solution Mesos currently goes with is to create C++ proxy classes, which registers callbacks that send notifications event handlers. The two event handlers currently implemented are AnyEvent watchers(the default) and Async::Interrupt objects(the *::Interrupt drivers).
+The Apache Mesos library is multithreaded, which is problematic when dealing with perl. The solution Mesos currently goes with is to create C++ proxy classes, which registers callbacks that send notifications event handlers.
 
 Launching internal POSIX threads also means that Mesos drivers are not fork safe, and only exec and POSIX::_exit can be guaranteed to work safely in the child process after forking. One should definitely not call any driver code in the child process after forking.
 

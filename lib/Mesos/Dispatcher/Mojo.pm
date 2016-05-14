@@ -7,6 +7,18 @@ use Moo;
 use namespace::autoclean;
 extends 'Mesos::Dispatcher::Pipe';
 
+=head1 NAME
+
+Mesos::Dispatcher::Mojo
+
+=head1 DESCRIPTION
+
+A Mesos::Dispatcher implementation, and subclass of Mesos::Dispatcher::Pipe.
+
+Creates a Mojo::Reactor I/O watcher to handle reading from the pipe.
+
+=cut
+
 has fh => (
     is      => 'ro',
     lazy    => 1,
@@ -17,6 +29,15 @@ sub _build_fh {
     open my($fh), '<&=', $self->fd;
     return $fh;
 }
+
+=head1 ATTRIBUTES
+
+=head2 loop
+
+The Mojo::IOLoop to use for event handling.
+Defaults to Mojo::IOLoop->singleton.
+
+=cut
 
 has loop => (
     is       => 'ro',
