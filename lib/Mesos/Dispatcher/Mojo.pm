@@ -82,7 +82,9 @@ sub BUILD {
 }
 
 sub DEMOLISH {
-    my ($self) = @_;
+    my ($self, $in_global_destruction) = @_;
+    return if $in_global_destruction;
+
     my $handle  = $self->fh;
     my $reactor = $self->loop->reactor;
     $reactor->remove($handle);

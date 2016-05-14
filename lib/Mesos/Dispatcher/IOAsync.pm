@@ -85,7 +85,9 @@ sub BUILD {
 }
 
 sub DEMOLISH {
-    my ($self) = @_;
+    my ($self, $in_global_destruction) = @_;
+    return if $in_global_destruction;
+
     $self->loop->remove($self->notifier);
 }
 
