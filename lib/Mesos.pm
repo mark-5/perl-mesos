@@ -2,7 +2,7 @@ package Mesos;
 use strict;
 use warnings;
 use 5.10.1;
-our $VERSION = '1.06.4';
+our $VERSION = '1.07.0';
 use Scalar::Util qw(looks_like_number);
 use parent 'Exporter';
 

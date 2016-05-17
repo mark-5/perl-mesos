@@ -1,3 +1,7 @@
+1.07.0 - 2016-05-16
+  - add support for mojolicious dispatcher, fixes github issue #3
+  - update to mesos-0.28.1 messages
+
 1.06.4
   - add support for older compilers, fixes github issues #1 and #2
 
