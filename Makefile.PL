@@ -107,7 +107,16 @@ sub assert_protobuf_headers {
         headers => ["google/protobuf/message.h", "cstdio"],
     );
     (my $bin = $src) =~ s/\.cpp$//;
-    my $cmd = sprintf "%s -o $bin $src", cpp_compiler();
+
+    my %extra = _find_mesos_extra_args();
+    my $inc = '';
+    my $lib = '';
+    if (%extra) {
+        $inc = "-I$extra{inc}" if $extra{inc};
+        $lib = "-L$extra{lib}" if $extra{lib};
+    }
+
+    my $cmd = sprintf "%s %s %s -o %s %s", cpp_compiler(), $inc, $lib, $bin, $src;
     my $output = `$cmd 2>&1`;
     my $failed = $?;
 

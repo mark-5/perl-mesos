@@ -17,7 +17,7 @@ SchedulerDriver::SchedulerDriver(const FrameworkInfo& framework,
                                  const Credential& credential,
                                  ProxyScheduler* proxyScheduler)
 : proxyScheduler_(proxyScheduler),
-  driver_(new MesosSchedulerDriver(proxyScheduler_, framework, master))
+  driver_(new MesosSchedulerDriver(proxyScheduler_, framework, master, credential))
 {
 
 }
