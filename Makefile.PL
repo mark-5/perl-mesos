@@ -30,7 +30,8 @@ author_tests 'xt';
 
 no_index directory => 'bin';
 clean_files 'inc', 'Makefile', 'MANIFEST.SKIP.', 'META.*', 'MYMETA.*', 'ppport.h';
-cpanfile;
+# stupid CPAN::FirstTime prompts mess up travis-ci
+cpanfile unless $ENV{CI};
 WriteAll;
 
 

@@ -36,6 +36,8 @@ sub trace {
 
 Mesos - perl bindings for Apache Mesos
 
+=for html <a href="https://travis-ci.org/mark-5/perl-mesos"><img src="https://travis-ci.org/mark-5/perl-mesos.svg?branch=master"></a>
+
 =head1 DESCRIPTION
 
 This is a collection of perl bindings for Apache Mesos. This requires having the mesos shared library installed, in order to link against(much like python's mesos library).

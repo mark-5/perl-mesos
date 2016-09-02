@@ -1,27 +1,31 @@
-author_requires 'Async::Interrupt';
-author_requires 'ExtUtils::CppGuess';
-author_requires 'ExtUtils::ParseXS', '3.18';
-author_requires 'ExtUtils::Typemaps';
-author_requires 'ExtUtils::Typemaps::ObjectMap';
-author_requires 'ExtUtils::Typemaps::STL';
-author_requires 'FindBin';
-author_requires 'Future::Mojo';
-author_requires 'IO::Async::Handle';
-author_requires 'List::Util';
-author_requires 'Module::Install::AuthorTests';
-author_requires 'Module::Install::CPANfile';
-author_requires 'Module::Install::ReadmePodFromPod';
-author_requires 'Module::Install::XSUtil';
-author_requires 'Mojolicious';
-author_requires 'POE';
-author_requires 'POE::Future';
+on develop => sub {
+    requires 'Async::Interrupt';
+    requires 'ExtUtils::CppGuess';
+    requires 'ExtUtils::ParseXS', '3.18';
+    requires 'ExtUtils::Typemaps';
+    requires 'ExtUtils::Typemaps::ObjectMap';
+    requires 'ExtUtils::Typemaps::STL';
+    requires 'FindBin';
+    requires 'Future::Mojo';
+    requires 'IO::Async::Handle';
+    requires 'List::Util';
+    requires 'Module::Install::AuthorTests';
+    requires 'Module::Install::CPANfile';
+    requires 'Module::Install::ReadmePodFromPod';
+    requires 'Module::Install::XSUtil';
+    requires 'Mojolicious';
+    requires 'POE';
+    requires 'POE::Future';
+};
 
-configure_requires 'ExtUtils::CppGuess';
-configure_requires 'ExtUtils::ParseXS', '3.18';
-configure_requires 'ExtUtils::Typemaps::ObjectMap';
-configure_requires 'ExtUtils::Typemaps::STL';
-configure_requires 'File::Temp';
-configure_requires 'List::Util';
+on configure => sub {
+    requires 'ExtUtils::CppGuess';
+    requires 'ExtUtils::ParseXS', '3.18';
+    requires 'ExtUtils::Typemaps::ObjectMap';
+    requires 'ExtUtils::Typemaps::STL';
+    requires 'File::Temp';
+    requires 'List::Util';
+};
 
 feature 'async-interrupt', 'Async::Interrupt support' => sub {
     recommends 'Async::Interrupt';
@@ -50,10 +54,12 @@ requires 'Scope::Guard';
 requires 'Type::Tiny';
 requires 'XSLoader';
 
-test_requires 'AnyEvent::Future';
-test_requires 'Test::Class::Moose', '0.55';
-test_requires 'Test::LeakTrace';
-test_requires 'Test::More';
-test_requires 'Test::Pod';
-test_requires 'Test::Strict';
-test_requires 'Try::Tiny';
+on test => sub {
+    requires 'AnyEvent::Future';
+    requires 'Test::Class::Moose', '0.55';
+    requires 'Test::LeakTrace';
+    requires 'Test::More';
+    requires 'Test::Pod';
+    requires 'Test::Strict';
+    requires 'Try::Tiny';
+};
