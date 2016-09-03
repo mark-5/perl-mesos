@@ -8,14 +8,6 @@ use Mesos::Test::Utils qw(
 use Test::Class::Moose::Role;
 requires qw(new_driver);
 
-around test_startup => sub {
-    my ($orig, $test, @args) = @_;
-    if ($ENV{CI}) {
-        $test->test_skip('TODO: figure out how to run travis-ci with service dependencies');
-    }
-    return $test->$orig(@args);
-};
-
 sub test_scheduler_without_executor {
     my ($test) = @_;
 
