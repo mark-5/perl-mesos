@@ -1,29 +1,34 @@
+---
 language: perl
-perl:
-  #- "blead-thr"
-  #- "blead"
-  #- "5.24-thr"
-  - "5.24"
-  #- "5.22-thr"
-  - "5.22"
-  #- "5.20-thr"
-  - "5.20"
-  #- "5.18-thr"
-  - "5.18"
-  #- "5.16-thr"
-  - "5.16"
-  #- "5.14-thr"
-  - "5.14"
-  #- "5.12-thr"
-  - "5.12"
-  #- "5.10-thr"
-  - "5.10"
+sudo: required
+services:
+  - docker
 
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install wget tar make g++ git
-  - .travis/install-mesos.sh
-  - .travis/install-protobuf.sh
+before_script:
+  - make -f ci/Makefile
 
-install:
-  - cpanm --with-configure --with-develop --installdeps --notest .
+script:
+  - make -f ci/Makefile test
+
+after_script:
+  - make -f ci/Makefile clean
+
+env:
+  matrix:
+    - MESOS_VERSION=0.20.1-1.0.ubuntu1404   PROTOBUF_VERSION=2.5.0 PERL_VERSION=5.10.1
+    - MESOS_VERSION=0.20.1-1.0.ubuntu1404   PROTOBUF_VERSION=2.5.0 PERL_VERSION=5.10.1-threaded
+    - MESOS_VERSION=0.20.1-1.0.ubuntu1404   PROTOBUF_VERSION=2.5.0 PERL_VERSION=5.24.0
+    - MESOS_VERSION=0.20.1-1.0.ubuntu1404   PROTOBUF_VERSION=2.5.0 PERL_VERSION=5.24.0-threaded
+    - MESOS_VERSION=0.20.1-1.0.ubuntu1404   PROTOBUF_VERSION=2.6.0 PERL_VERSION=5.10.1
+    - MESOS_VERSION=0.20.1-1.0.ubuntu1404   PROTOBUF_VERSION=2.6.0 PERL_VERSION=5.10.1-threaded
+    - MESOS_VERSION=0.20.1-1.0.ubuntu1404   PROTOBUF_VERSION=2.6.0 PERL_VERSION=5.24.0
+    - MESOS_VERSION=0.20.1-1.0.ubuntu1404   PROTOBUF_VERSION=2.6.0 PERL_VERSION=5.24.0-threaded
+    - MESOS_VERSION=1.0.1-2.0.93.ubuntu1404 PROTOBUF_VERSION=2.5.0 PERL_VERSION=5.10.1
+    - MESOS_VERSION=1.0.1-2.0.93.ubuntu1404 PROTOBUF_VERSION=2.5.0 PERL_VERSION=5.10.1-threaded
+    - MESOS_VERSION=1.0.1-2.0.93.ubuntu1404 PROTOBUF_VERSION=2.5.0 PERL_VERSION=5.24.0
+    - MESOS_VERSION=1.0.1-2.0.93.ubuntu1404 PROTOBUF_VERSION=2.5.0 PERL_VERSION=5.24.0-threaded
+    - MESOS_VERSION=1.0.1-2.0.93.ubuntu1404 PROTOBUF_VERSION=2.6.0 PERL_VERSION=5.10.1
+    - MESOS_VERSION=1.0.1-2.0.93.ubuntu1404 PROTOBUF_VERSION=2.6.0 PERL_VERSION=5.10.1-threaded
+    - MESOS_VERSION=1.0.1-2.0.93.ubuntu1404 PROTOBUF_VERSION=2.6.0 PERL_VERSION=5.24.0
+    - MESOS_VERSION=1.0.1-2.0.93.ubuntu1404 PROTOBUF_VERSION=2.6.0 PERL_VERSION=5.24.0-threaded
+

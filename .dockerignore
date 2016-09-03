@@ -1,0 +1,4 @@
+/.git
+/.dockerignore
+/.travis.yml
+/ci
